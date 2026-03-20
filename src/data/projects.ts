@@ -5,6 +5,7 @@ export interface Project {
   title: string;
   description: string;
   costOps: number; // 消耗算力
+  costYomi?: number; // 消耗 Yomi (后期项目需要)
   costFunds?: number; // 消耗资金 (可选)
   costCreativity?: number; // 消耗创造力 (可选)
   isUnlocked: (state: GameState) => boolean; // 何时出现在列表中
@@ -201,6 +202,7 @@ export const INITIAL_PROJECTS: Project[] = [
     title: '太空探索 (Space Exploration)',
     description: '发射冯·诺依曼探测器到太空中。',
     costOps: 120000,
+    costYomi: 10000000, // 根据原版设定，通常后期项目消耗 Yomi，由于原版此处是 Yomi 还是 Ops 有时有歧义，我们这里加上防止无法购买
     isUnlocked: (state) => state.availableMatter <= 0, // 原版中地球物质耗尽后解锁
     effect: () => ({ spaceExplorationUnlocked: true })
   },

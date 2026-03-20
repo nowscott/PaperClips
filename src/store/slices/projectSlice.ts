@@ -20,8 +20,9 @@ export const createProjectSlice: StateCreator<GameState, [], [], ProjectSlice> =
     const hasEnoughOps = state.ops >= project.costOps;
     const hasEnoughFunds = project.costFunds === undefined || state.funds >= project.costFunds;
     const hasEnoughCreativity = project.costCreativity === undefined || state.creativity >= project.costCreativity;
+    const hasEnoughYomi = project.costYomi === undefined || state.yomi >= project.costYomi;
 
-    if (hasEnoughOps && hasEnoughFunds && hasEnoughCreativity) {
+    if (hasEnoughOps && hasEnoughFunds && hasEnoughCreativity && hasEnoughYomi) {
       const updates: Partial<GameState> = {
         ops: state.ops - project.costOps,
         completedProjects: [...state.completedProjects, projectId],
@@ -33,6 +34,10 @@ export const createProjectSlice: StateCreator<GameState, [], [], ProjectSlice> =
 
       if (project.costCreativity) {
         updates.creativity = state.creativity - project.costCreativity;
+      }
+      
+      if (project.costYomi) {
+        updates.yomi = state.yomi - project.costYomi;
       }
 
       // 处理特殊项目效果

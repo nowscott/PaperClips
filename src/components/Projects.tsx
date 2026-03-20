@@ -7,6 +7,7 @@ export const Projects = () => {
     ops, 
     funds,
     creativity,
+    yomi,
     completedProjects, 
     compAndProjectsUnlocked,
     completeProject 
@@ -47,8 +48,9 @@ export const Projects = () => {
             const canAffordOps = ops >= project.costOps;
             const canAffordFunds = project.costFunds === undefined || funds >= project.costFunds;
             const canAffordCreativity = project.costCreativity === undefined || creativity >= project.costCreativity;
+            const canAffordYomi = project.costYomi === undefined || yomi >= project.costYomi;
             
-            const canAfford = canAffordOps && canAffordFunds && canAffordCreativity;
+            const canAfford = canAffordOps && canAffordFunds && canAffordCreativity && canAffordYomi;
 
             return (
               <div key={project.id} className="panel-inner flex flex-col gap-2">
@@ -79,6 +81,11 @@ export const Projects = () => {
                   {project.costCreativity && (
                     <span className={canAffordCreativity ? 'text-evolve-accent' : 'text-evolve-danger'}>
                       Creativity: {project.costCreativity}
+                    </span>
+                  )}
+                  {project.costYomi && (
+                    <span className={canAffordYomi ? 'text-evolve-warning' : 'text-evolve-danger'}>
+                      Yomi: {project.costYomi.toLocaleString()}
                     </span>
                   )}
                 </div>
