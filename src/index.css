@@ -47,8 +47,12 @@
 
   body {
     /* 移除 body 上的 transition-colors duration-300 以防止初始加载时的白屏闪烁 */
-    @apply antialiased min-h-screen bg-evolve-bg text-evolve-textMain font-sans;
+    @apply antialiased min-h-screen bg-evolve-bg text-evolve-textMain font-sans select-none;
     margin: 0;
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Standard */
   }
 }
 
