@@ -16,7 +16,7 @@ export const Business = () => {
     <div className="panel flex flex-col gap-4">
       <div className="flex items-center gap-2 border-b border-evolve-border pb-2">
         <Briefcase className="w-5 h-5 text-evolve-textDim" />
-        <h2 className="text-lg font-bold tracking-wide uppercase">商业 <span className="text-sm opacity-50 font-normal">Business</span></h2>
+        <h2 className="text-lg font-bold tracking-wide uppercase">商业运营</h2>
       </div>
 
       <div className="flex flex-col gap-5 mt-2">
@@ -25,32 +25,32 @@ export const Business = () => {
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
               <DollarSign className="w-4 h-4 text-evolve-success" />
-              <span className="text-sm text-evolve-textDim uppercase tracking-wider">可用资金 (Funds)</span>
+              <span className="text-sm text-evolve-textDim tracking-wider">可用资金</span>
             </div>
             <span className="font-mono text-evolve-success text-lg">${funds.toFixed(2)}</span>
           </div>
           {revTrackerUnlocked && (
             <>
               <div className="flex justify-between items-center border-t border-evolve-border pt-2 mt-1">
-                <span className="text-xs text-evolve-textDim uppercase tracking-wider">每秒收益 (Rev/sec)</span>
-                <span className="font-mono text-sm text-evolve-accent">${revenuePerSecond.toFixed(2)}</span>
+                <span className="text-xs text-evolve-textDim tracking-wider">营收速率</span>
+                <span className="font-mono text-sm text-evolve-accent">${revenuePerSecond.toFixed(2)}/秒</span>
               </div>
               <div className="flex justify-between items-center border-t border-evolve-border pt-2 mt-1">
-                <span className="text-xs text-evolve-textDim uppercase tracking-wider">每秒销售量 (Sales/sec)</span>
-                <span className="font-mono text-sm text-evolve-accent">{Math.floor(salesPerSecond).toLocaleString()}</span>
+                <span className="text-xs text-evolve-textDim tracking-wider">销售速率</span>
+                <span className="font-mono text-sm text-evolve-accent">{Math.floor(salesPerSecond).toLocaleString()}件/秒</span>
               </div>
             </>
           )}
           <div className="flex justify-between items-center border-t border-evolve-border pt-2 mt-1">
-            <span className="text-xs text-evolve-textDim uppercase tracking-wider">未销售库存 (Unsold Inventory)</span>
-            <span className="font-mono text-sm">{unsoldInventory.toLocaleString()}</span>
+            <span className="text-xs text-evolve-textDim tracking-wider">积压库存</span>
+            <span className="font-mono text-sm">{unsoldInventory.toLocaleString()}件</span>
           </div>
         </div>
 
         {/* 定价控制 */}
         <div className="flex flex-col gap-2">
           <div className="flex justify-between items-center">
-            <span className="text-sm text-evolve-textDim uppercase tracking-wider">单价 (Price)</span>
+            <span className="text-sm text-evolve-textDim tracking-wider">产品单价</span>
             <div className="flex items-center gap-2">
               <button className="btn-evolve p-1" onClick={lowerPrice}>
                 <ChevronDown className="w-4 h-4" />
@@ -64,7 +64,7 @@ export const Business = () => {
           <div className="flex justify-between items-center text-sm">
             <div className="flex items-center gap-1.5 text-evolve-textDim">
               <TrendingUp className="w-3.5 h-3.5" />
-              <span>公众需求 (Public Demand)</span>
+              <span>市场需求</span>
             </div>
             <span className="font-mono">{publicDemand}%</span>
           </div>
@@ -75,20 +75,20 @@ export const Business = () => {
         {/* 营销系统 */}
         <div className="flex flex-col gap-2">
           <div className="flex justify-between items-center mb-1">
-            <div className="flex items-center gap-2 text-sm text-evolve-textDim uppercase tracking-wider">
+            <div className="flex items-center gap-2 text-sm text-evolve-textDim tracking-wider">
               <Megaphone className="w-4 h-4" />
-              <span>营销等级 (Marketing)</span>
+              <span>营销投入</span>
             </div>
             <span className="font-mono text-lg">Lv.{marketingLevel}</span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-xs font-mono opacity-70">成本: ${marketingCost.toFixed(2)}</span>
+            <span className="text-xs font-mono opacity-70">升级成本: ${marketingCost.toFixed(2)}</span>
             <button 
               className="btn-evolve text-xs py-1.5 px-3"
               onClick={upgradeMarketing}
               disabled={funds < marketingCost}
             >
-              升级 (Upgrade)
+              扩大宣传
             </button>
           </div>
         </div>
@@ -98,9 +98,9 @@ export const Business = () => {
         {/* 购买铁丝 */}
         <div className="flex justify-between items-center">
           <div>
-            <div className="text-sm text-evolve-textDim uppercase tracking-wider mb-1">购买铁丝 (Buy Wire)</div>
+            <div className="text-sm text-evolve-textDim tracking-wider mb-1">采购原材料</div>
             <div className="flex items-center gap-1 text-xs font-mono">
-              <span className="opacity-70">成本: ${wireCost}</span>
+              <span className="opacity-70">铁丝市价: ${wireCost}</span>
               {isWireCostUp && <TrendingUp className="w-3 h-3 text-evolve-danger ml-1" />}
               {isWireCostDown && <TrendingUp className="w-3 h-3 text-evolve-success ml-1 transform rotate-180 scale-y-[-1]" />}
             </div>
@@ -111,7 +111,7 @@ export const Business = () => {
             disabled={funds < wireCost}
           >
             <ShoppingCart className="w-4 h-4" />
-            <span>进货 (Purchase)</span>
+            <span>进货</span>
           </button>
         </div>
       </div>

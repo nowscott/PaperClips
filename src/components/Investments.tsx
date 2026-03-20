@@ -24,17 +24,17 @@ export const Investments = () => {
       <div className="flex items-center justify-between border-b border-evolve-border pb-2">
         <div className="flex items-center gap-2">
           <LineChart className="w-5 h-5 text-evolve-accent" />
-          <h2 className="text-lg font-bold tracking-wide uppercase text-evolve-accent">投资 <span className="text-sm opacity-50 font-normal">Investments</span></h2>
+          <h2 className="text-lg font-bold tracking-wide uppercase text-evolve-accent">金融投资</h2>
         </div>
         <div className="text-xs text-evolve-textDim font-mono">
-          Engine Level: {investmentLevel}
+          引擎等级: {investmentLevel}
         </div>
       </div>
 
       <div className="flex flex-col gap-5 mt-2">
         {/* 投资资金池概览 */}
         <div className="panel-inner flex flex-col items-center justify-center gap-1">
-          <span className="text-xs text-evolve-textDim uppercase tracking-wider">资金池 (Bankroll)</span>
+          <span className="text-xs text-evolve-textDim tracking-wider">投资资金池</span>
           <span className={`text-2xl font-mono font-bold ${investmentBankroll > 0 ? 'text-evolve-success' : 'text-evolve-textMain'}`}>
             ${investmentBankroll.toFixed(2)}
           </span>
@@ -47,7 +47,7 @@ export const Investments = () => {
             onClick={depositFunds}
           >
             <ArrowDownToLine className="w-4 h-4 text-evolve-success" />
-            <span className="text-xs uppercase tracking-wider">全部存入 (Deposit)</span>
+            <span className="text-xs tracking-wider">全部存入</span>
           </button>
           
           <button 
@@ -56,7 +56,7 @@ export const Investments = () => {
             disabled={investmentBankroll <= 0}
           >
             <ArrowUpFromLine className="w-4 h-4 text-evolve-textMain" />
-            <span className="text-xs uppercase tracking-wider">全部提取 (Withdraw)</span>
+            <span className="text-xs tracking-wider">全部提取</span>
           </button>
         </div>
 
@@ -64,7 +64,7 @@ export const Investments = () => {
 
         {/* 风险等级控制 */}
         <div className="flex flex-col gap-2">
-          <span className="text-sm text-evolve-textDim uppercase tracking-wider">策略等级 (Strategy Level)</span>
+          <span className="text-sm text-evolve-textDim tracking-wider">风险策略</span>
           <div className="flex gap-2">
             <button
               className={`flex-1 py-1 text-xs border uppercase tracking-wide transition-colors ${
@@ -74,7 +74,7 @@ export const Investments = () => {
               }`}
               onClick={() => setRiskLevel('low')}
             >
-              Low Risk
+              低风险
             </button>
             {investmentLevel >= 2 && (
               <button
@@ -85,7 +85,7 @@ export const Investments = () => {
                 }`}
                 onClick={() => setRiskLevel('med')}
               >
-                Med Risk
+                中等风险
               </button>
             )}
             {investmentLevel >= 3 && (
@@ -97,7 +97,7 @@ export const Investments = () => {
                 }`}
                 onClick={() => setRiskLevel('high')}
               >
-                High Risk
+                高风险
               </button>
             )}
           </div>
@@ -108,8 +108,8 @@ export const Investments = () => {
         {/* 引擎升级 */}
         <div className="flex justify-between items-center">
           <div className="flex flex-col">
-            <span className="text-sm text-evolve-textDim uppercase tracking-wider mb-1">升级引擎 (Upgrade Engine)</span>
-            <span className="text-xs font-mono opacity-70">成本: {upgradeCost} Yomi</span>
+            <span className="text-sm text-evolve-textDim tracking-wider mb-1">升级投资引擎</span>
+            <span className="text-xs font-mono opacity-70">升级成本: {upgradeCost} 预判值 (Yomi)</span>
           </div>
           <button 
             className="btn-evolve flex items-center gap-2"
@@ -117,7 +117,7 @@ export const Investments = () => {
             disabled={!canUpgrade}
           >
             <TrendingUp className="w-4 h-4" />
-            <span>升级 (Upgrade)</span>
+            <span>升级</span>
           </button>
         </div>
       </div>
