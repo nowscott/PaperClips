@@ -20,7 +20,7 @@ export const Investments = () => {
   const canUpgrade = yomi >= upgradeCost;
 
   return (
-    <div className="panel flex flex-col gap-4 border-evolve-accent/30 mt-6 shadow-[0_0_15px_rgba(0,168,255,0.05)]">
+    <div className="panel flex flex-col gap-4 border-evolve-accent/30 shadow-[0_0_15px_rgba(0,168,255,0.05)]">
       <div className="flex items-center justify-between border-b border-evolve-border pb-2">
         <div className="flex items-center gap-2">
           <LineChart className="w-5 h-5 text-evolve-accent" />

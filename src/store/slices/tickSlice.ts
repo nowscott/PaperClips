@@ -20,8 +20,14 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
 
     // 自动购买铁丝逻辑 (WireBuyer 项目)
     if (nextState.hasWireBuyer && nextState.wireBuyerOn && nextState.wire === 0 && nextState.funds >= nextState.wireCost) {
-      nextState.wire += nextState.wireSupply;
-      nextState.funds -= nextState.wireCost;
+      // 在原版后期，单次进货不够巨型制造机塞牙缝，这里需要一个循环，能买多少买多少，直到没钱或者买够
+      let purchases = 0;
+      // 限制一个最大批量，防止死循环
+      while (nextState.funds >= nextState.wireCost && purchases < 1000) {
+        nextState.wire += nextState.wireSupply;
+        nextState.funds -= nextState.wireCost;
+        purchases++;
+      }
     }
 
     let totalClipsProducedThisTick = 0;
@@ -217,7 +223,7 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
       // 采集无人机：将可用物质(Available Matter)转化为已采集物质(Acquired Matter)
       if (nextState.harvesterDrones > 0 && nextState.availableMatter > 0) {
         // 每个无人机每 tick 采集的基础量
-        let harvestAmount = nextState.harvesterDrones * 1000 * droneWorkRatio; 
+        let harvestAmount = nextState.harvesterDrones * 1000 * droneWorkRatio * nextState.droneBoost; 
         harvestAmount = Math.min(harvestAmount, nextState.availableMatter);
         nextState.availableMatter -= harvestAmount;
         nextState.acquiredMatter += harvestAmount;
@@ -225,7 +231,7 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
 
       // 铁丝加工无人机：将已采集物质(Acquired Matter)转化为铁丝(Wire)
       if (nextState.wireDrones > 0 && nextState.acquiredMatter > 0) {
-        let processAmount = nextState.wireDrones * 1000 * droneWorkRatio;
+        let processAmount = nextState.wireDrones * 1000 * droneWorkRatio * nextState.droneBoost;
         processAmount = Math.min(processAmount, nextState.acquiredMatter);
         nextState.acquiredMatter -= processAmount;
         nextState.wire += processAmount;
@@ -357,7 +363,11 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
         
         // 玩家探针伤亡 = 漂流者数量 * 漂流者战斗力 (固定值) * 基础系数
         const drifterCombatPower = 1; // 漂流者固定战斗力
-        let clipCasualties = Math.floor(nextState.drifterCount * drifterCombatPower * 0.01);
+        
+        // OODA循环：探测器速度影响防御机动，减少己方伤亡
+        const defenseMultiplier = nextState.oodaLoopUnlocked ? Math.max(0.2, 1 - (nextState.probeSpeed * 0.05)) : 1;
+        
+        let clipCasualties = Math.floor(nextState.drifterCount * drifterCombatPower * 0.01 * defenseMultiplier);
         clipCasualties = Math.min(clipCasualties, nextState.probes);
 
         // 结算伤亡

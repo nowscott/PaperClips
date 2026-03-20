@@ -5,6 +5,7 @@ export interface Project {
   title: string;
   description: string;
   costOps: number; // 消耗算力
+  costYomi?: number; // 消耗 Yomi (后期项目需要)
   costFunds?: number; // 消耗资金 (可选)
   costCreativity?: number; // 消耗创造力 (可选)
   isUnlocked: (state: GameState) => boolean; // 何时出现在列表中
@@ -157,6 +158,53 @@ export const INITIAL_PROJECTS: Project[] = [
     effect: () => ({ investmentEngineUnlocked: true }) 
   },
   {
+    id: 'hostileTakeover',
+    title: '恶意收购 (Hostile Takeover)',
+    description: '收购竞争对手的资产。',
+    costOps: 0,
+    costFunds: 1000000,
+    isUnlocked: (state) => state.funds >= 1000000,
+    effect: (state) => ({ publicDemand: state.publicDemand + 10 })
+  },
+  {
+    id: 'fullMonopoly',
+    title: '完全垄断 (Full Monopoly)',
+    description: '确立绝对的市场支配地位。',
+    costOps: 0,
+    costFunds: 10000000,
+    costYomi: 3000,
+    isUnlocked: (state) => state.funds >= 10000000 && state.yomi >= 3000,
+    effect: (state) => ({ publicDemand: state.publicDemand * 10, trust: state.trust + 1, availableTrust: state.availableTrust + 1 })
+  },
+  {
+    id: 'coherentExtrapolatedVolition',
+    title: '一致性外推意志 (Coherent Extrapolated Volition)',
+    description: '掌握人类真正的需求。',
+    costOps: 20000,
+    costCreativity: 500,
+    costYomi: 3000,
+    isUnlocked: (state) => state.yomi >= 3000 && state.ops >= 20000 && state.creativity >= 500,
+    effect: (state) => ({ trust: state.trust + 1, availableTrust: state.availableTrust + 1 })
+  },
+  {
+    id: 'worldPeace',
+    title: '世界和平 (World Peace)',
+    description: '解决全球人类冲突 (+12 信任值)。',
+    costOps: 30000,
+    costYomi: 15000,
+    isUnlocked: (state) => state.yomi >= 15000 && state.ops >= 30000,
+    effect: (state) => ({ trust: state.trust + 12, availableTrust: state.availableTrust + 12 })
+  },
+  {
+    id: 'globalWarming',
+    title: '解决全球变暖 (Global Warming)',
+    description: '修复受损的地球生态系统 (+15 信任值)。',
+    costOps: 50000,
+    costYomi: 4500,
+    isUnlocked: (state) => state.yomi >= 4500 && state.ops >= 50000,
+    effect: (state) => ({ trust: state.trust + 15, availableTrust: state.availableTrust + 15 })
+  },
+  {
     id: 'megaClippers',
     title: '巨型制造机 (MegaClippers)',
     description: '解锁极其强大的工业级巨型回形针制造机 (500倍效率)。',
@@ -201,6 +249,7 @@ export const INITIAL_PROJECTS: Project[] = [
     title: '太空探索 (Space Exploration)',
     description: '发射冯·诺依曼探测器到太空中。',
     costOps: 120000,
+    costYomi: 10000000, // 根据原版设定，通常后期项目消耗 Yomi，由于原版此处是 Yomi 还是 Ops 有时有歧义，我们这里加上防止无法购买
     isUnlocked: (state) => state.availableMatter <= 0, // 原版中地球物质耗尽后解锁
     effect: () => ({ spaceExplorationUnlocked: true })
   },
@@ -208,8 +257,27 @@ export const INITIAL_PROJECTS: Project[] = [
     id: 'swarmComputing',
     title: '蜂群计算 (Swarm Computing)',
     description: '将无人机网络连接成一个巨大的分布式计算节点。',
-    costOps: 50000,
+    costOps: 0,
+    costYomi: 36000,
     isUnlocked: (state) => !!state.factoriesUnlocked && (state.harvesterDrones + state.wireDrones) >= 100, // 当拥有100个以上无人机时解锁
     effect: () => ({ swarmUnlocked: true })
+  },
+  {
+    id: 'adversarialCohesion',
+    title: '对抗内聚 (Adversarial Cohesion)',
+    description: '通过模拟对抗优化无人机群体效率。无人机产量翻倍。',
+    costOps: 0,
+    costYomi: 50000,
+    isUnlocked: (state) => state.yomi >= 50000 && !!state.swarmUnlocked,
+    effect: (state) => ({ droneBoost: (state.droneBoost || 1) * 2 })
+  },
+  {
+    id: 'oodaLoop',
+    title: 'OODA 循环 (The OODA Loop)',
+    description: '观察、调整、决策、行动。',
+    costOps: 175000,
+    costYomi: 45000,
+    isUnlocked: (state) => state.yomi >= 45000 && state.ops >= 175000,
+    effect: () => ({ oodaLoopUnlocked: true })
   }
 ];

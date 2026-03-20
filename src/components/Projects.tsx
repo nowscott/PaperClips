@@ -7,6 +7,7 @@ export const Projects = () => {
     ops, 
     funds,
     creativity,
+    yomi,
     completedProjects, 
     compAndProjectsUnlocked,
     completeProject 
@@ -34,7 +35,7 @@ export const Projects = () => {
   }
 
   return (
-    <div className="panel flex flex-col gap-4 border-evolve-success/30 shadow-[0_0_15px_rgba(var(--color-success),0.05)] mt-6">
+    <div className="panel flex flex-col gap-4 border-evolve-success/30 shadow-[0_0_15px_rgba(var(--color-success),0.05)]">
       <div className="flex items-center gap-2 border-b border-evolve-border pb-2">
         <FlaskConical className="w-5 h-5 text-evolve-success" />
         <h2 className="text-lg font-bold tracking-wide uppercase text-evolve-success">项目 <span className="text-sm opacity-50 font-normal">Projects</span></h2>
@@ -47,15 +48,16 @@ export const Projects = () => {
             const canAffordOps = ops >= project.costOps;
             const canAffordFunds = project.costFunds === undefined || funds >= project.costFunds;
             const canAffordCreativity = project.costCreativity === undefined || creativity >= project.costCreativity;
+            const canAffordYomi = project.costYomi === undefined || yomi >= project.costYomi;
             
-            const canAfford = canAffordOps && canAffordFunds && canAffordCreativity;
+            const canAfford = canAffordOps && canAffordFunds && canAffordCreativity && canAffordYomi;
 
             return (
               <div key={project.id} className="panel-inner flex flex-col gap-2">
-                <div className="flex justify-between items-start">
-                  <span className="font-bold text-evolve-textMain">{project.title}</span>
+                <div className="flex justify-between items-start gap-3">
+                  <span className="font-bold text-evolve-textMain break-words flex-1">{project.title}</span>
                   <button
-                    className="btn-evolve text-xs py-1 px-3 border-evolve-success text-evolve-success hover:bg-evolve-success/20 disabled:border-evolve-border disabled:text-evolve-textDim"
+                    className="btn-evolve text-xs py-1 px-3 border-evolve-success text-evolve-success hover:bg-evolve-success/20 disabled:border-evolve-border disabled:text-evolve-textDim whitespace-nowrap shrink-0"
                     onClick={() => completeProject(project.id)}
                     disabled={!canAfford}
                   >
@@ -79,6 +81,11 @@ export const Projects = () => {
                   {project.costCreativity && (
                     <span className={canAffordCreativity ? 'text-evolve-accent' : 'text-evolve-danger'}>
                       Creativity: {project.costCreativity}
+                    </span>
+                  )}
+                  {project.costYomi && (
+                    <span className={canAffordYomi ? 'text-evolve-warning' : 'text-evolve-danger'}>
+                      Yomi: {project.costYomi.toLocaleString()}
                     </span>
                   )}
                 </div>
