@@ -1,6 +1,7 @@
 import { useGameStore } from '../store/gameStore';
 import { Paperclip } from 'lucide-react';
 import { Settings } from './Settings';
+import { formatNumber } from '../utils/formatNumber';
 
 export const Header = () => {
   const { clips } = useGameStore();
@@ -17,7 +18,7 @@ export const Header = () => {
         <div className="text-right">
           <div className="text-xs text-evolve-textDim uppercase tracking-wider mb-1">总制造量 (Total Clips)</div>
           <div className="text-2xl font-mono text-evolve-accent font-bold">
-            {clips.toLocaleString()}
+            {formatNumber(clips)}
           </div>
         </div>
         <Settings />

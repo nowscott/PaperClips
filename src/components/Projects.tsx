@@ -1,6 +1,6 @@
 import { useGameStore } from '../store/gameStore';
 import { INITIAL_PROJECTS, type Project } from '../data/projects';
-import { FlaskConical, CheckCircle2 } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 
 export const Projects = () => {
   const { 
@@ -36,12 +36,7 @@ export const Projects = () => {
 
   return (
     <div className="panel flex flex-col gap-4 border-evolve-success/30 shadow-[0_0_15px_rgba(var(--color-success),0.05)]">
-      <div className="flex items-center gap-2 border-b border-evolve-border pb-2">
-        <FlaskConical className="w-5 h-5 text-evolve-success" />
-        <h2 className="text-lg font-bold tracking-wide uppercase text-evolve-success">科技与项目</h2>
-      </div>
-
-      <div className="flex flex-col gap-3 mt-2">
+      <div className="flex flex-col gap-3">
         {/* 可用项目列表 */}
         {availableProjects.length > 0 ? (
           availableProjects.map((project) => {

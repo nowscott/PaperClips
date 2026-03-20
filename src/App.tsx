@@ -38,8 +38,28 @@ function App() {
         
         {/* 左侧/第一列：制造与无人机 */}
         <div className="flex flex-col gap-4 sm:gap-6">
-          <Manufacturing />
-          <SpaceAndDrones />
+          <TabbedPanelGroup
+            tabs={[
+              { 
+                id: 'manufacturing', 
+                label: "生产制造",
+                icon: 'Hammer',
+                content: <Manufacturing /> 
+              },
+              { 
+                id: 'space_and_drones', 
+                label: "物质与无人机",
+                icon: 'Rocket',
+                content: <SpaceAndDrones />,
+                // 当至少有一个无人机相关科技解锁，或者有物质时才显示此 Tab
+                condition: useGameStore.getState().harvesterDronesUnlocked || 
+                           useGameStore.getState().wireDronesUnlocked || 
+                           useGameStore.getState().factoriesUnlocked || 
+                           useGameStore.getState().availableMatter > 0 || 
+                           useGameStore.getState().acquiredMatter > 0
+              }
+            ]}
+          />
         </div>
 
         {/* 中间/第二列：商业与投资 (Tabbed) */}

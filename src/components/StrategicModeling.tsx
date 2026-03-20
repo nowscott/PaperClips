@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { useGameStore } from '../store/gameStore';
-import { BrainCircuit, Play, ChevronRight } from 'lucide-react';
+import { Play, ChevronRight, ChevronDown } from 'lucide-react';
 import type { StrategyType } from '../store/slices/strategySlice';
+import { formatNumber } from '../utils/formatNumber';
 
 const STRATEGY_NAMES: Record<StrategyType, string> = {
   'RANDOM': '随机 (Random)',
@@ -28,24 +30,19 @@ export const StrategicModeling = () => {
     runTourney
   } = useGameStore();
 
+  // 添加一个状态来控制矩阵的折叠/展开，默认隐藏以节省空间
+  const [showMatrix, setShowMatrix] = useState(false);
+
   if (!strategyEngineUnlocked) return null;
 
   const canAffordTourney = ops >= tourneyCost;
 
   return (
     <div className="panel flex flex-col gap-4">
-      {/* 标题 */}
-      <div className="flex justify-between items-center border-b border-evolve-border pb-2">
-        <div className="flex items-center gap-2">
-          <BrainCircuit className="w-5 h-5 text-evolve-accent" />
-          <h2 className="text-lg font-bold tracking-widest uppercase">战略建模</h2>
-        </div>
-      </div>
-
       {/* Yomi 资源显示 */}
       <div className="flex justify-between items-center bg-evolve-accent/10 p-2 rounded border border-evolve-accent/30">
         <span className="text-sm font-bold text-evolve-accent tracking-wider">预判值 (Yomi)</span>
-        <span className="text-lg font-mono text-evolve-accent">{yomi.toLocaleString()}</span>
+        <span className="text-lg font-mono text-evolve-accent">{formatNumber(yomi)}</span>
       </div>
 
       {/* 策略选择与控制 */}
@@ -76,20 +73,20 @@ export const StrategicModeling = () => {
         </button>
         
         <div className="text-right text-xs font-mono text-evolve-textDim">
-          算力成本: {tourneyCost.toLocaleString()}
+          算力成本: {formatNumber(tourneyCost)}
         </div>
       </div>
 
       {/* 进度条 */}
       {tourneyInProg && (
-        <div className="flex flex-col gap-1 mt-2">
-          <div className="flex justify-between text-xs text-evolve-textDim">
-            <span>正在进行锦标赛...</span>
-            <span>{tourneyProgress}%</span>
+        <div className="flex flex-col gap-1 mt-2 p-2 bg-evolve-accent/5 rounded border border-evolve-accent/20">
+          <div className="flex justify-between text-xs font-bold text-evolve-accent tracking-widest">
+            <span className="animate-pulse">正在进行锦标赛计算...</span>
+            <span className="font-mono">{tourneyProgress}%</span>
           </div>
-          <div className="w-full h-1 bg-evolve-border rounded overflow-hidden">
+          <div className="w-full h-1.5 bg-evolve-border rounded overflow-hidden mt-1 shadow-inner">
             <div 
-              className="h-full bg-evolve-accent transition-all duration-200" 
+              className="h-full bg-gradient-to-r from-evolve-accent to-[#4a00cc] transition-all duration-200" 
               style={{ width: `${tourneyProgress}%` }}
             ></div>
           </div>
@@ -98,41 +95,67 @@ export const StrategicModeling = () => {
 
       {/* 比赛结果矩阵 (仅在比赛结束后有数据时显示) */}
       {!tourneyInProg && matchResults.length > 0 && (
-        <div className="mt-4 flex flex-col gap-2 animate-fade-in">
-          <div className="flex items-center gap-1 text-xs text-evolve-textDim tracking-wider border-b border-evolve-border pb-1">
-            <ChevronRight className="w-3 h-3" />
-            <span>最新锦标赛结果矩阵</span>
-          </div>
+        <div className="mt-2 flex flex-col animate-fade-in panel-inner">
+          <button 
+            className="flex justify-between items-center w-full py-1 text-sm font-bold text-evolve-textMain tracking-wider hover:text-evolve-accent transition-colors"
+            onClick={() => setShowMatrix(!showMatrix)}
+          >
+            <div className="flex items-center gap-2">
+              {showMatrix ? <ChevronDown className="w-4 h-4 text-evolve-accent" /> : <ChevronRight className="w-4 h-4 text-evolve-accent" />}
+              <span>博弈结果矩阵</span>
+            </div>
+            <span className="text-xs font-mono text-evolve-textDim opacity-50">
+              {showMatrix ? '收起' : '展开查看'}
+            </span>
+          </button>
           
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs font-mono text-center border-collapse">
-              <thead>
-                <tr className="text-evolve-textDim opacity-70">
-                  <th className="p-1 border border-evolve-border/30"></th>
-                  {unlockedStrategies.map((_, i) => (
-                    <th key={i} className="p-1 border border-evolve-border/30">S{i+1}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {matchResults.map((row, i) => (
-                  <tr key={i} className={unlockedStrategies[i] === currentStrategy ? "bg-evolve-accent/10" : ""}>
-                    <td className={`p-1 border border-evolve-border/30 font-bold ${unlockedStrategies[i] === currentStrategy ? "text-evolve-accent" : "text-evolve-textDim"}`}>
-                      S{i+1}
-                    </td>
-                    {row.map((score, j) => (
-                      <td key={j} className={`p-1 border border-evolve-border/30 ${i === j ? 'bg-evolve-border/20 text-evolve-textDim/30' : ''}`}>
-                        {i === j ? '-' : score}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div className="text-xs text-evolve-textDim text-center opacity-70">
-            * 高亮行(S{unlockedStrategies.indexOf(currentStrategy) + 1})为你选择的策略
-          </div>
+          {showMatrix && (
+            <div className="mt-3 flex flex-col gap-2 animate-fade-in border-t border-evolve-border/50 pt-3">
+              <div className="overflow-x-auto custom-scrollbar">
+                <table className="w-full text-xs font-mono text-center border-collapse">
+                  <thead>
+                    <tr className="text-evolve-textDim">
+                      <th className="p-1.5 border border-evolve-border/30 bg-evolve-border/10"></th>
+                      {unlockedStrategies.map((_, i) => (
+                        <th key={i} className="p-1.5 border border-evolve-border/30 bg-evolve-border/10 font-bold">
+                          S{i+1}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {matchResults.map((row, i) => {
+                      const isCurrent = unlockedStrategies[i] === currentStrategy;
+                      return (
+                        <tr key={i} className={`transition-colors ${isCurrent ? "bg-evolve-accent/15" : "hover:bg-evolve-border/10"}`}>
+                          <td className={`p-1.5 border border-evolve-border/30 font-bold ${isCurrent ? "text-evolve-accent shadow-[inset_2px_0_0_rgba(0,168,255,1)]" : "text-evolve-textDim bg-evolve-border/5"}`}>
+                            S{i+1}
+                          </td>
+                          {row.map((score, j) => {
+                            const isSelf = i === j;
+                            // 根据得分给不同颜色：高分偏绿，低分偏红/灰
+                            const scoreColor = score > 5 ? 'text-evolve-success' : score < 3 ? 'text-evolve-textDim opacity-50' : 'text-evolve-textMain';
+                            return (
+                              <td key={j} className={`p-1.5 border border-evolve-border/30 ${isSelf ? 'bg-evolve-border/20 text-evolve-textDim/20' : scoreColor}`}>
+                                {isSelf ? '·' : score}
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+              <div className="flex justify-between items-center text-[10px] text-evolve-textDim opacity-70 mt-1">
+                <span className="flex items-center gap-1">
+                  <span className="w-2 h-2 inline-block bg-evolve-accent/30 border border-evolve-accent/50 rounded-sm"></span>
+                  当前选择策略 (S{unlockedStrategies.indexOf(currentStrategy) + 1})
+                </span>
+                <span>行: 策略 A / 列: 策略 B</span>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

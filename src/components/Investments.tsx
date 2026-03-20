@@ -1,5 +1,6 @@
 import { useGameStore } from '../store/gameStore';
-import { LineChart, TrendingUp, ArrowDownToLine, ArrowUpFromLine } from 'lucide-react';
+import { TrendingUp, ArrowDownToLine, ArrowUpFromLine } from 'lucide-react';
+import { formatNumber } from '../utils/formatNumber';
 
 export const Investments = () => {
   const { 
@@ -21,14 +22,8 @@ export const Investments = () => {
 
   return (
     <div className="panel flex flex-col gap-4 border-evolve-accent/30 shadow-[0_0_15px_rgba(0,168,255,0.05)]">
-      <div className="flex items-center justify-between border-b border-evolve-border pb-2">
-        <div className="flex items-center gap-2">
-          <LineChart className="w-5 h-5 text-evolve-accent" />
-          <h2 className="text-lg font-bold tracking-wide uppercase text-evolve-accent">金融投资</h2>
-        </div>
-        <div className="text-xs text-evolve-textDim font-mono">
-          引擎等级: {investmentLevel}
-        </div>
+      <div className="text-right text-xs text-evolve-textDim font-mono border-b border-evolve-border pb-2">
+        引擎等级: {investmentLevel}
       </div>
 
       <div className="flex flex-col gap-5 mt-2">
@@ -36,7 +31,7 @@ export const Investments = () => {
         <div className="panel-inner flex flex-col items-center justify-center gap-1">
           <span className="text-xs text-evolve-textDim tracking-wider">投资资金池</span>
           <span className={`text-2xl font-mono font-bold ${investmentBankroll > 0 ? 'text-evolve-success' : 'text-evolve-textMain'}`}>
-            ${investmentBankroll.toFixed(2)}
+            ${formatNumber(investmentBankroll, 2)}
           </span>
         </div>
 
@@ -109,7 +104,7 @@ export const Investments = () => {
         <div className="flex justify-between items-center">
           <div className="flex flex-col">
             <span className="text-sm text-evolve-textDim tracking-wider mb-1">升级投资引擎</span>
-            <span className="text-xs font-mono opacity-70">升级成本: {upgradeCost} 预判值 (Yomi)</span>
+            <span className="text-xs font-mono opacity-70">升级成本: {formatNumber(upgradeCost)} 预判值 (Yomi)</span>
           </div>
           <button 
             className="btn-evolve flex items-center gap-2"

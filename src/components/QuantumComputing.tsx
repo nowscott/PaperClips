@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useGameStore } from '../store/gameStore';
-import { Cpu } from 'lucide-react';
 
 export const QuantumComputing = () => {
   const { qChips, qComputingUnlocked, addOps } = useGameStore();
@@ -55,14 +54,7 @@ export const QuantumComputing = () => {
 
   return (
     <div className="panel flex flex-col gap-4 border-evolve-accent/30 shadow-[0_0_15px_rgba(0,168,255,0.05)]">
-      <div className="flex items-center gap-2 border-b border-evolve-border pb-2">
-        <Cpu className="w-5 h-5 text-evolve-accent" />
-        <h2 className="text-lg font-bold tracking-wide uppercase text-evolve-accent">
-          量子计算
-        </h2>
-      </div>
-
-      <div className="flex flex-col gap-4 mt-2">
+      <div className="flex flex-col gap-4">
         {/* 量子波动显示区 */}
         <div className="panel-inner flex justify-center gap-2 h-16 items-center overflow-hidden">
           {qValues.map((val, index) => {

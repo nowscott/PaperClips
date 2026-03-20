@@ -1,5 +1,6 @@
 import { useGameStore } from '../store/gameStore';
-import { Rocket, Factory, Plus, Zap } from 'lucide-react';
+import { Factory, Plus, Zap } from 'lucide-react';
+import { formatNumber } from '../utils/formatNumber';
 
 export const SpaceAndDrones = () => {
   const {
@@ -24,7 +25,7 @@ export const SpaceAndDrones = () => {
     sliderPos,
     setSliderPos,
     
-    clips,
+    unsoldInventory,
     buyHarvesterDrone,
     buyWireDrone,
     buyFactory
@@ -34,23 +35,15 @@ export const SpaceAndDrones = () => {
 
   return (
     <div className="panel flex flex-col gap-4">
-      {/* 标题 */}
-      <div className="flex justify-between items-center border-b border-evolve-border pb-2">
-        <div className="flex items-center gap-2">
-          <Rocket className="w-5 h-5 text-evolve-accent" />
-          <h2 className="text-lg font-bold tracking-widest uppercase">物质与无人机</h2>
-        </div>
-      </div>
-
       {/* 物质资源显示 */}
       <div className="flex flex-col gap-2">
         <div className="flex justify-between items-center">
           <span className="text-xs text-evolve-textDim tracking-wider">可用物质</span>
-          <span className="font-mono text-sm">{availableMatter.toLocaleString()} g</span>
+          <span className="font-mono text-sm">{formatNumber(availableMatter)} g</span>
         </div>
         <div className="flex justify-between items-center">
           <span className="text-xs text-evolve-textDim tracking-wider">已采集物质</span>
-          <span className="font-mono text-sm">{acquiredMatter.toLocaleString()} g</span>
+          <span className="font-mono text-sm">{formatNumber(acquiredMatter)} g</span>
         </div>
       </div>
 
@@ -62,20 +55,20 @@ export const SpaceAndDrones = () => {
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
               <span className="text-sm font-bold">采集无人机</span>
-              <span className="font-mono text-evolve-accent">{harvesterDrones.toLocaleString()}</span>
+              <span className="font-mono text-evolve-accent">{formatNumber(harvesterDrones)}</span>
             </div>
             <button 
               className={`btn flex items-center justify-between w-full p-2 ${
-                clips >= harvesterDroneCost ? 'hover:bg-evolve-accent/10 border-evolve-accent/50' : 'opacity-50 cursor-not-allowed'
+                unsoldInventory >= harvesterDroneCost ? 'hover:bg-evolve-accent/10 border-evolve-accent/50' : 'opacity-50 cursor-not-allowed'
               }`}
               onClick={buyHarvesterDrone}
-              disabled={clips < harvesterDroneCost}
+              disabled={unsoldInventory < harvesterDroneCost}
             >
               <div className="flex items-center gap-2">
                 <Plus className="w-4 h-4" />
                 <span>建造采集无人机</span>
               </div>
-              <span className="text-xs font-mono">{harvesterDroneCost.toLocaleString()} 件</span>
+              <span className="text-xs font-mono">{formatNumber(harvesterDroneCost)} 件</span>
             </button>
           </div>
         )}
@@ -84,20 +77,20 @@ export const SpaceAndDrones = () => {
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
               <span className="text-sm font-bold">线材加工无人机</span>
-              <span className="font-mono text-evolve-accent">{wireDrones.toLocaleString()}</span>
+              <span className="font-mono text-evolve-accent">{formatNumber(wireDrones)}</span>
             </div>
             <button 
               className={`btn flex items-center justify-between w-full p-2 ${
-                clips >= wireDroneCost ? 'hover:bg-evolve-accent/10 border-evolve-accent/50' : 'opacity-50 cursor-not-allowed'
+                unsoldInventory >= wireDroneCost ? 'hover:bg-evolve-accent/10 border-evolve-accent/50' : 'opacity-50 cursor-not-allowed'
               }`}
               onClick={buyWireDrone}
-              disabled={clips < wireDroneCost}
+              disabled={unsoldInventory < wireDroneCost}
             >
               <div className="flex items-center gap-2">
                 <Plus className="w-4 h-4" />
                 <span>建造加工无人机</span>
               </div>
-              <span className="text-xs font-mono">{wireDroneCost.toLocaleString()} 件</span>
+              <span className="text-xs font-mono">{formatNumber(wireDroneCost)} 件</span>
             </button>
           </div>
         )}
@@ -111,20 +104,20 @@ export const SpaceAndDrones = () => {
                   <Factory className="w-4 h-4 text-evolve-warning" />
                   <span className="text-sm font-bold text-evolve-warning">回形针工厂</span>
                 </div>
-                <span className="font-mono text-evolve-warning">{factories.toLocaleString()}</span>
+                <span className="font-mono text-evolve-warning">{formatNumber(factories)}</span>
               </div>
               <button 
                 className={`btn flex items-center justify-between w-full p-2 ${
-                  clips >= factoryCost ? 'hover:bg-evolve-warning/10 border-evolve-warning/50 text-evolve-warning' : 'opacity-50 cursor-not-allowed'
+                  unsoldInventory >= factoryCost ? 'hover:bg-evolve-warning/10 border-evolve-warning/50 text-evolve-warning' : 'opacity-50 cursor-not-allowed'
                 }`}
                 onClick={buyFactory}
-                disabled={clips < factoryCost}
+                disabled={unsoldInventory < factoryCost}
               >
                 <div className="flex items-center gap-2">
                   <Plus className="w-4 h-4" />
                   <span>建造工厂</span>
                 </div>
-                <span className="text-xs font-mono">{factoryCost.toLocaleString()} 件</span>
+                <span className="text-xs font-mono">{formatNumber(factoryCost)} 件</span>
               </button>
             </div>
           </>

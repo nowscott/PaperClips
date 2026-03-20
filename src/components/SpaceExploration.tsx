@@ -1,6 +1,7 @@
 import { useGameStore } from '../store/gameStore';
 import { Rocket, Minus, Plus, Infinity } from 'lucide-react';
 import type { SpaceSlice } from '../store/slices/spaceSlice';
+import { formatNumber } from '../utils/formatNumber';
 
 export const SpaceExploration = () => {
   const { 
@@ -132,7 +133,7 @@ export const SpaceExploration = () => {
       <div className="flex flex-col gap-2">
         <div className="flex justify-between items-center">
           <span className="text-sm font-bold">冯·诺依曼探测器</span>
-          <span className="font-mono text-lg text-evolve-accent">{probes.toLocaleString()}</span>
+          <span className="font-mono text-lg text-evolve-accent">{formatNumber(probes)}</span>
         </div>
         <button 
           className={`btn flex justify-center py-2 ${
@@ -144,7 +145,7 @@ export const SpaceExploration = () => {
           <span>发射探测器</span>
         </button>
         <div className="text-right text-xs font-mono text-evolve-textDim">
-          成本: {probeCost.toLocaleString()} 件
+          成本: {formatNumber(probeCost)} 件
         </div>
       </div>
 
@@ -155,15 +156,15 @@ export const SpaceExploration = () => {
           <div className="flex flex-col gap-2 bg-evolve-bg p-3 rounded border border-evolve-border text-sm">
             <div className="flex justify-between items-center">
               <span className="text-evolve-textDim">漂流者数量</span>
-              <span className="font-mono text-evolve-danger">{drifterCount.toLocaleString()}</span>
+              <span className="font-mono text-evolve-danger">{formatNumber(drifterCount)}</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-evolve-textDim">迷失于漂变</span>
-              <span className="font-mono text-evolve-warning">{probesLostDrift.toLocaleString()}</span>
+              <span className="font-mono text-evolve-warning">{formatNumber(probesLostDrift)}</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-evolve-textDim">战损</span>
-              <span className="font-mono text-evolve-danger">{probesLostCombat.toLocaleString()}</span>
+              <span className="font-mono text-evolve-danger">{formatNumber(probesLostCombat)}</span>
             </div>
           </div>
           <div className="h-px bg-evolve-border w-full my-2"></div>

@@ -1,5 +1,6 @@
 import { useGameStore } from '../store/gameStore';
-import { Hammer, Zap, Cpu, Factory } from 'lucide-react';
+import { Zap, Cpu, Factory } from 'lucide-react';
+import { formatNumber } from '../utils/formatNumber';
 
 export const Manufacturing = () => {
   const { 
@@ -24,12 +25,7 @@ export const Manufacturing = () => {
 
   return (
     <div className="panel flex flex-col gap-4">
-      <div className="flex items-center gap-2 border-b border-evolve-border pb-2">
-        <Hammer className="w-5 h-5 text-evolve-textDim" />
-        <h2 className="text-lg font-bold tracking-wide uppercase">生产制造</h2>
-      </div>
-      
-      <div className="flex flex-col gap-4 mt-2">
+      <div className="flex flex-col gap-4">
         {/* 制造按钮 */}
         <button 
           className="btn-evolve btn-evolve-accent w-full py-3 flex items-center justify-center gap-2"
@@ -44,7 +40,7 @@ export const Manufacturing = () => {
         <div className="panel-inner">
           <div className="flex justify-between items-end mb-2">
             <span className="text-sm text-evolve-textDim tracking-wider">原材料 (铁丝)</span>
-            <span className="font-mono text-evolve-textMain">{wire.toLocaleString()} <span className="text-xs text-evolve-textDim">英寸</span></span>
+            <span className="font-mono text-evolve-textMain">{formatNumber(wire)} <span className="text-xs text-evolve-textDim">英寸</span></span>
           </div>
           <div className="progress-bar-container">
             <div 
@@ -78,10 +74,10 @@ export const Manufacturing = () => {
               <Cpu className="w-4 h-4" />
               <span>自动制造机</span>
             </div>
-            <span className="font-mono text-lg">{autoClippers}</span>
+            <span className="font-mono text-lg">{formatNumber(autoClippers)}</span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-xs font-mono opacity-70">造价: ${autoClipperCost.toFixed(2)}</span>
+            <span className="text-xs font-mono opacity-70">造价: ${formatNumber(autoClipperCost, 2)}</span>
             <button 
               className="btn-evolve text-xs py-1.5 px-3"
               onClick={buyAutoClipper}
@@ -102,10 +98,10 @@ export const Manufacturing = () => {
                   <Factory className="w-4 h-4" />
                   <span>巨型制造机</span>
                 </div>
-                <span className="font-mono text-lg text-evolve-accent">{megaClippers}</span>
+                <span className="font-mono text-lg text-evolve-accent">{formatNumber(megaClippers)}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-xs font-mono opacity-70">造价: ${megaClipperCost.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                <span className="text-xs font-mono opacity-70">造价: ${formatNumber(megaClipperCost, 2)}</span>
                 <button 
                   className="btn-evolve btn-evolve-accent text-xs py-1.5 px-3"
                   onClick={buyMegaClipper}
@@ -121,7 +117,7 @@ export const Manufacturing = () => {
         {/* 产能统计 */}
         {(autoClippers > 0 || megaClippers > 0) && (
           <div className="mt-2 text-right text-xs font-mono text-evolve-textDim animate-fade-in">
-            当前产能: {Math.floor(clipsPerSecond).toLocaleString()} 件/秒
+            当前产能: {formatNumber(Math.floor(clipsPerSecond))} 件/秒
           </div>
         )}
       </div>
