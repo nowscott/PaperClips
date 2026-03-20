@@ -2,6 +2,17 @@ import { useGameStore } from '../store/gameStore';
 import { BrainCircuit, Play, ChevronRight } from 'lucide-react';
 import type { StrategyType } from '../store/slices/strategySlice';
 
+const STRATEGY_NAMES: Record<StrategyType, string> = {
+  'RANDOM': '随机 (Random)',
+  'A100': '始终选A (A100)',
+  'B100': '始终选B (B100)',
+  'GREEDY': '贪婪 (Greedy)',
+  'GENEROUS': '慷慨 (Generous)',
+  'MINIMAX': '极小化极大 (Minimax)',
+  'TIT_FOR_TAT': '以牙还牙 (Tit for Tat)',
+  'BEAT_LAST': '击败上轮 (Beat Last)'
+};
+
 export const StrategicModeling = () => {
   const {
     strategyEngineUnlocked,
@@ -27,20 +38,20 @@ export const StrategicModeling = () => {
       <div className="flex justify-between items-center border-b border-evolve-border pb-2">
         <div className="flex items-center gap-2">
           <BrainCircuit className="w-5 h-5 text-evolve-accent" />
-          <h2 className="text-lg font-bold tracking-widest uppercase">战略建模 (Strategic Modeling)</h2>
+          <h2 className="text-lg font-bold tracking-widest uppercase">战略建模</h2>
         </div>
       </div>
 
       {/* Yomi 资源显示 */}
       <div className="flex justify-between items-center bg-evolve-accent/10 p-2 rounded border border-evolve-accent/30">
-        <span className="text-sm font-bold text-evolve-accent uppercase tracking-wider">Yomi</span>
+        <span className="text-sm font-bold text-evolve-accent tracking-wider">预判值 (Yomi)</span>
         <span className="text-lg font-mono text-evolve-accent">{yomi.toLocaleString()}</span>
       </div>
 
       {/* 策略选择与控制 */}
       <div className="panel-inner flex flex-col gap-3">
         <div className="flex flex-col gap-2">
-          <span className="text-xs text-evolve-textDim uppercase tracking-wider">选择策略 (Pick Strategy)</span>
+          <span className="text-xs text-evolve-textDim tracking-wider">选择策略</span>
           <select 
             className="bg-evolve-bg border border-evolve-border text-evolve-textMain p-1 rounded text-sm focus:outline-none focus:border-evolve-accent"
             value={currentStrategy}
@@ -48,7 +59,7 @@ export const StrategicModeling = () => {
             disabled={tourneyInProg}
           >
             {unlockedStrategies.map(strat => (
-              <option key={strat} value={strat}>{strat.replace(/_/g, ' ')}</option>
+              <option key={strat} value={strat}>{STRATEGY_NAMES[strat] || strat.replace(/_/g, ' ')}</option>
             ))}
           </select>
         </div>
@@ -61,11 +72,11 @@ export const StrategicModeling = () => {
           disabled={!canAffordTourney || tourneyInProg}
         >
           <Play className="w-4 h-4" />
-          <span>运行锦标赛 (Run Tournament)</span>
+          <span>运行锦标赛</span>
         </button>
         
         <div className="text-right text-xs font-mono text-evolve-textDim">
-          成本: {tourneyCost.toLocaleString()} Ops
+          算力成本: {tourneyCost.toLocaleString()}
         </div>
       </div>
 
@@ -88,9 +99,9 @@ export const StrategicModeling = () => {
       {/* 比赛结果矩阵 (仅在比赛结束后有数据时显示) */}
       {!tourneyInProg && matchResults.length > 0 && (
         <div className="mt-4 flex flex-col gap-2 animate-fade-in">
-          <div className="flex items-center gap-1 text-xs text-evolve-textDim uppercase tracking-wider border-b border-evolve-border pb-1">
+          <div className="flex items-center gap-1 text-xs text-evolve-textDim tracking-wider border-b border-evolve-border pb-1">
             <ChevronRight className="w-3 h-3" />
-            <span>最新锦标赛结果矩阵 (Latest Results)</span>
+            <span>最新锦标赛结果矩阵</span>
           </div>
           
           <div className="overflow-x-auto">

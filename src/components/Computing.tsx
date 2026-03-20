@@ -30,15 +30,15 @@ export const Computing = () => {
       <div className="panel flex flex-col gap-4 opacity-50">
         <div className="flex items-center gap-2 border-b border-evolve-border pb-2">
           <Terminal className="w-5 h-5 text-evolve-textDim" />
-          <h2 className="text-lg font-bold tracking-wide uppercase">计算 <span className="text-sm opacity-50 font-normal">Computing</span></h2>
+          <h2 className="text-lg font-bold tracking-wide uppercase">计算资源</h2>
         </div>
         <div className="py-6 flex flex-col items-center justify-center gap-4">
-          <p className="text-sm text-evolve-textDim uppercase tracking-wider">
-            系统离线... (System Offline...)
+          <p className="text-sm text-evolve-textDim tracking-wider">
+            系统离线...
           </p>
           <div className="panel-inner w-full">
-            <div className="flex justify-between text-xs mb-2 text-evolve-textDim uppercase tracking-wider">
-              <span>信任解锁 (Trust Unlock)</span>
+            <div className="flex justify-between text-xs mb-2 text-evolve-textDim tracking-wider">
+              <span>获取信任进度</span>
               <span>{clips.toLocaleString()} / {nextTrustStage.toLocaleString()}</span>
             </div>
             <div className="progress-bar-container">
@@ -55,7 +55,7 @@ export const Computing = () => {
     <div className="panel flex flex-col gap-4 border-evolve-accent/30 shadow-[0_0_15px_rgba(0,168,255,0.05)]">
       <div className="flex items-center gap-2 border-b border-evolve-border pb-2">
         <Terminal className="w-5 h-5 text-evolve-accent" />
-        <h2 className="text-lg font-bold tracking-wide uppercase text-evolve-accent">计算 <span className="text-sm opacity-50 font-normal">Computing</span></h2>
+        <h2 className="text-lg font-bold tracking-wide uppercase text-evolve-accent">计算资源</h2>
       </div>
 
       <div className="flex flex-col gap-5 mt-2">
@@ -63,7 +63,7 @@ export const Computing = () => {
         <div className="panel-inner flex justify-between items-center">
           <div className="flex items-center gap-2">
             <Unlock className="w-4 h-4 text-evolve-textMain" />
-            <span className="text-sm text-evolve-textDim uppercase tracking-wider">信任值 (Trust)</span>
+            <span className="text-sm text-evolve-textDim tracking-wider">信任值</span>
           </div>
           <span className="font-mono text-lg">{trust}</span>
         </div>
@@ -71,12 +71,12 @@ export const Computing = () => {
         {/* 信任值分配 */}
         <div className="flex flex-col gap-3">
           <div className="flex justify-between items-end text-sm">
-            <span className="text-evolve-textDim uppercase tracking-wider">+1 信任于:</span>
-            <span className="font-mono">{nextTrustStage.toLocaleString()} clips</span>
+            <span className="text-evolve-textDim tracking-wider">下一信任值阈值:</span>
+            <span className="font-mono">{nextTrustStage.toLocaleString()} 件</span>
           </div>
           
           <div className="text-sm text-evolve-accent font-mono bg-evolve-accent/10 px-3 py-1 rounded w-fit">
-            可用信任 (Available Trust): {availableTrust}
+            可用信任: {availableTrust}
           </div>
 
           <div className="grid grid-cols-2 gap-3 mt-1">
@@ -85,7 +85,7 @@ export const Computing = () => {
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-1.5 text-sm text-evolve-textDim">
                   <Cpu className="w-4 h-4" />
-                  <span>处理器 (Processors)</span>
+                  <span>处理器</span>
                 </div>
                 <span className="font-mono">{processors}</span>
               </div>
@@ -94,7 +94,7 @@ export const Computing = () => {
                 onClick={addProcessor}
                 disabled={availableTrust <= 0}
               >
-                升级 (Upgrade)
+                分配
               </button>
             </div>
 
@@ -103,7 +103,7 @@ export const Computing = () => {
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-1.5 text-sm text-evolve-textDim">
                   <HardDrive className="w-4 h-4" />
-                  <span>内存 (Memory)</span>
+                  <span>内存</span>
                 </div>
                 <span className="font-mono">{memory}</span>
               </div>
@@ -112,7 +112,7 @@ export const Computing = () => {
                 onClick={addMemory}
                 disabled={availableTrust <= 0}
               >
-                升级 (Upgrade)
+                分配
               </button>
             </div>
           </div>
@@ -123,7 +123,7 @@ export const Computing = () => {
         {/* 算力 Operations */}
         <div className="flex flex-col gap-2">
           <div className="flex justify-between items-end mb-1">
-            <span className="text-sm text-evolve-textDim uppercase tracking-wider">算力 (Operations)</span>
+            <span className="text-sm text-evolve-textDim tracking-wider">算力</span>
             <span className="font-mono">{Math.floor(ops).toLocaleString()} / {maxOps.toLocaleString()}</span>
           </div>
           <div className="progress-bar-container h-2">
@@ -138,7 +138,7 @@ export const Computing = () => {
         {creativityOn && (
           <div className="flex flex-col gap-2 mt-1">
             <div className="flex justify-between items-end mb-1">
-              <span className="text-sm text-evolve-accent uppercase tracking-wider">创造力 (Creativity)</span>
+              <span className="text-sm text-evolve-accent tracking-wider">创造力</span>
               <span className="font-mono text-evolve-accent">{Math.floor(creativity).toLocaleString()}</span>
             </div>
           </div>

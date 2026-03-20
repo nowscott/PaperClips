@@ -10,7 +10,7 @@ export const Header = () => {
       <div className="flex items-center gap-3">
         <Paperclip className="text-evolve-accent w-6 h-6" />
         <h1 className="text-xl font-bold tracking-widest text-evolve-textMain">
-          通用回形针 <span className="text-sm opacity-50 font-normal hidden sm:inline">UNIVERSAL PAPERCLIPS</span>
+          无限回形针 <span className="text-sm opacity-50 font-normal hidden sm:inline">INFINITE PAPERCLIPS</span>
         </h1>
       </div>
       <div className="flex items-center gap-6">

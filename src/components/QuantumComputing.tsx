@@ -58,7 +58,7 @@ export const QuantumComputing = () => {
       <div className="flex items-center gap-2 border-b border-evolve-border pb-2">
         <Cpu className="w-5 h-5 text-evolve-accent" />
         <h2 className="text-lg font-bold tracking-wide uppercase text-evolve-accent">
-          量子计算 <span className="text-sm opacity-50 font-normal">Quantum Computing</span>
+          量子计算
         </h2>
       </div>
 
@@ -90,8 +90,8 @@ export const QuantumComputing = () => {
           onClick={handleCompute}
           disabled={totalQ <= 0}
         >
-          计算 (Compute) 
-          {totalQ > 0 && <span className="ml-2 opacity-80">+{Math.floor(totalQ * 360)} Ops</span>}
+          执行量子计算
+          {totalQ > 0 && <span className="ml-2 opacity-80">+{Math.floor(totalQ * 360)} 算力</span>}
         </button>
       </div>
     </div>

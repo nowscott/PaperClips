@@ -38,7 +38,7 @@ export const Projects = () => {
     <div className="panel flex flex-col gap-4 border-evolve-success/30 shadow-[0_0_15px_rgba(var(--color-success),0.05)]">
       <div className="flex items-center gap-2 border-b border-evolve-border pb-2">
         <FlaskConical className="w-5 h-5 text-evolve-success" />
-        <h2 className="text-lg font-bold tracking-wide uppercase text-evolve-success">项目 <span className="text-sm opacity-50 font-normal">Projects</span></h2>
+        <h2 className="text-lg font-bold tracking-wide uppercase text-evolve-success">科技与项目</h2>
       </div>
 
       <div className="flex flex-col gap-3 mt-2">
@@ -61,31 +61,31 @@ export const Projects = () => {
                     onClick={() => completeProject(project.id)}
                     disabled={!canAfford}
                   >
-                    研发 (Research)
+                    研发
                   </button>
                 </div>
                 <p className="text-xs text-evolve-textDim leading-relaxed">
                   {project.description}
                 </p>
-                <div className="flex gap-4 mt-1 text-xs font-mono">
+                <div className="flex gap-4 mt-1 text-xs font-mono flex-wrap">
                   {project.costOps > 0 && (
                     <span className={canAffordOps ? 'text-evolve-textMain' : 'text-evolve-danger'}>
-                      成本: {project.costOps} Ops
+                      算力: {project.costOps}
                     </span>
                   )}
                   {project.costFunds && (
                     <span className={canAffordFunds ? 'text-evolve-textMain' : 'text-evolve-danger'}>
-                      ${project.costFunds.toFixed(2)}
+                      资金: ${project.costFunds.toFixed(2)}
                     </span>
                   )}
                   {project.costCreativity && (
                     <span className={canAffordCreativity ? 'text-evolve-accent' : 'text-evolve-danger'}>
-                      Creativity: {project.costCreativity}
+                      创造力: {project.costCreativity}
                     </span>
                   )}
                   {project.costYomi && (
                     <span className={canAffordYomi ? 'text-evolve-warning' : 'text-evolve-danger'}>
-                      Yomi: {project.costYomi.toLocaleString()}
+                      预判值: {project.costYomi.toLocaleString()}
                     </span>
                   )}
                 </div>
@@ -94,14 +94,14 @@ export const Projects = () => {
           })
         ) : (
           <div className="text-center text-sm text-evolve-textDim italic py-4">
-            等待新发现... (Awaiting new discoveries...)
+            等待新发现...
           </div>
         )}
 
         {/* 已完成项目记录 */}
         {recentCompleted.length > 0 && (
           <div className="mt-4 border-t border-evolve-border pt-4">
-            <h3 className="text-xs text-evolve-textDim uppercase tracking-wider mb-2">已完成 (Completed)</h3>
+            <h3 className="text-xs text-evolve-textDim tracking-wider mb-2">近期已完成</h3>
             <div className="flex flex-col gap-1">
               {recentCompleted.map((p: Project) => (
                 <div key={p.id} className="flex items-center gap-2 text-sm text-evolve-textDim opacity-70">

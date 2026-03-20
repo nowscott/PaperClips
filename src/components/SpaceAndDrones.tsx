@@ -38,18 +38,18 @@ export const SpaceAndDrones = () => {
       <div className="flex justify-between items-center border-b border-evolve-border pb-2">
         <div className="flex items-center gap-2">
           <Rocket className="w-5 h-5 text-evolve-accent" />
-          <h2 className="text-lg font-bold tracking-widest uppercase">物质与无人机 (Matter & Drones)</h2>
+          <h2 className="text-lg font-bold tracking-widest uppercase">物质与无人机</h2>
         </div>
       </div>
 
       {/* 物质资源显示 */}
       <div className="flex flex-col gap-2">
         <div className="flex justify-between items-center">
-          <span className="text-xs text-evolve-textDim uppercase tracking-wider">可用物质 (Available Matter)</span>
+          <span className="text-xs text-evolve-textDim tracking-wider">可用物质</span>
           <span className="font-mono text-sm">{availableMatter.toLocaleString()} g</span>
         </div>
         <div className="flex justify-between items-center">
-          <span className="text-xs text-evolve-textDim uppercase tracking-wider">已采集物质 (Acquired Matter)</span>
+          <span className="text-xs text-evolve-textDim tracking-wider">已采集物质</span>
           <span className="font-mono text-sm">{acquiredMatter.toLocaleString()} g</span>
         </div>
       </div>
@@ -61,7 +61,7 @@ export const SpaceAndDrones = () => {
         {harvesterDronesUnlocked && (
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <span className="text-sm font-bold">采集无人机 (Harvester Drones)</span>
+              <span className="text-sm font-bold">采集无人机</span>
               <span className="font-mono text-evolve-accent">{harvesterDrones.toLocaleString()}</span>
             </div>
             <button 
@@ -73,9 +73,9 @@ export const SpaceAndDrones = () => {
             >
               <div className="flex items-center gap-2">
                 <Plus className="w-4 h-4" />
-                <span>建造无人机</span>
+                <span>建造采集无人机</span>
               </div>
-              <span className="text-xs font-mono">{harvesterDroneCost.toLocaleString()} clips</span>
+              <span className="text-xs font-mono">{harvesterDroneCost.toLocaleString()} 件</span>
             </button>
           </div>
         )}
@@ -83,7 +83,7 @@ export const SpaceAndDrones = () => {
         {wireDronesUnlocked && (
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <span className="text-sm font-bold">铁丝加工无人机 (Wire Drones)</span>
+              <span className="text-sm font-bold">线材加工无人机</span>
               <span className="font-mono text-evolve-accent">{wireDrones.toLocaleString()}</span>
             </div>
             <button 
@@ -95,9 +95,9 @@ export const SpaceAndDrones = () => {
             >
               <div className="flex items-center gap-2">
                 <Plus className="w-4 h-4" />
-                <span>建造无人机</span>
+                <span>建造加工无人机</span>
               </div>
-              <span className="text-xs font-mono">{wireDroneCost.toLocaleString()} clips</span>
+              <span className="text-xs font-mono">{wireDroneCost.toLocaleString()} 件</span>
             </button>
           </div>
         )}
@@ -109,7 +109,7 @@ export const SpaceAndDrones = () => {
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
                   <Factory className="w-4 h-4 text-evolve-warning" />
-                  <span className="text-sm font-bold text-evolve-warning">回形针工厂 (Clip Factories)</span>
+                  <span className="text-sm font-bold text-evolve-warning">回形针工厂</span>
                 </div>
                 <span className="font-mono text-evolve-warning">{factories.toLocaleString()}</span>
               </div>
@@ -124,7 +124,7 @@ export const SpaceAndDrones = () => {
                   <Plus className="w-4 h-4" />
                   <span>建造工厂</span>
                 </div>
-                <span className="text-xs font-mono">{factoryCost.toLocaleString()} clips</span>
+                <span className="text-xs font-mono">{factoryCost.toLocaleString()} 件</span>
               </button>
             </div>
           </>
@@ -138,7 +138,7 @@ export const SpaceAndDrones = () => {
               <div className="flex justify-between items-center text-sm font-bold text-evolve-accent">
                 <div className="flex items-center gap-2">
                   <Zap className="w-4 h-4" />
-                  <span>蜂群计算 (Swarm Computing)</span>
+                  <span>蜂群计算分配</span>
                 </div>
               </div>
               <div className="flex flex-col gap-1 px-1">
@@ -151,12 +151,12 @@ export const SpaceAndDrones = () => {
                   className="w-full h-2 bg-evolve-border rounded-lg appearance-none cursor-pointer accent-evolve-accent"
                 />
                 <div className="flex justify-between text-xs font-mono text-evolve-textDim">
-                  <span>Think: {Math.max(0, 200 - sliderPos)}%</span>
-                  <span>Work: {Math.max(0, sliderPos)}%</span>
+                  <span>思考 (Think): {Math.max(0, 200 - sliderPos)}%</span>
+                  <span>劳作 (Work): {Math.max(0, sliderPos)}%</span>
                 </div>
               </div>
               <span className="text-[10px] text-evolve-textDim opacity-70">
-                调整无人机的算力分配。偏向 Think 获取更多 Ops，偏向 Work 加快采集与生产。
+                调整无人机的算力分配。偏向"思考"获取更多算力，偏向"劳作"加快采集与生产。
               </span>
             </div>
           </>
