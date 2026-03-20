@@ -3,19 +3,21 @@ import { Rocket, Minus, Plus } from 'lucide-react';
 import type { SpaceSlice } from '../store/slices/spaceSlice';
 
 export const SpaceExploration = () => {
-  const {
+  const { 
     spaceExplorationUnlocked,
     probes,
     probeCost,
-    probeDesignTrust,
     maxProbeTrust,
-    clips,
-    
-    probeSpeed, probeExploration, probeReplication, probeHazard,
-    probeFactory, probeHarvester, probeWire, probeCombat,
-    
+    probeSpeed,
+    probeExploration,
+    probeReplication,
+    probeHazard,
+    probeFactory,
+    probeHarvester,
+    probeWire,
+    probeCombat,
     universeExplored,
-    
+    clips,
     launchProbe,
     increaseProbeStat,
     decreaseProbeStat
