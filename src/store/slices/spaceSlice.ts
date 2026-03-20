@@ -3,6 +3,7 @@ import type { GameState } from '../gameStore';
 
 export interface SpaceSlice {
   spaceExplorationUnlocked: boolean;
+  oodaLoopUnlocked: boolean;
   
   // Probes & Cost
   probes: number;
@@ -44,6 +45,7 @@ export interface SpaceSlice {
 
 export const initialSpaceState: Omit<SpaceSlice, 'launchProbe' | 'increaseProbeStat' | 'decreaseProbeStat' | 'triggerVictory' | 'resetForPrestige'> = {
   spaceExplorationUnlocked: false,
+  oodaLoopUnlocked: false,
   probes: 0,
   probeCost: 100000000000000000, // 初始需要100,000,000,000,000,000 (100 Quadrillion) 回形针
   

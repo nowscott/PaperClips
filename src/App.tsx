@@ -10,10 +10,17 @@ import { SpaceAndDrones } from './components/SpaceAndDrones';
 import { SpaceExploration } from './components/SpaceExploration';
 import { ConsoleLog } from './components/ConsoleLog';
 import { GameLoop } from './components/GameLoop';
+import { TabbedPanelGroup } from './components/TabbedPanelGroup';
 import { useGameStore } from './store/gameStore';
 
 function App() {
-  const { spaceExplorationUnlocked } = useGameStore();
+  const { 
+    spaceExplorationUnlocked,
+    investmentEngineUnlocked,
+    strategyEngineUnlocked,
+    compAndProjectsUnlocked,
+    qComputingUnlocked
+  } = useGameStore();
 
   return (
     <div className="container mx-auto max-w-7xl p-2 sm:p-4 md:p-8">
@@ -35,18 +42,87 @@ function App() {
           <SpaceAndDrones />
         </div>
 
-        {/* 中间/第二列：商业与投资 */}
+        {/* 中间/第二列：商业与投资 (Tabbed) */}
         <div className="flex flex-col gap-4 sm:gap-6">
-          <Business />
-          <Investments />
-          <StrategicModeling />
+          <TabbedPanelGroup
+            tabs={[
+              { 
+                id: 'business', 
+                label: (
+                  <>
+                    <span className="truncate w-full text-center">商业</span>
+                    <span className="text-[10px] opacity-70 font-normal truncate w-full text-center tracking-normal">Business</span>
+                  </>
+                ), 
+                content: <Business /> 
+              },
+              { 
+                id: 'investments', 
+                label: (
+                  <>
+                    <span className="truncate w-full text-center">投资</span>
+                    <span className="text-[10px] opacity-70 font-normal truncate w-full text-center tracking-normal">Investments</span>
+                  </>
+                ), 
+                content: <Investments />, 
+                condition: investmentEngineUnlocked 
+              },
+              { 
+                id: 'strategic_modeling', 
+                label: (
+                  <>
+                    <span className="truncate w-full text-center">战略建模</span>
+                    <span className="text-[10px] opacity-70 font-normal truncate w-full text-center tracking-normal">Strategic</span>
+                  </>
+                ), 
+                content: <StrategicModeling />, 
+                condition: strategyEngineUnlocked 
+              }
+            ]}
+          />
         </div>
 
-        {/* 右侧/第三列：计算与项目 */}
+        {/* 右侧/第三列：计算与项目 (Tabbed) */}
         <div className="flex flex-col gap-4 sm:gap-6">
-          <QuantumComputing />
-          <Computing />
-          <Projects />
+          {compAndProjectsUnlocked ? (
+            <TabbedPanelGroup
+              tabs={[
+                { 
+                  id: 'computing', 
+                  label: (
+                    <>
+                      <span className="truncate w-full text-center">计算</span>
+                      <span className="text-[10px] opacity-70 font-normal truncate w-full text-center tracking-normal">Computing</span>
+                    </>
+                  ), 
+                  content: <Computing /> 
+                },
+                { 
+                  id: 'quantum_computing', 
+                  label: (
+                    <>
+                      <span className="truncate w-full text-center">量子计算</span>
+                      <span className="text-[10px] opacity-70 font-normal truncate w-full text-center tracking-normal">Quantum</span>
+                    </>
+                  ), 
+                  content: <QuantumComputing />, 
+                  condition: qComputingUnlocked 
+                },
+                { 
+                  id: 'projects', 
+                  label: (
+                    <>
+                      <span className="truncate w-full text-center">项目</span>
+                      <span className="text-[10px] opacity-70 font-normal truncate w-full text-center tracking-normal">Projects</span>
+                    </>
+                  ), 
+                  content: <Projects /> 
+                }
+              ]}
+            />
+          ) : (
+            <Computing /> // 未解锁前作为占位或显示系统离线
+          )}
         </div>
 
         {/* 第四列：仅在太空阶段显示 (如果不显示，前面的三列会均匀铺满) */}

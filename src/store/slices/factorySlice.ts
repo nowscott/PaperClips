@@ -21,6 +21,7 @@ export interface FactorySlice {
 
   swarmUnlocked: boolean;
   sliderPos: number; // 0 to 200 (100 is center)
+  droneBoost: number;
   setSliderPos: (pos: number) => void;
   
   buyHarvesterDrone: () => void;
@@ -48,6 +49,7 @@ export const initialFactoryState = {
 
   swarmUnlocked: false,
   sliderPos: 100, // 默认中间，100% Work, 100% Think
+  droneBoost: 1,
 };
 
 export const createFactorySlice: StateCreator<GameState, [], [], FactorySlice> = (set) => ({
