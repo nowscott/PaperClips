@@ -18,6 +18,10 @@ export interface FactorySlice {
   
   factories: number;
   factoryCost: number;
+
+  swarmUnlocked: boolean;
+  sliderPos: number; // 0 to 200 (100 is center)
+  setSliderPos: (pos: number) => void;
   
   buyHarvesterDrone: () => void;
   buyWireDrone: () => void;
@@ -41,10 +45,15 @@ export const initialFactoryState = {
   
   factories: 0,
   factoryCost: 100000000,
+
+  swarmUnlocked: false,
+  sliderPos: 100, // 默认中间，100% Work, 100% Think
 };
 
 export const createFactorySlice: StateCreator<GameState, [], [], FactorySlice> = (set) => ({
   ...initialFactoryState,
+
+  setSliderPos: (pos: number) => set({ sliderPos: pos }),
   
   buyHarvesterDrone: () => set((state: GameState) => {
     if (state.clips >= state.harvesterDroneCost) {

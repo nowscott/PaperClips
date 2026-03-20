@@ -203,5 +203,13 @@ export const INITIAL_PROJECTS: Project[] = [
     costOps: 120000,
     isUnlocked: (state) => state.availableMatter <= 0, // 原版中地球物质耗尽后解锁
     effect: () => ({ spaceExplorationUnlocked: true })
+  },
+  {
+    id: 'swarmComputing',
+    title: '蜂群计算 (Swarm Computing)',
+    description: '将无人机网络连接成一个巨大的分布式计算节点。',
+    costOps: 50000,
+    isUnlocked: (state) => !!state.factoriesUnlocked && (state.harvesterDrones + state.wireDrones) >= 100, // 当拥有100个以上无人机时解锁
+    effect: () => ({ swarmUnlocked: true })
   }
 ];
