@@ -38,8 +38,11 @@ export const Settings = () => {
     reader.onload = (e) => {
       try {
         const content = e.target?.result as string;
-        // 简单验证 JSON 格式
-        JSON.parse(content); 
+        // 简单验证 JSON 格式以及是否包含 state 属性 (Zustand 默认结构)
+        const parsed = JSON.parse(content); 
+        if (!parsed.state) {
+          throw new Error("Invalid save file structure");
+        }
         localStorage.setItem('paperclips-storage', content);
         alert("存档导入成功！游戏即将刷新以加载存档。");
         window.location.reload();
