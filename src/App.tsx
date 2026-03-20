@@ -19,7 +19,10 @@ function App() {
     investmentEngineUnlocked,
     strategyEngineUnlocked,
     compAndProjectsUnlocked,
-    qComputingUnlocked
+    qComputingUnlocked,
+    harvesterDronesUnlocked,
+    wireDronesUnlocked,
+    factoriesUnlocked
   } = useGameStore();
 
   return (
@@ -51,12 +54,11 @@ function App() {
                 label: "物质与无人机",
                 icon: 'Rocket',
                 content: <SpaceAndDrones />,
-                // 当至少有一个无人机相关科技解锁，或者有物质时才显示此 Tab
-                condition: useGameStore.getState().harvesterDronesUnlocked || 
-                           useGameStore.getState().wireDronesUnlocked || 
-                           useGameStore.getState().factoriesUnlocked || 
-                           useGameStore.getState().availableMatter > 0 || 
-                           useGameStore.getState().acquiredMatter > 0
+                // 当至少有一个无人机相关科技解锁时才显示此 Tab
+                // 注意：不能用 availableMatter > 0，因为游戏初始时地球物质就是满的，会导致一开局就暴露此面板
+                condition: harvesterDronesUnlocked || 
+                           wireDronesUnlocked || 
+                           factoriesUnlocked
               }
             ]}
           />
