@@ -16,8 +16,9 @@
     --color-panel-inner: 253 253 253; /* #fdfdfd */
   }
 
+  /* 支持媒体查询和 html.dark 两种方式触发深色模式 */
   @media (prefers-color-scheme: dark) {
-    :root {
+    :root:not(.light) {
       --color-bg: 17 17 17;         /* #111111 */
       --color-panel: 26 26 26;      /* #1a1a1a */
       --color-border: 51 51 51;     /* #333333 */
@@ -30,9 +31,23 @@
       --color-panel-inner: 21 21 21;  /* #151515 */
     }
   }
+  
+  :root.dark {
+    --color-bg: 17 17 17;         /* #111111 */
+    --color-panel: 26 26 26;      /* #1a1a1a */
+    --color-border: 51 51 51;     /* #333333 */
+    --color-text-main: 224 224 224; /* #e0e0e0 */
+    --color-text-dim: 136 136 136;  /* #888888 */
+    --color-accent: 0 168 255;      /* #00a8ff */
+    --color-accent-hover: 0 132 204; /* #0084cc */
+    --color-success: 46 204 113;    /* #2ecc71 */
+    --color-danger: 231 76 60;      /* #e74c3c */
+    --color-panel-inner: 21 21 21;  /* #151515 */
+  }
 
   body {
-    @apply antialiased min-h-screen bg-evolve-bg text-evolve-textMain font-sans transition-colors duration-300;
+    /* 移除 body 上的 transition-colors duration-300 以防止初始加载时的白屏闪烁 */
+    @apply antialiased min-h-screen bg-evolve-bg text-evolve-textMain font-sans;
     margin: 0;
   }
 }
