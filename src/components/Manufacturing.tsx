@@ -1,4 +1,5 @@
 import { useGameStore } from '../store/gameStore';
+import { useContinuousClick } from '../hooks/useContinuousClick';
 import { Zap, Cpu, Factory } from 'lucide-react';
 import { formatNumber } from '../utils/formatNumber';
 
@@ -23,13 +24,15 @@ export const Manufacturing = () => {
   const maxWire = 1000;
   const wirePercent = Math.min(100, Math.max(0, (wire / maxWire) * 100));
 
+  const makePaperclipContinuous = useContinuousClick(makePaperclip, 50, 200);
+
   return (
     <div className="panel flex flex-col gap-4">
       <div className="flex flex-col gap-4">
         {/* 制造按钮 */}
         <button 
-          className="btn-evolve btn-evolve-accent w-full py-3 flex items-center justify-center gap-2"
-          onClick={makePaperclip}
+          className="btn-evolve btn-evolve-accent w-full py-3 flex items-center justify-center gap-2 select-none touch-none"
+          {...makePaperclipContinuous}
           disabled={wire <= 0}
         >
           <Zap className="w-4 h-4" />
