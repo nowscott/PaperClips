@@ -1,5 +1,6 @@
 import { useGameStore } from '../store/gameStore';
 import { LineChart, TrendingUp, ArrowDownToLine, ArrowUpFromLine } from 'lucide-react';
+import { formatNumber } from '../utils/formatNumber';
 
 export const Investments = () => {
   const { 
@@ -36,7 +37,7 @@ export const Investments = () => {
         <div className="panel-inner flex flex-col items-center justify-center gap-1">
           <span className="text-xs text-evolve-textDim tracking-wider">投资资金池</span>
           <span className={`text-2xl font-mono font-bold ${investmentBankroll > 0 ? 'text-evolve-success' : 'text-evolve-textMain'}`}>
-            ${investmentBankroll.toFixed(2)}
+            ${formatNumber(investmentBankroll, 2)}
           </span>
         </div>
 
@@ -109,7 +110,7 @@ export const Investments = () => {
         <div className="flex justify-between items-center">
           <div className="flex flex-col">
             <span className="text-sm text-evolve-textDim tracking-wider mb-1">升级投资引擎</span>
-            <span className="text-xs font-mono opacity-70">升级成本: {upgradeCost} 预判值 (Yomi)</span>
+            <span className="text-xs font-mono opacity-70">升级成本: {formatNumber(upgradeCost)} 预判值 (Yomi)</span>
           </div>
           <button 
             className="btn-evolve flex items-center gap-2"

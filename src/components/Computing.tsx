@@ -1,5 +1,6 @@
 import { useGameStore } from '../store/gameStore';
 import { Terminal, Cpu, HardDrive, Unlock } from 'lucide-react';
+import { formatNumber } from '../utils/formatNumber';
 
 export const Computing = () => {
   const { 
@@ -39,7 +40,7 @@ export const Computing = () => {
           <div className="panel-inner w-full">
             <div className="flex justify-between text-xs mb-2 text-evolve-textDim tracking-wider">
               <span>获取信任进度</span>
-              <span>{clips.toLocaleString()} / {nextTrustStage.toLocaleString()}</span>
+              <span>{formatNumber(clips)} / {formatNumber(nextTrustStage)}</span>
             </div>
             <div className="progress-bar-container">
               <div className="progress-bar-fill bg-evolve-textDim" style={{ width: `${progress}%` }} />
@@ -65,18 +66,18 @@ export const Computing = () => {
             <Unlock className="w-4 h-4 text-evolve-textMain" />
             <span className="text-sm text-evolve-textDim tracking-wider">信任值</span>
           </div>
-          <span className="font-mono text-lg">{trust}</span>
+          <span className="font-mono text-lg">{formatNumber(trust)}</span>
         </div>
 
         {/* 信任值分配 */}
         <div className="flex flex-col gap-3">
           <div className="flex justify-between items-end text-sm">
             <span className="text-evolve-textDim tracking-wider">下一信任值阈值:</span>
-            <span className="font-mono">{nextTrustStage.toLocaleString()} 件</span>
+            <span className="font-mono">{formatNumber(nextTrustStage)} 件</span>
           </div>
           
           <div className="text-sm text-evolve-accent font-mono bg-evolve-accent/10 px-3 py-1 rounded w-fit">
-            可用信任: {availableTrust}
+            可用信任: {formatNumber(availableTrust)}
           </div>
 
           <div className="grid grid-cols-2 gap-3 mt-1">
@@ -87,7 +88,7 @@ export const Computing = () => {
                   <Cpu className="w-4 h-4" />
                   <span>处理器</span>
                 </div>
-                <span className="font-mono">{processors}</span>
+                <span className="font-mono">{formatNumber(processors)}</span>
               </div>
               <button 
                 className="btn-evolve text-xs py-1"
@@ -105,7 +106,7 @@ export const Computing = () => {
                   <HardDrive className="w-4 h-4" />
                   <span>内存</span>
                 </div>
-                <span className="font-mono">{memory}</span>
+                <span className="font-mono">{formatNumber(memory)}</span>
               </div>
               <button 
                 className="btn-evolve text-xs py-1"
@@ -124,7 +125,7 @@ export const Computing = () => {
         <div className="flex flex-col gap-2">
           <div className="flex justify-between items-end mb-1">
             <span className="text-sm text-evolve-textDim tracking-wider">算力</span>
-            <span className="font-mono">{Math.floor(ops).toLocaleString()} / {maxOps.toLocaleString()}</span>
+            <span className="font-mono">{formatNumber(Math.floor(ops))} / {formatNumber(maxOps)}</span>
           </div>
           <div className="progress-bar-container h-2">
             <div 
@@ -139,7 +140,7 @@ export const Computing = () => {
           <div className="flex flex-col gap-2 mt-1">
             <div className="flex justify-between items-end mb-1">
               <span className="text-sm text-evolve-accent tracking-wider">创造力</span>
-              <span className="font-mono text-evolve-accent">{Math.floor(creativity).toLocaleString()}</span>
+              <span className="font-mono text-evolve-accent">{formatNumber(Math.floor(creativity))}</span>
             </div>
           </div>
         )}

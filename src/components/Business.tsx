@@ -1,5 +1,6 @@
 import { useGameStore } from '../store/gameStore';
 import { Briefcase, DollarSign, TrendingUp, ShoppingCart, ChevronDown, ChevronUp, Megaphone } from 'lucide-react';
+import { formatNumber } from '../utils/formatNumber';
 
 export const Business = () => {
   const { 
@@ -27,23 +28,23 @@ export const Business = () => {
               <DollarSign className="w-4 h-4 text-evolve-success" />
               <span className="text-sm text-evolve-textDim tracking-wider">可用资金</span>
             </div>
-            <span className="font-mono text-evolve-success text-lg">${funds.toFixed(2)}</span>
+            <span className="font-mono text-evolve-success text-lg">${formatNumber(funds, 2)}</span>
           </div>
           {revTrackerUnlocked && (
             <>
               <div className="flex justify-between items-center border-t border-evolve-border pt-2 mt-1">
                 <span className="text-xs text-evolve-textDim tracking-wider">营收速率</span>
-                <span className="font-mono text-sm text-evolve-accent">${revenuePerSecond.toFixed(2)}/秒</span>
+                <span className="font-mono text-sm text-evolve-accent">${formatNumber(revenuePerSecond, 2)}/秒</span>
               </div>
               <div className="flex justify-between items-center border-t border-evolve-border pt-2 mt-1">
                 <span className="text-xs text-evolve-textDim tracking-wider">销售速率</span>
-                <span className="font-mono text-sm text-evolve-accent">{Math.floor(salesPerSecond).toLocaleString()}件/秒</span>
+                <span className="font-mono text-sm text-evolve-accent">{formatNumber(Math.floor(salesPerSecond))}件/秒</span>
               </div>
             </>
           )}
           <div className="flex justify-between items-center border-t border-evolve-border pt-2 mt-1">
             <span className="text-xs text-evolve-textDim tracking-wider">积压库存</span>
-            <span className="font-mono text-sm">{unsoldInventory.toLocaleString()}件</span>
+            <span className="font-mono text-sm">{formatNumber(unsoldInventory)}件</span>
           </div>
         </div>
 
@@ -55,7 +56,7 @@ export const Business = () => {
               <button className="btn-evolve p-1" onClick={lowerPrice}>
                 <ChevronDown className="w-4 h-4" />
               </button>
-              <span className="font-mono w-16 text-center">${price.toFixed(2)}</span>
+              <span className="font-mono w-16 text-center">${formatNumber(price, 2)}</span>
               <button className="btn-evolve p-1" onClick={raisePrice}>
                 <ChevronUp className="w-4 h-4" />
               </button>
@@ -66,7 +67,7 @@ export const Business = () => {
               <TrendingUp className="w-3.5 h-3.5" />
               <span>市场需求</span>
             </div>
-            <span className="font-mono">{publicDemand}%</span>
+            <span className="font-mono">{formatNumber(publicDemand)}%</span>
           </div>
         </div>
 
@@ -82,7 +83,7 @@ export const Business = () => {
             <span className="font-mono text-lg">Lv.{marketingLevel}</span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-xs font-mono opacity-70">升级成本: ${marketingCost.toFixed(2)}</span>
+            <span className="text-xs font-mono opacity-70">升级成本: ${formatNumber(marketingCost, 2)}</span>
             <button 
               className="btn-evolve text-xs py-1.5 px-3"
               onClick={upgradeMarketing}
@@ -100,7 +101,7 @@ export const Business = () => {
           <div>
             <div className="text-sm text-evolve-textDim tracking-wider mb-1">采购原材料</div>
             <div className="flex items-center gap-1 text-xs font-mono">
-              <span className="opacity-70">铁丝市价: ${wireCost}</span>
+              <span className="opacity-70">铁丝市价: ${formatNumber(wireCost)}</span>
               {isWireCostUp && <TrendingUp className="w-3 h-3 text-evolve-danger ml-1" />}
               {isWireCostDown && <TrendingUp className="w-3 h-3 text-evolve-success ml-1 transform rotate-180 scale-y-[-1]" />}
             </div>

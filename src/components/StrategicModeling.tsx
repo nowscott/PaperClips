@@ -1,6 +1,7 @@
 import { useGameStore } from '../store/gameStore';
 import { BrainCircuit, Play, ChevronRight } from 'lucide-react';
 import type { StrategyType } from '../store/slices/strategySlice';
+import { formatNumber } from '../utils/formatNumber';
 
 const STRATEGY_NAMES: Record<StrategyType, string> = {
   'RANDOM': '随机 (Random)',
@@ -45,7 +46,7 @@ export const StrategicModeling = () => {
       {/* Yomi 资源显示 */}
       <div className="flex justify-between items-center bg-evolve-accent/10 p-2 rounded border border-evolve-accent/30">
         <span className="text-sm font-bold text-evolve-accent tracking-wider">预判值 (Yomi)</span>
-        <span className="text-lg font-mono text-evolve-accent">{yomi.toLocaleString()}</span>
+        <span className="text-lg font-mono text-evolve-accent">{formatNumber(yomi)}</span>
       </div>
 
       {/* 策略选择与控制 */}
@@ -76,7 +77,7 @@ export const StrategicModeling = () => {
         </button>
         
         <div className="text-right text-xs font-mono text-evolve-textDim">
-          算力成本: {tourneyCost.toLocaleString()}
+          算力成本: {formatNumber(tourneyCost)}
         </div>
       </div>
 
