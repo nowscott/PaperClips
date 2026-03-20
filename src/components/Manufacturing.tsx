@@ -1,5 +1,5 @@
 import { useGameStore } from '../store/gameStore';
-import { Hammer, Zap, Cpu, Factory } from 'lucide-react';
+import { Zap, Cpu, Factory } from 'lucide-react';
 import { formatNumber } from '../utils/formatNumber';
 
 export const Manufacturing = () => {
@@ -25,12 +25,7 @@ export const Manufacturing = () => {
 
   return (
     <div className="panel flex flex-col gap-4">
-      <div className="flex items-center gap-2 border-b border-evolve-border pb-2">
-        <Hammer className="w-5 h-5 text-evolve-textDim" />
-        <h2 className="text-lg font-bold tracking-wide uppercase">生产制造</h2>
-      </div>
-      
-      <div className="flex flex-col gap-4 mt-2">
+      <div className="flex flex-col gap-4">
         {/* 制造按钮 */}
         <button 
           className="btn-evolve btn-evolve-accent w-full py-3 flex items-center justify-center gap-2"

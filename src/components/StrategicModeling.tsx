@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useGameStore } from '../store/gameStore';
-import { BrainCircuit, Play, ChevronRight, ChevronDown } from 'lucide-react';
+import { Play, ChevronRight, ChevronDown } from 'lucide-react';
 import type { StrategyType } from '../store/slices/strategySlice';
 import { formatNumber } from '../utils/formatNumber';
 
@@ -39,14 +39,6 @@ export const StrategicModeling = () => {
 
   return (
     <div className="panel flex flex-col gap-4">
-      {/* 标题 */}
-      <div className="flex justify-between items-center border-b border-evolve-border pb-2">
-        <div className="flex items-center gap-2">
-          <BrainCircuit className="w-5 h-5 text-evolve-accent" />
-          <h2 className="text-lg font-bold tracking-widest uppercase">战略建模</h2>
-        </div>
-      </div>
-
       {/* Yomi 资源显示 */}
       <div className="flex justify-between items-center bg-evolve-accent/10 p-2 rounded border border-evolve-accent/30">
         <span className="text-sm font-bold text-evolve-accent tracking-wider">预判值 (Yomi)</span>

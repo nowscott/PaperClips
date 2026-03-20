@@ -1,5 +1,5 @@
 import { useGameStore } from '../store/gameStore';
-import { Rocket, Factory, Plus, Zap } from 'lucide-react';
+import { Factory, Plus, Zap } from 'lucide-react';
 import { formatNumber } from '../utils/formatNumber';
 
 export const SpaceAndDrones = () => {
@@ -35,14 +35,6 @@ export const SpaceAndDrones = () => {
 
   return (
     <div className="panel flex flex-col gap-4">
-      {/* 标题 */}
-      <div className="flex justify-between items-center border-b border-evolve-border pb-2">
-        <div className="flex items-center gap-2">
-          <Rocket className="w-5 h-5 text-evolve-accent" />
-          <h2 className="text-lg font-bold tracking-widest uppercase">物质与无人机</h2>
-        </div>
-      </div>
-
       {/* 物质资源显示 */}
       <div className="flex flex-col gap-2">
         <div className="flex justify-between items-center">

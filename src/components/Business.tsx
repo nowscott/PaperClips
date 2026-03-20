@@ -1,5 +1,5 @@
 import { useGameStore } from '../store/gameStore';
-import { Briefcase, DollarSign, TrendingUp, ShoppingCart, ChevronDown, ChevronUp, Megaphone } from 'lucide-react';
+import { DollarSign, TrendingUp, ShoppingCart, ChevronDown, ChevronUp, Megaphone } from 'lucide-react';
 import { formatNumber } from '../utils/formatNumber';
 
 export const Business = () => {
@@ -15,12 +15,7 @@ export const Business = () => {
 
   return (
     <div className="panel flex flex-col gap-4">
-      <div className="flex items-center gap-2 border-b border-evolve-border pb-2">
-        <Briefcase className="w-5 h-5 text-evolve-textDim" />
-        <h2 className="text-lg font-bold tracking-wide uppercase">商业运营</h2>
-      </div>
-
-      <div className="flex flex-col gap-5 mt-2">
+      <div className="flex flex-col gap-5">
         {/* 资金 */}
         <div className="panel-inner flex flex-col gap-2">
           <div className="flex justify-between items-center">

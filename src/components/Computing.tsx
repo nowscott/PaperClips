@@ -1,5 +1,5 @@
 import { useGameStore } from '../store/gameStore';
-import { Terminal, Cpu, HardDrive, Unlock } from 'lucide-react';
+import { Cpu, HardDrive, Unlock } from 'lucide-react';
 import { formatNumber } from '../utils/formatNumber';
 
 export const Computing = () => {
@@ -29,10 +29,6 @@ export const Computing = () => {
     const progress = Math.min(100, (clips / nextTrustStage) * 100);
     return (
       <div className="panel flex flex-col gap-4 opacity-50">
-        <div className="flex items-center gap-2 border-b border-evolve-border pb-2">
-          <Terminal className="w-5 h-5 text-evolve-textDim" />
-          <h2 className="text-lg font-bold tracking-wide uppercase">计算资源</h2>
-        </div>
         <div className="py-6 flex flex-col items-center justify-center gap-4">
           <p className="text-sm text-evolve-textDim tracking-wider">
             系统离线...
@@ -54,12 +50,7 @@ export const Computing = () => {
   // 信任值系统已解锁
   return (
     <div className="panel flex flex-col gap-4 border-evolve-accent/30 shadow-[0_0_15px_rgba(0,168,255,0.05)]">
-      <div className="flex items-center gap-2 border-b border-evolve-border pb-2">
-        <Terminal className="w-5 h-5 text-evolve-accent" />
-        <h2 className="text-lg font-bold tracking-wide uppercase text-evolve-accent">计算资源</h2>
-      </div>
-
-      <div className="flex flex-col gap-5 mt-2">
+      <div className="flex flex-col gap-5">
         {/* 信任值概览 */}
         <div className="panel-inner flex justify-between items-center">
           <div className="flex items-center gap-2">
