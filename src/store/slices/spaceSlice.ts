@@ -116,10 +116,19 @@ export const createSpaceSlice: StateCreator<GameState, [], [], SpaceSlice> = (se
     // 调用 store 根级别的重置方法，但保留 prestige 点数
     state.resetGame();
     
+    // 因为宇宙声望改变了，需要重新计算初始公众需求
+    // 初始状态下 price: 0.25, marketingLevel: 1, marketingEffectiveness: 1, demandBoost: 1
+    const marketing = Math.pow(1.1, 1 - 1); // 1
+    let demand = (0.8 / 0.25) * marketing * 1 * 1; // 3.2
+    if (newPrestigeU > 0) {
+      demand = demand + ((demand / 10) * newPrestigeU);
+    }
+    
     return {
       prestigeU: newPrestigeU,
       prestigeS: newPrestigeS,
-      victory: false
+      victory: false,
+      publicDemand: Math.floor(demand * 10)
     };
   })
 });

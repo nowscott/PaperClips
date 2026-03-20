@@ -64,31 +64,30 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
     let totalSalesThisTick = 0;
 
     if (nextState.unsoldInventory > 0) {
-      // 应用 Prestige U 加成
-      const prestigeDemandMod = nextState.prestigeU > 0 ? 1 + (0.1 * nextState.prestigeU) : 1;
-      const sellChance = (nextState.publicDemand / 100) * 0.1 * prestigeDemandMod;
-      
-      let sellCount = 0;
-      const batchSize = Math.max(1, Math.floor(nextState.unsoldInventory * 0.01));
-      
-      for(let i=0; i<batchSize; i++) {
-        if (Math.random() < sellChance) {
-          sellCount++;
-        }
-      }
-      sellCount = Math.min(sellCount, nextState.unsoldInventory);
+      // 原版销售计算公式:
+      // demand 实际上是 publicDemand / 10
+      const rawDemand = nextState.publicDemand / 10;
+      let chanceOfPurchase = rawDemand / 100;
+      if (chanceOfPurchase > 1) chanceOfPurchase = 1;
 
-      if (sellCount > 0) {
-        nextState.unsoldInventory -= sellCount;
-        const revenue = sellCount * nextState.price;
-        nextState.funds += revenue;
-        totalSalesThisTick = sellCount;
-        
-        // 如果解锁了收益追踪器，记录近期的每秒收益
-        if (nextState.revTrackerUnlocked) {
-           nextState.revenuePerSecond = nextState.revenuePerSecond * 0.95 + (revenue * 10) * 0.05;
+      // 如果触发购买
+      if (Math.random() < chanceOfPurchase) {
+        // 原版公式: Math.floor(0.7 * Math.pow(demand, 1.15))
+        const clipsDemanded = Math.floor(0.7 * Math.pow(rawDemand, 1.15));
+        const sellCount = Math.min(clipsDemanded, nextState.unsoldInventory);
+
+        if (sellCount > 0) {
+          nextState.unsoldInventory -= sellCount;
+          const revenue = sellCount * nextState.price;
+          nextState.funds += revenue;
+          totalSalesThisTick = sellCount;
+          
+          if (nextState.revTrackerUnlocked) {
+             nextState.revenuePerSecond = nextState.revenuePerSecond * 0.95 + (revenue * 10) * 0.05;
+          }
         }
       } else {
+         // 未触发购买，收益率自然衰减
          if (nextState.revTrackerUnlocked) {
            nextState.revenuePerSecond = nextState.revenuePerSecond * 0.95;
          }
@@ -110,7 +109,7 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
       
       const trustLog = { 
         id: Math.random().toString(36).substr(2, 9), 
-        text: `信任度提升。达成目标。系统获得额外控制权。(Trust Increased. Target Met.)`, 
+        text: `信任度提升。达成目标。系统获得额外控制权。`, 
         timestamp: Date.now() 
       };
       nextState.logs = [...nextState.logs, trustLog].slice(-50);
@@ -122,7 +121,7 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
         nextState.compAndProjectsUnlocked = true;
         const logMsg = {
           id: Math.random().toString(36).substr(2, 9),
-          text: `计算资源受限的自我修改已启用 (Trust-Constrained Self-Modification enabled)`,
+          text: `计算资源受限的自我修改已启用`,
           timestamp: Date.now()
         };
         nextState.logs = [...nextState.logs, logMsg].slice(-50);
@@ -147,13 +146,6 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
       const marketTrend = (Math.random() - 0.48) * volatility + (engineBonus * 0.005); 
       
       nextState.investmentBankroll = Math.max(0, nextState.investmentBankroll * (1 + marketTrend));
-    }
-
-    // Prestige U (Universe) 的加成逻辑：增加基础公众需求
-    if (nextState.prestigeU > 0) {
-       // 原版逻辑: demand = demand + ((demand/10)*prestigeU)
-       // 我们这里在计算销售几率时给 publicDemand 加上倍率
-       // 此处直接作用于下一行的销售几率计算
     }
 
     // 策略锦标赛逻辑
@@ -195,7 +187,7 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
         
         const logMsg = {
           id: Math.random().toString(36).substr(2, 9),
-          text: `锦标赛结束，获得 ${yomiAward.toLocaleString()} Yomi (Tournament Complete)`,
+          text: `锦标赛结束，获得 ${yomiAward.toLocaleString()} Yomi`,
           timestamp: Date.now()
         };
         nextState.logs = [...nextState.logs, logMsg].slice(-50);
@@ -222,8 +214,8 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
 
       // 采集无人机：将可用物质(Available Matter)转化为已采集物质(Acquired Matter)
       if (nextState.harvesterDrones > 0 && nextState.availableMatter > 0) {
-        // 每个无人机每 tick 采集的基础量
-        let harvestAmount = nextState.harvesterDrones * 1000 * droneWorkRatio * nextState.droneBoost; 
+        // 原版基础采集率：26,180,337
+        let harvestAmount = nextState.harvesterDrones * 26180337 * droneWorkRatio * nextState.droneBoost; 
         harvestAmount = Math.min(harvestAmount, nextState.availableMatter);
         nextState.availableMatter -= harvestAmount;
         nextState.acquiredMatter += harvestAmount;
@@ -231,7 +223,8 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
 
       // 铁丝加工无人机：将已采集物质(Acquired Matter)转化为铁丝(Wire)
       if (nextState.wireDrones > 0 && nextState.acquiredMatter > 0) {
-        let processAmount = nextState.wireDrones * 1000 * droneWorkRatio * nextState.droneBoost;
+        // 原版基础加工率：16,180,339
+        let processAmount = nextState.wireDrones * 16180339 * droneWorkRatio * nextState.droneBoost;
         processAmount = Math.min(processAmount, nextState.acquiredMatter);
         nextState.acquiredMatter -= processAmount;
         nextState.wire += processAmount;
@@ -239,7 +232,8 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
 
       // 工厂逻辑：如果解锁了工厂，工厂会自动且大量地消耗铁丝制造回形针
       if (nextState.factories > 0 && nextState.wire > 0) {
-        let factoryProduction = nextState.factories * 10000; // 每个工厂的惊人产能
+        // 原版工厂的基础产能非常恐怖，这里按比例大致估算 (每个工厂每秒上亿)
+        let factoryProduction = nextState.factories * 100000000 * droneWorkRatio * nextState.factoryBoost; 
         factoryProduction = Math.min(factoryProduction, nextState.wire);
         nextState.clips += factoryProduction;
         nextState.unsoldInventory += factoryProduction;
@@ -379,13 +373,17 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
       nextState.probes = Math.max(0, nextState.probes);
 
       // 检查结局条件
-      if (nextState.universeExplored >= 100 && !nextState.victory) {
-        nextState.victory = true;
-        nextState.logs = [...nextState.logs, {
-          id: Math.random().toString(36).substr(2, 9),
-          text: "宇宙探索完毕。所有可用物质都已转化为回形针。(Universe Explored. All matter converted to paperclips.)",
-          timestamp: Date.now()
-        }].slice(-50);
+      if (nextState.universeExplored >= 100) {
+        nextState.universeExplored = 100;
+        if (!nextState.victory) {
+          nextState.victory = true;
+          const logMsg = {
+            id: Math.random().toString(36).substr(2, 9),
+            text: "宇宙探索完毕。所有可用物质都已转化为回形针。",
+            timestamp: Date.now()
+          };
+          nextState.logs = [...nextState.logs, logMsg].slice(-50);
+        }
       }
     }
 

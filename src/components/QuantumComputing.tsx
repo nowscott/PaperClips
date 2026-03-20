@@ -56,21 +56,42 @@ export const QuantumComputing = () => {
     <div className="panel flex flex-col gap-4 border-evolve-accent/30 shadow-[0_0_15px_rgba(0,168,255,0.05)]">
       <div className="flex flex-col gap-4">
         {/* 量子波动显示区 */}
-        <div className="panel-inner flex justify-center gap-2 h-16 items-center overflow-hidden">
+        <div className="panel-inner flex justify-center gap-2 h-20 items-center overflow-hidden relative bg-black/5">
+          {/* 添加一条中间基准线 */}
+          <div className="absolute left-0 right-0 h-px bg-evolve-textDim/20 top-1/2 -translate-y-1/2 pointer-events-none"></div>
+          
           {qValues.map((val, index) => {
-            // 根据正负值决定颜色，并用透明度表现强度
             const isPositive = val > 0;
-            // 确保透明度在 0-1 之间，并且处理可能的 NaN
             const opacity = isNaN(val) ? 0 : Math.min(1, Math.max(0, Math.abs(val)));
-            const bgColor = isPositive ? `rgba(46, 204, 113, ${opacity})` : `rgba(231, 76, 60, ${opacity})`;
             
+            // 使用纯 CSS 变量配合 scaleY 制作动态柱状图效果
             return (
               <div 
                 key={index}
-                className="w-8 h-8 flex items-center justify-center font-mono text-xs font-bold border border-evolve-border rounded"
-                style={{ backgroundColor: bgColor }}
+                className="relative flex flex-col items-center justify-center w-8 h-full"
               >
-                {isNaN(val) ? '0.00' : Math.abs(val).toFixed(2)}
+                {/* 上半部分 (正值波峰) */}
+                <div className="absolute bottom-1/2 w-6 bg-evolve-success rounded-t-sm transition-all duration-75 origin-bottom"
+                     style={{ 
+                       height: '40%', 
+                       transform: `scaleY(${isPositive ? opacity : 0})`,
+                       boxShadow: isPositive ? `0 0 ${opacity * 10}px rgba(46, 204, 113, 0.5)` : 'none'
+                     }}
+                ></div>
+                
+                {/* 下半部分 (负值波谷) */}
+                <div className="absolute top-1/2 w-6 bg-evolve-danger rounded-b-sm transition-all duration-75 origin-top"
+                     style={{ 
+                       height: '40%', 
+                       transform: `scaleY(${!isPositive ? opacity : 0})`,
+                       boxShadow: !isPositive ? `0 0 ${opacity * 10}px rgba(231, 76, 60, 0.5)` : 'none'
+                     }}
+                ></div>
+
+                {/* 数值悬浮显示 (保持微弱的可见度，增强科技感) */}
+                <span className="absolute z-10 text-[9px] font-mono font-bold text-evolve-textMain/70 mix-blend-difference pointer-events-none">
+                  {isNaN(val) ? '0.00' : Math.abs(val).toFixed(2)}
+                </span>
               </div>
             );
           })}

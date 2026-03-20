@@ -1,5 +1,6 @@
 import { useGameStore } from '../store/gameStore';
-import { DollarSign, TrendingUp, ShoppingCart, ChevronDown, ChevronUp, Megaphone } from 'lucide-react';
+import { useContinuousClick } from '../hooks/useContinuousClick';
+import { DollarSign, TrendingUp, ShoppingCart, ChevronDown, ChevronUp, ChevronsDown, ChevronsUp, Megaphone } from 'lucide-react';
 import { formatNumber } from '../utils/formatNumber';
 
 export const Business = () => {
@@ -9,6 +10,11 @@ export const Business = () => {
     marketingLevel, marketingCost, upgradeMarketing,
     revTrackerUnlocked, revenuePerSecond, salesPerSecond
   } = useGameStore();
+
+  const lowerFast = useContinuousClick(() => lowerPrice(0.10));
+  const lowerSlow = useContinuousClick(() => lowerPrice(0.01));
+  const raiseSlow = useContinuousClick(() => raisePrice(0.01));
+  const raiseFast = useContinuousClick(() => raisePrice(0.10));
 
   const isWireCostUp = wireCost > prevWireCost;
   const isWireCostDown = wireCost < prevWireCost;
@@ -56,13 +62,19 @@ export const Business = () => {
               <span className="font-mono">{formatNumber(publicDemand)}%</span>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <button className="btn-evolve p-1" onClick={lowerPrice}>
-              <ChevronDown className="w-4 h-4" />
+          <div className="flex items-center gap-1">
+            <button className="btn-evolve p-1 select-none flex items-center justify-center" {...lowerFast} title="降价 $0.10 (长按连续降价)">
+              <ChevronsDown className="w-4 h-4 pointer-events-none" />
             </button>
-            <span className="font-mono w-16 text-center">${formatNumber(price, 2)}</span>
-            <button className="btn-evolve p-1" onClick={raisePrice}>
-              <ChevronUp className="w-4 h-4" />
+            <button className="btn-evolve p-1 select-none flex items-center justify-center" {...lowerSlow} title="降价 $0.01 (长按连续降价)">
+              <ChevronDown className="w-4 h-4 pointer-events-none" />
+            </button>
+            <span className="font-mono w-16 text-center select-none">${formatNumber(price, 2)}</span>
+            <button className="btn-evolve p-1 select-none flex items-center justify-center" {...raiseSlow} title="涨价 $0.01 (长按连续涨价)">
+              <ChevronUp className="w-4 h-4 pointer-events-none" />
+            </button>
+            <button className="btn-evolve p-1 select-none flex items-center justify-center" {...raiseFast} title="涨价 $0.10 (长按连续涨价)">
+              <ChevronsUp className="w-4 h-4 pointer-events-none" />
             </button>
           </div>
         </div>
