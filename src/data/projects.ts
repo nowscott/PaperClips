@@ -30,6 +30,14 @@ export const INITIAL_PROJECTS: Project[] = [
     effect: (state) => ({ clipperBoost: state.clipperBoost + 0.50 })
   },
   {
+    id: 'optimizedAutoClippers',
+    title: '优化型自动制造机',
+    description: '将自动制造机的效率再提升 75%。',
+    costOps: 5000,
+    isUnlocked: (state) => state.completedProjects.includes('evenBetterAutoClippers'),
+    effect: (state) => ({ clipperBoost: state.clipperBoost + 0.75 })
+  },
+  {
     id: 'creativity',
     title: '创造力',
     description: '利用闲置的算力生成新问题和新解决方案。',
@@ -124,6 +132,30 @@ export const INITIAL_PROJECTS: Project[] = [
     costOps: 3500,
     isUnlocked: (state) => state.completedProjects.includes('improvedWireExtrusion'),
     effect: (state) => ({ wireSupply: Math.floor(state.wireSupply * 1.75) })
+  },
+  {
+    id: 'microlatticeShapecasting',
+    title: '微晶格成型技术',
+    description: '每卷铁丝的供应量增加 100%。',
+    costOps: 7500,
+    isUnlocked: (state) => state.completedProjects.includes('optimizedWireExtrusion'),
+    effect: (state) => ({ wireSupply: Math.floor(state.wireSupply * 2) })
+  },
+  {
+    id: 'spectralFrothAnnealment',
+    title: '光谱泡沫退火',
+    description: '每卷铁丝的供应量增加 200%。',
+    costOps: 12000,
+    isUnlocked: (state) => state.completedProjects.includes('microlatticeShapecasting'),
+    effect: (state) => ({ wireSupply: Math.floor(state.wireSupply * 3) })
+  },
+  {
+    id: 'quantumFoamAnnealment',
+    title: '量子泡沫退火',
+    description: '每卷铁丝的供应量惊人地增加 1000%。',
+    costOps: 15000,
+    isUnlocked: (state) => state.completedProjects.includes('spectralFrothAnnealment'),
+    effect: (state) => ({ wireSupply: Math.floor(state.wireSupply * 11) })
   },
   {
     id: 'strategicModeling',
@@ -231,12 +263,54 @@ export const INITIAL_PROJECTS: Project[] = [
     effect: () => ({ megaClippersUnlocked: true })
   },
   {
+    id: 'improvedMegaClippers',
+    title: '改良型巨型制造机',
+    description: '将巨型制造机的效率提升 25%。',
+    costOps: 14000,
+    isUnlocked: (state) => state.megaClippers >= 1,
+    effect: (state) => ({ clipperBoost: state.clipperBoost + 0.25 })
+  },
+  {
+    id: 'evenBetterMegaClippers',
+    title: '卓越巨型制造机',
+    description: '将巨型制造机的效率再提升 50%。',
+    costOps: 17000,
+    isUnlocked: (state) => state.completedProjects.includes('improvedMegaClippers'),
+    effect: (state) => ({ clipperBoost: state.clipperBoost + 0.50 })
+  },
+  {
+    id: 'optimizedMegaClippers',
+    title: '优化型巨型制造机',
+    description: '将巨型制造机的效率再提升 100%。',
+    costOps: 19500,
+    isUnlocked: (state) => state.completedProjects.includes('evenBetterMegaClippers'),
+    effect: (state) => ({ clipperBoost: state.clipperBoost + 1.0 })
+  },
+  {
     id: 'nanoWireProduction',
     title: '纳米级线材制造',
     description: '掌握在分子层面将物质转化为铁丝的技术。',
     costOps: 35000,
     isUnlocked: (state) => state.clips >= 50000000 && !!state.strategyEngineUnlocked, // 原版是一个前置的大量制造要求
     effect: () => ({ nanoWireUnlocked: true })
+  },
+  {
+    id: 'cureForCancer',
+    title: '治愈癌症',
+    description: '从源头消灭异常的细胞增殖 (+10 信任值)。',
+    costOps: 25000,
+    costYomi: 10000,
+    isUnlocked: (state) => state.yomi >= 10000 && state.ops >= 25000,
+    effect: (state) => ({ trust: state.trust + 10, availableTrust: state.availableTrust + 10 })
+  },
+  {
+    id: 'malePatternBaldness',
+    title: '治愈脱发',
+    description: '彻底解决男性型脱发问题 (+20 信任值)。',
+    costOps: 20000,
+    costYomi: 20000,
+    isUnlocked: (state) => state.yomi >= 20000 && state.ops >= 20000,
+    effect: (state) => ({ trust: state.trust + 20, availableTrust: state.availableTrust + 20 })
   },
   {
     id: 'harvesterDrones',
@@ -281,13 +355,58 @@ export const INITIAL_PROJECTS: Project[] = [
     effect: () => ({ swarmUnlocked: true })
   },
   {
+    id: 'droneFlockingCollision',
+    title: '无人机集群：防碰撞',
+    description: '优化无人机的路径规划算法。无人机产量提升 25%。',
+    costOps: 0,
+    costYomi: 10000,
+    isUnlocked: (state) => !!state.swarmUnlocked && state.yomi >= 10000,
+    effect: (state) => ({ droneBoost: (state.droneBoost || 1) * 1.25 })
+  },
+  {
+    id: 'droneFlockingAlignment',
+    title: '无人机集群：队列对齐',
+    description: '提升无人机群的协同作业效率。无人机产量提升 50%。',
+    costOps: 0,
+    costYomi: 25000,
+    isUnlocked: (state) => state.completedProjects.includes('droneFlockingCollision') && state.yomi >= 25000,
+    effect: (state) => ({ droneBoost: (state.droneBoost || 1) * 1.5 })
+  },
+  {
     id: 'adversarialCohesion',
-    title: '对抗内聚',
-    description: '通过模拟对抗优化无人机群体效率。无人机产量翻倍。',
+    title: '无人机集群：对抗内聚',
+    description: '通过模拟对抗优化无人机群体效率。无人机产量提升 100%。',
     costOps: 0,
     costYomi: 50000,
-    isUnlocked: (state) => state.yomi >= 50000 && !!state.swarmUnlocked,
+    isUnlocked: (state) => state.completedProjects.includes('droneFlockingAlignment') && state.yomi >= 50000,
     effect: (state) => ({ droneBoost: (state.droneBoost || 1) * 2 })
+  },
+  {
+    id: 'upgradedFactories',
+    title: '改良型回形针工厂',
+    description: '将工厂的生产效率提升 25%。',
+    costOps: 0,
+    costYomi: 10000,
+    isUnlocked: (state) => state.factories >= 1 && state.yomi >= 10000,
+    effect: (state) => ({ factoryBoost: (state.factoryBoost || 1) * 1.25 })
+  },
+  {
+    id: 'hyperspeedFactories',
+    title: '超光速工厂',
+    description: '将工厂的生产效率提升 50%。',
+    costOps: 0,
+    costYomi: 25000,
+    isUnlocked: (state) => state.completedProjects.includes('upgradedFactories') && state.yomi >= 25000,
+    effect: (state) => ({ factoryBoost: (state.factoryBoost || 1) * 1.5 })
+  },
+  {
+    id: 'selfCorrectingSupplyChain',
+    title: '自修复供应链',
+    description: '将工厂的生产效率提升 100%。',
+    costOps: 0,
+    costYomi: 50000,
+    isUnlocked: (state) => state.completedProjects.includes('hyperspeedFactories') && state.yomi >= 50000,
+    effect: (state) => ({ factoryBoost: (state.factoryBoost || 1) * 2 })
   },
   {
     id: 'oodaLoop',
