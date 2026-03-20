@@ -58,11 +58,12 @@ export const createFactorySlice: StateCreator<GameState, [], [], FactorySlice> =
   setSliderPos: (pos: number) => set({ sliderPos: pos }),
   
   buyHarvesterDrone: () => set((state: GameState) => {
-    if (state.clips >= state.harvesterDroneCost) {
+    // 使用 unsoldInventory 代替 clips
+    if (state.unsoldInventory >= state.harvesterDroneCost) {
       const nextLevel = state.harvesterDrones + 1;
       return {
         harvesterDrones: nextLevel,
-        clips: state.clips - state.harvesterDroneCost,
+        unsoldInventory: state.unsoldInventory - state.harvesterDroneCost, // 扣除未售出库存
         harvesterDroneCost: Math.pow(nextLevel + 1, 2.25) * 1000000 
       }
     }
@@ -70,11 +71,12 @@ export const createFactorySlice: StateCreator<GameState, [], [], FactorySlice> =
   }),
   
   buyWireDrone: () => set((state: GameState) => {
-    if (state.clips >= state.wireDroneCost) {
+    // 使用 unsoldInventory 代替 clips
+    if (state.unsoldInventory >= state.wireDroneCost) {
       const nextLevel = state.wireDrones + 1;
       return {
         wireDrones: nextLevel,
-        clips: state.clips - state.wireDroneCost,
+        unsoldInventory: state.unsoldInventory - state.wireDroneCost, // 扣除未售出库存
         wireDroneCost: Math.pow(nextLevel + 1, 2.25) * 1000000
       }
     }
@@ -82,7 +84,8 @@ export const createFactorySlice: StateCreator<GameState, [], [], FactorySlice> =
   }),
   
   buyFactory: () => set((state: GameState) => {
-    if (state.clips >= state.factoryCost) {
+    // 使用 unsoldInventory 代替 clips
+    if (state.unsoldInventory >= state.factoryCost) {
       const nextLevel = state.factories + 1;
       let fcmod = 1;
       if (nextLevel > 0 && nextLevel < 8) fcmod = 11 - nextLevel;
@@ -94,7 +97,7 @@ export const createFactorySlice: StateCreator<GameState, [], [], FactorySlice> =
 
       return {
         factories: nextLevel,
-        clips: state.clips - state.factoryCost,
+        unsoldInventory: state.unsoldInventory - state.factoryCost, // 扣除未售出库存
         factoryCost: state.factoryCost * fcmod
       }
     }

@@ -25,7 +25,7 @@ export const SpaceAndDrones = () => {
     sliderPos,
     setSliderPos,
     
-    clips,
+    unsoldInventory,
     buyHarvesterDrone,
     buyWireDrone,
     buyFactory
@@ -59,10 +59,10 @@ export const SpaceAndDrones = () => {
             </div>
             <button 
               className={`btn flex items-center justify-between w-full p-2 ${
-                clips >= harvesterDroneCost ? 'hover:bg-evolve-accent/10 border-evolve-accent/50' : 'opacity-50 cursor-not-allowed'
+                unsoldInventory >= harvesterDroneCost ? 'hover:bg-evolve-accent/10 border-evolve-accent/50' : 'opacity-50 cursor-not-allowed'
               }`}
               onClick={buyHarvesterDrone}
-              disabled={clips < harvesterDroneCost}
+              disabled={unsoldInventory < harvesterDroneCost}
             >
               <div className="flex items-center gap-2">
                 <Plus className="w-4 h-4" />
@@ -81,10 +81,10 @@ export const SpaceAndDrones = () => {
             </div>
             <button 
               className={`btn flex items-center justify-between w-full p-2 ${
-                clips >= wireDroneCost ? 'hover:bg-evolve-accent/10 border-evolve-accent/50' : 'opacity-50 cursor-not-allowed'
+                unsoldInventory >= wireDroneCost ? 'hover:bg-evolve-accent/10 border-evolve-accent/50' : 'opacity-50 cursor-not-allowed'
               }`}
               onClick={buyWireDrone}
-              disabled={clips < wireDroneCost}
+              disabled={unsoldInventory < wireDroneCost}
             >
               <div className="flex items-center gap-2">
                 <Plus className="w-4 h-4" />
@@ -108,10 +108,10 @@ export const SpaceAndDrones = () => {
               </div>
               <button 
                 className={`btn flex items-center justify-between w-full p-2 ${
-                  clips >= factoryCost ? 'hover:bg-evolve-warning/10 border-evolve-warning/50 text-evolve-warning' : 'opacity-50 cursor-not-allowed'
+                  unsoldInventory >= factoryCost ? 'hover:bg-evolve-warning/10 border-evolve-warning/50 text-evolve-warning' : 'opacity-50 cursor-not-allowed'
                 }`}
                 onClick={buyFactory}
-                disabled={clips < factoryCost}
+                disabled={unsoldInventory < factoryCost}
               >
                 <div className="flex items-center gap-2">
                   <Plus className="w-4 h-4" />
