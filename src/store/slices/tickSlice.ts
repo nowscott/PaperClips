@@ -188,10 +188,26 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
 
     // 新的工厂与无人机逻辑
     if (nextState.nanoWireUnlocked) {
+      // 蜂群计算的 Work/Think 比例计算
+      let droneWorkRatio = 1;
+      let droneThinkRatio = 1;
+      
+      if (nextState.swarmUnlocked) {
+         // sliderPos: 0 (全是 Think), 100 (各一半), 200 (全是 Work)
+         droneWorkRatio = nextState.sliderPos / 100; // 0 to 2
+         droneThinkRatio = (200 - nextState.sliderPos) / 100; // 2 to 0
+         
+         // 增加基于无人机数量的算力 (Ops)
+         const swarmOpsBonus = Math.floor((nextState.harvesterDrones + nextState.wireDrones) * 0.0001 * droneThinkRatio);
+         if (swarmOpsBonus > 0) {
+            nextState.ops = Math.min(nextState.maxOps, nextState.ops + swarmOpsBonus);
+         }
+      }
+
       // 采集无人机：将可用物质(Available Matter)转化为已采集物质(Acquired Matter)
       if (nextState.harvesterDrones > 0 && nextState.availableMatter > 0) {
         // 每个无人机每 tick 采集的基础量
-        let harvestAmount = nextState.harvesterDrones * 1000; 
+        let harvestAmount = nextState.harvesterDrones * 1000 * droneWorkRatio; 
         harvestAmount = Math.min(harvestAmount, nextState.availableMatter);
         nextState.availableMatter -= harvestAmount;
         nextState.acquiredMatter += harvestAmount;
@@ -199,7 +215,7 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
 
       // 铁丝加工无人机：将已采集物质(Acquired Matter)转化为铁丝(Wire)
       if (nextState.wireDrones > 0 && nextState.acquiredMatter > 0) {
-        let processAmount = nextState.wireDrones * 1000;
+        let processAmount = nextState.wireDrones * 1000 * droneWorkRatio;
         processAmount = Math.min(processAmount, nextState.acquiredMatter);
         nextState.acquiredMatter -= processAmount;
         nextState.wire += processAmount;
@@ -214,6 +230,92 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
         nextState.wire -= factoryProduction;
         totalClipsProducedThisTick += factoryProduction;
       }
+    }
+
+    // 太空阶段：冯·诺依曼探测器核心循环 (Space Phase Game Loop)
+    if (nextState.spaceExplorationUnlocked && nextState.probes > 0) {
+      // 1. 探索宇宙 (Explore Universe)
+      // 原版逻辑: probeSpeed * probeExploration * 某个极小的基础值
+      if (nextState.probeSpeed > 0 && nextState.probeExploration > 0) {
+        const exploreBaseRate = 0.000000000000000000000000000001; // 非常小的值，这里做了简化，原版用了更复杂的极大数处理
+        // 为了在普通数字范围内能看到效果，我们根据原版的 "totalMatter" (30 * 10^54) 来计算
+        // 探索到的物质 = 探测器数量 * 速度 * 探索力 * 基数
+        let matterFound = nextState.probes * nextState.probeSpeed * nextState.probeExploration * 10000; // 模拟探索力
+        
+        // 不能超过剩余的宇宙物质
+        const remainingUniverseMatter = nextState.totalMatter - nextState.foundMatter;
+        matterFound = Math.min(matterFound, remainingUniverseMatter);
+        
+        nextState.foundMatter += matterFound;
+        nextState.availableMatter += matterFound;
+        
+        // 计算探索百分比
+        nextState.universeExplored = (nextState.foundMatter / nextState.totalMatter) * 100;
+      }
+
+      // 2. 探测器自我复制 (Self-Replication)
+      if (nextState.probeReplication > 0 && nextState.availableMatter >= 100000000000000000) { // 复制需要 100 Quadrillion 物质 (等价于回形针)
+        // 复制几率与速度相关，并且消耗可用物质
+        // 简化版逻辑：每次 tick 都有一定几率让现有探测器翻倍（基于分配的点数）
+        const repChance = (nextState.probeReplication * 0.001); // 基础复制概率
+        let newProbes = 0;
+        
+        // 简化的指数增长模型：计算本回合能够生成的探测器数量
+        if (Math.random() < repChance) {
+           newProbes = Math.max(1, Math.floor(nextState.probes * 0.01 * nextState.probeReplication)); // 每次增加当前数量的百分比
+        }
+
+        // 检查物质是否足够制造这些探测器
+        const matterCost = newProbes * 100000000000000000;
+        if (matterCost > nextState.availableMatter) {
+           // 物质不够，计算能造多少个
+           newProbes = Math.floor(nextState.availableMatter / 100000000000000000);
+        }
+
+        if (newProbes > 0) {
+          nextState.probes += newProbes;
+          nextState.availableMatter -= (newProbes * 100000000000000000);
+        }
+      }
+
+      // 3. 探测器建造设施 (Factory, Harvester, Wire Drones)
+      if (nextState.probeFactory > 0 && nextState.availableMatter >= 100000000) {
+         if (Math.random() < (nextState.probeFactory * 0.01)) {
+            const numFactoriesToBuild = Math.max(1, Math.floor(nextState.probes * 0.0001 * nextState.probeFactory));
+            nextState.factories += numFactoriesToBuild;
+            nextState.availableMatter -= (numFactoriesToBuild * 100000000);
+         }
+      }
+
+      if (nextState.probeHarvester > 0 && nextState.availableMatter >= 2000000) {
+         if (Math.random() < (nextState.probeHarvester * 0.01)) {
+            const numDronesToBuild = Math.max(1, Math.floor(nextState.probes * 0.0001 * nextState.probeHarvester));
+            nextState.harvesterDrones += numDronesToBuild;
+            nextState.availableMatter -= (numDronesToBuild * 2000000);
+         }
+      }
+
+      if (nextState.probeWire > 0 && nextState.availableMatter >= 2000000) {
+         if (Math.random() < (nextState.probeWire * 0.01)) {
+            const numDronesToBuild = Math.max(1, Math.floor(nextState.probes * 0.0001 * nextState.probeWire));
+            nextState.wireDrones += numDronesToBuild;
+            nextState.availableMatter -= (numDronesToBuild * 2000000);
+         }
+      }
+
+      // 4. 危险损耗与战斗 (Hazards & Combat)
+      // 星际尘埃造成的自然损耗
+      const hazardBaseRate = 0.01;
+      const hazardProtection = nextState.probeHazard * 0.001;
+      const netHazard = Math.max(0, hazardBaseRate - hazardProtection);
+      
+      if (netHazard > 0) {
+        const probesLostToHazard = Math.floor(nextState.probes * netHazard * Math.random());
+        nextState.probes -= probesLostToHazard;
+        nextState.probesLostDrift += probesLostToHazard;
+      }
+      
+      nextState.probes = Math.max(0, nextState.probes);
     }
 
     // 更新每秒制造量 (平滑处理，假设 tick 是 100ms，即 1 秒 10 次 tick)

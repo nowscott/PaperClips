@@ -1,5 +1,5 @@
 import { useGameStore } from '../store/gameStore';
-import { Rocket, Factory, Plus } from 'lucide-react';
+import { Rocket, Factory, Plus, Zap } from 'lucide-react';
 
 export const SpaceAndDrones = () => {
   const {
@@ -19,6 +19,10 @@ export const SpaceAndDrones = () => {
     
     factories,
     factoryCost,
+    
+    swarmUnlocked,
+    sliderPos,
+    setSliderPos,
     
     clips,
     buyHarvesterDrone,
@@ -122,6 +126,38 @@ export const SpaceAndDrones = () => {
                 </div>
                 <span className="text-xs font-mono">{factoryCost.toLocaleString()} clips</span>
               </button>
+            </div>
+          </>
+        )}
+
+        {/* 蜂群计算 (Swarm Computing) 滑块 */}
+        {swarmUnlocked && (
+          <>
+            <div className="h-px bg-evolve-border w-full my-2"></div>
+            <div className="flex flex-col gap-2">
+              <div className="flex justify-between items-center text-sm font-bold text-evolve-accent">
+                <div className="flex items-center gap-2">
+                  <Zap className="w-4 h-4" />
+                  <span>蜂群计算 (Swarm Computing)</span>
+                </div>
+              </div>
+              <div className="flex flex-col gap-1 px-1">
+                <input 
+                  type="range" 
+                  min="0" 
+                  max="200" 
+                  value={sliderPos} 
+                  onChange={(e) => setSliderPos(parseInt(e.target.value))}
+                  className="w-full h-2 bg-evolve-border rounded-lg appearance-none cursor-pointer accent-evolve-accent"
+                />
+                <div className="flex justify-between text-xs font-mono text-evolve-textDim">
+                  <span>Think: {Math.max(0, 200 - sliderPos)}%</span>
+                  <span>Work: {Math.max(0, sliderPos)}%</span>
+                </div>
+              </div>
+              <span className="text-[10px] text-evolve-textDim opacity-70">
+                调整无人机的算力分配。偏向 Think 获取更多 Ops，偏向 Work 加快采集与生产。
+              </span>
             </div>
           </>
         )}

@@ -22,6 +22,11 @@ export interface SpaceSlice {
 
   // 太空阶段探索进度
   universeExplored: number; // 0 to 100
+  totalMatter: number;
+  foundMatter: number;
+  drifterCount: number;
+  probesLostCombat: number;
+  probesLostDrift: number;
   
   // Actions
   launchProbe: () => void;
@@ -47,6 +52,11 @@ export const initialSpaceState: Omit<SpaceSlice, 'launchProbe' | 'increaseProbeS
   probeCombat: 0,
 
   universeExplored: 0,
+  totalMatter: Math.pow(10, 54) * 30, // 原版宇宙总物质
+  foundMatter: 0,
+  drifterCount: 0,
+  probesLostCombat: 0,
+  probesLostDrift: 0,
 };
 
 export const createSpaceSlice: StateCreator<GameState, [], [], SpaceSlice> = (set) => ({
