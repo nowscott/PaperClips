@@ -1,5 +1,8 @@
 # 通用回形针 (Universal Paperclips) - 现代开源汉化重制版
 
+> **🚧 迁移状态提示：**
+> 本项目正在进行中，目前已完成了前、中、后期（阶段一至阶段三）的重构与功能迁移。最终阶段“宇宙探险与蜂群计算 (Late Game)”尚未完全完成。详情请参阅 `GAME_DESIGN.md`。
+
 ## ⚠️ 开源与版权声明
 本项目为经典网页放置类游戏《Universal Paperclips》的二次开发与开源汉化版本。
 原版游戏及所有权利归原作者 **Decision Problem** 所有。本项目非本人原创，仅供编程学习、UI优化交流与中文本地化体验使用。
@@ -29,29 +32,36 @@
 
 ### Phase 1: 资产归档与基础设施搭建 (已完成 ✅)
 - 抓取原版 `index.html`, `main.js`, `globals.js` 等所有资源。
-- 存放至 `public/legacy/` 作为对照和兼容版本。
+- 存放至 `public/legacy/` 作为对照和兼容版本（已在 `.gitignore` 中忽略以免污染仓库）。
 - 初始化 Vite + React + TS 脚手架，确保本地运行与 Vercel 部署通道畅通。
 
-### Phase 2: 核心状态抽象 (State Management) (即将进行 ⏳)
+### Phase 2: 核心状态抽象 (State Management) (已完成 ✅)
 - 分析原版 `globals.js` 和 `main.js`。
-- 将 `clips` (回形针数量), `funds` (资金), `wire` (铁丝) 等核心变量提取到 React 状态库中。
-- **指导原则**：先剥离数据层，再处理视图层，切忌直接在 React 中混写 `document.getElementById`。
+- 引入 Zustand，将 `clips` (回形针数量), `funds` (资金), `wire` (铁丝) 等核心变量提取到响应式状态库中。
+- 将状态管理模块化拆分为多个 Slices (如 `businessSlice`, `tickSlice`, `manufacturingSlice` 等)。
 
-### Phase 3: UI 组件化重构 (Componentization) (计划中 📅)
-- 将原版宏大的 HTML 拆分为独立的 React 组件，逐步替换。
+### Phase 3: UI 组件化重构 (Componentization) (已完成 ✅)
+- 将原版宏大的 HTML 拆分为独立的 React 组件。
 - `Header` (资源总览：回形针总数)
-- `Manufacturing` (制造面板：手动制造、自动制造机)
-- `Business` (商业/市场面板：定价、公众需求、营销)
-- `Projects` (项目/计算面板：算力、信任值解锁)
-- **指导原则**：组件应当是“数据驱动”的，只负责展示状态和派发 Action。
+- `Manufacturing` (制造面板：手动制造、自动制造机、巨型制造机)
+- `Business` (商业/市场面板：定价、公众需求、营销、收益追踪)
+- `Projects` & `Computing` (科研项目与计算面板：算力、创造力、量子计算)
+- `Investments` & `StrategicModeling` (投资引擎与策略锦标赛)
 
-### Phase 4: 全面汉化与样式优化 (Localization & Styling)
+### Phase 4: 全面汉化与样式优化 (Localization & Styling) (进行中 🚧)
 - 提取所有硬编码的英文字符串，替换为中文。
 - 重新设计布局，加入现代化卡片阴影、按钮 Hover 动画、数值滚动反馈。
+- 修复各种 Flexbox 布局问题和动态渲染条件（如终端日志堆叠、高级投资按钮解锁）。
 
-### Phase 5: 游戏循环接管 (Game Loop)
-- 迁移原版的 `window.setInterval` 核心 Tick 逻辑（游戏的心跳）。
-- 确保数据随时间自动增长的机制（如自动制造机、市场销售）完美运行且不引发 React 的过度渲染。
+### Phase 5: 游戏循环接管与数值对齐 (Game Loop) (已完成 ✅)
+- 迁移原版的核心 Tick 逻辑（游戏的心跳）。
+- 严格对齐原版的所有指数级/多项式成本增长数学公式（如自动制造机、巨型制造机、无人机、太空探测器等）。
+- 确保数据随时间自动增长的机制完美运行且不引发 React 的过度渲染。
+
+### Phase 6: 太空探索与蜂群计算 (Late Game) (待开发 ⏳)
+- 迁移冯·诺依曼探测器发射面板。
+- 实现探测器设计属性分配（速度、探索、复制、战斗）。
+- 实现无人机 Work/Think 蜂群计算网络机制。
 
 ---
 
