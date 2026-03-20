@@ -20,8 +20,14 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
 
     // 自动购买铁丝逻辑 (WireBuyer 项目)
     if (nextState.hasWireBuyer && nextState.wireBuyerOn && nextState.wire === 0 && nextState.funds >= nextState.wireCost) {
-      nextState.wire += nextState.wireSupply;
-      nextState.funds -= nextState.wireCost;
+      // 在原版后期，单次进货不够巨型制造机塞牙缝，这里需要一个循环，能买多少买多少，直到没钱或者买够
+      let purchases = 0;
+      // 限制一个最大批量，防止死循环
+      while (nextState.funds >= nextState.wireCost && purchases < 1000) {
+        nextState.wire += nextState.wireSupply;
+        nextState.funds -= nextState.wireCost;
+        purchases++;
+      }
     }
 
     let totalClipsProducedThisTick = 0;
