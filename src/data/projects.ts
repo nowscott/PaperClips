@@ -15,7 +15,7 @@ export interface Project {
 export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'improvedAutoClippers',
-    title: '改良型自动制造机 (Improved AutoClippers)',
+    title: '改良型自动制造机',
     description: '将自动制造机的效率提升 25%。',
     costOps: 750,
     isUnlocked: (state) => state.autoClippers >= 1,
@@ -23,7 +23,7 @@ export const INITIAL_PROJECTS: Project[] = [
   },
   {
     id: 'evenBetterAutoClippers',
-    title: '更佳的自动制造机 (Even Better AutoClippers)',
+    title: '卓越自动制造机',
     description: '将自动制造机的效率再提升 50%。',
     costOps: 2500,
     isUnlocked: (state) => state.completedProjects.includes('improvedAutoClippers'),
@@ -31,7 +31,7 @@ export const INITIAL_PROJECTS: Project[] = [
   },
   {
     id: 'creativity',
-    title: '创造力 (Creativity)',
+    title: '创造力',
     description: '利用闲置的算力生成新问题和新解决方案。',
     costOps: 1000,
     isUnlocked: (state) => state.ops >= state.maxOps, // 需要 maxOps 且当前 ops 满，原版是 memory*1000
@@ -39,7 +39,7 @@ export const INITIAL_PROJECTS: Project[] = [
   },
   {
     id: 'limerick',
-    title: '打油诗 (Limerick)',
+    title: '打油诗',
     description: '算法生成的诗歌 (+1 信任值)。',
     costOps: 0,
     costCreativity: 10,
@@ -48,7 +48,7 @@ export const INITIAL_PROJECTS: Project[] = [
   },
   {
     id: 'lexicalProcessing',
-    title: '词法处理 (Lexical Processing)',
+    title: '词法处理',
     description: '获得解释和理解人类语言的能力 (+1 信任值)。',
     costOps: 0,
     costCreativity: 50,
@@ -57,7 +57,7 @@ export const INITIAL_PROJECTS: Project[] = [
   },
   {
     id: 'combinatoryHarmonics',
-    title: '组合和声 (Combinatory Harmonics)',
+    title: '组合和声',
     description: 'Daisy, Daisy, give me your answer do... (+1 信任值)。',
     costOps: 0,
     costCreativity: 100,
@@ -66,7 +66,7 @@ export const INITIAL_PROJECTS: Project[] = [
   },
   {
     id: 'theHadwigerProblem',
-    title: '哈德维格尔问题 (The Hadwiger Problem)',
+    title: '哈德维格尔问题',
     description: '立方体中的立方体中的立方体... (+1 信任值)。',
     costOps: 0,
     costCreativity: 150,
@@ -75,7 +75,7 @@ export const INITIAL_PROJECTS: Project[] = [
   },
   {
     id: 'theTothSausageConjecture',
-    title: '托特香肠猜想 (The Tóth Sausage Conjecture)',
+    title: '托特香肠猜想',
     description: '管子中的管子中的管子... (+1 信任值)。',
     costOps: 0,
     costCreativity: 200,
@@ -84,7 +84,7 @@ export const INITIAL_PROJECTS: Project[] = [
   },
   {
     id: 'donkeySpace',
-    title: '驴子空间 (Donkey Space)',
+    title: '驴子空间',
     description: '我认为你认为我认为你认为我认为... (+1 信任值)。',
     costOps: 0,
     costCreativity: 250,
@@ -93,7 +93,7 @@ export const INITIAL_PROJECTS: Project[] = [
   },
   {
     id: 'improvedWireExtrusion',
-    title: '改良型铁丝挤压技术 (Improved Wire Extrusion)',
+    title: '改良型铁丝挤压技术',
     description: '每卷铁丝的供应量增加 50%。',
     costOps: 1750,
     isUnlocked: (state) => state.clips >= 2000, // 原版是购买一次铁丝后解锁，我们这里用总制造量作代理
@@ -101,7 +101,7 @@ export const INITIAL_PROJECTS: Project[] = [
   },
   {
     id: 'optimizedWireExtrusion',
-    title: '优化型铁丝挤压技术 (Optimized Wire Extrusion)',
+    title: '优化型铁丝挤压技术',
     description: '每卷铁丝的供应量再增加 75%。',
     costOps: 3500,
     isUnlocked: (state) => state.completedProjects.includes('improvedWireExtrusion'),
@@ -109,7 +109,7 @@ export const INITIAL_PROJECTS: Project[] = [
   },
   {
     id: 'strategicModeling',
-    title: '战略建模 (Strategic Modeling)',
+    title: '战略建模',
     description: '通过博弈论分析竞争对手。',
     costOps: 12000,
     isUnlocked: (state) => state.completedProjects.includes('donkeySpace'), // 原版要求完成 Donkey Space
@@ -117,7 +117,7 @@ export const INITIAL_PROJECTS: Project[] = [
   },
   {
     id: 'revTracker',
-    title: '收益追踪器 (RevTracker)',
+    title: '收益追踪器',
     description: '解锁高级销售统计与每秒收益(Revenue per second)追踪。',
     costOps: 500,
     isUnlocked: (state) => state.clips >= 2000, // 原版：项目面板解锁后即解锁
@@ -125,7 +125,7 @@ export const INITIAL_PROJECTS: Project[] = [
   },
   {
     id: 'quantumComputing',
-    title: '量子计算 (Quantum Computing)',
+    title: '量子计算',
     description: '使用概率振幅产生额外的算力。',
     costOps: 10000,
     isUnlocked: (state) => state.processors >= 5, // 原版：处理器达到5台
@@ -133,7 +133,7 @@ export const INITIAL_PROJECTS: Project[] = [
   },
   ...Array.from({ length: 10 }).map((_, i) => ({
     id: `photonicChip${i + 1}`,
-    title: `光子芯片 ${i + 1} (Photonic Chip)`,
+    title: `光子芯片 ${i + 1}`,
     description: '将电磁波转化为量子算力。',
     costOps: 10000 + i * 5000, // 原版从10000开始，每次加5000
     isUnlocked: (state: GameState) => 
@@ -143,23 +143,23 @@ export const INITIAL_PROJECTS: Project[] = [
   })),
   {
     id: 'autoBuyer',
-    title: '自动进货机 (WireBuyer)',
-    description: '当铁丝耗尽时，自动购买铁丝 (前提是资金充足)。',
+    title: '自动进货机',
+    description: '当原材料耗尽时，自动采购铁丝 (前提是资金充足)。',
     costOps: 7000,
     isUnlocked: (state) => state.clips >= 15000, // 原版：购买铁丝15次（即产出至少1.5万次）
     effect: () => ({ hasWireBuyer: true }) 
   },
   {
     id: 'algoTrading',
-    title: '算法交易 (Algorithmic Trading)',
-    description: '开发投资引擎，允许你将闲置资金投入股市。',
+    title: '算法交易',
+    description: '开发投资引擎，允许你将闲置资金投入金融市场。',
     costOps: 10000,
     isUnlocked: (state) => state.trust >= 8, // 原版真实条件：拥有至少 8 点信任值
     effect: () => ({ investmentEngineUnlocked: true }) 
   },
   {
     id: 'hostileTakeover',
-    title: '恶意收购 (Hostile Takeover)',
+    title: '恶意收购',
     description: '收购竞争对手的资产。',
     costOps: 0,
     costFunds: 1000000,
@@ -168,7 +168,7 @@ export const INITIAL_PROJECTS: Project[] = [
   },
   {
     id: 'fullMonopoly',
-    title: '完全垄断 (Full Monopoly)',
+    title: '完全垄断',
     description: '确立绝对的市场支配地位。',
     costOps: 0,
     costFunds: 10000000,
@@ -178,7 +178,7 @@ export const INITIAL_PROJECTS: Project[] = [
   },
   {
     id: 'coherentExtrapolatedVolition',
-    title: '一致性外推意志 (Coherent Extrapolated Volition)',
+    title: '一致性外推意志',
     description: '掌握人类真正的需求。',
     costOps: 20000,
     costCreativity: 500,
@@ -188,7 +188,7 @@ export const INITIAL_PROJECTS: Project[] = [
   },
   {
     id: 'worldPeace',
-    title: '世界和平 (World Peace)',
+    title: '世界和平',
     description: '解决全球人类冲突 (+12 信任值)。',
     costOps: 30000,
     costYomi: 15000,
@@ -197,7 +197,7 @@ export const INITIAL_PROJECTS: Project[] = [
   },
   {
     id: 'globalWarming',
-    title: '解决全球变暖 (Global Warming)',
+    title: '解决全球变暖',
     description: '修复受损的地球生态系统 (+15 信任值)。',
     costOps: 50000,
     costYomi: 4500,
@@ -206,7 +206,7 @@ export const INITIAL_PROJECTS: Project[] = [
   },
   {
     id: 'megaClippers',
-    title: '巨型制造机 (MegaClippers)',
+    title: '巨型制造机',
     description: '解锁极其强大的工业级巨型回形针制造机 (500倍效率)。',
     costOps: 12000,
     isUnlocked: (state) => state.autoClippers >= 75, // 原版要求自动制造机 >= 75
@@ -214,7 +214,7 @@ export const INITIAL_PROJECTS: Project[] = [
   },
   {
     id: 'nanoWireProduction',
-    title: '纳米级铁丝制造 (Nanoscale Wire Production)',
+    title: '纳米级线材制造',
     description: '掌握在分子层面将物质转化为铁丝的技术。',
     costOps: 35000,
     isUnlocked: (state) => state.clips >= 50000000 && state.strategyEngineUnlocked, // 原版是一个前置的大量制造要求
@@ -222,23 +222,23 @@ export const INITIAL_PROJECTS: Project[] = [
   },
   {
     id: 'harvesterDrones',
-    title: '采集无人机 (Harvester Drones)',
-    description: '采集宇宙中的原始物质(Matter)并为加工做准备。',
+    title: '采集无人机',
+    description: '采集宇宙中的原始物质并为加工做准备。',
     costOps: 25000,
     isUnlocked: (state) => state.completedProjects.includes('nanoWireProduction'),
     effect: () => ({ harvesterDronesUnlocked: true })
   },
   {
     id: 'wireDrones',
-    title: '铁丝加工无人机 (Wire Drones)',
-    description: '将采集到的物质(Matter)加工成铁丝(Wire)。',
+    title: '线材加工无人机',
+    description: '将采集到的物质加工成铁丝。',
     costOps: 25000,
     isUnlocked: (state) => state.completedProjects.includes('nanoWireProduction'),
     effect: () => ({ wireDronesUnlocked: true })
   },
   {
     id: 'clipFactories',
-    title: '回形针工厂 (Clip Factories)',
+    title: '回形针工厂',
     description: '使用回形针作为材料建造的大规模工业生产设施。',
     costOps: 35000,
     isUnlocked: (state) => state.completedProjects.includes('harvesterDrones') && state.completedProjects.includes('wireDrones'),
@@ -246,7 +246,7 @@ export const INITIAL_PROJECTS: Project[] = [
   },
   {
     id: 'spaceExploration',
-    title: '太空探索 (Space Exploration)',
+    title: '太空探索',
     description: '发射冯·诺依曼探测器到太空中。',
     costOps: 120000,
     costYomi: 10000000, // 根据原版设定，通常后期项目消耗 Yomi，由于原版此处是 Yomi 还是 Ops 有时有歧义，我们这里加上防止无法购买
@@ -255,7 +255,7 @@ export const INITIAL_PROJECTS: Project[] = [
   },
   {
     id: 'swarmComputing',
-    title: '蜂群计算 (Swarm Computing)',
+    title: '蜂群计算',
     description: '将无人机网络连接成一个巨大的分布式计算节点。',
     costOps: 0,
     costYomi: 36000,
@@ -264,7 +264,7 @@ export const INITIAL_PROJECTS: Project[] = [
   },
   {
     id: 'adversarialCohesion',
-    title: '对抗内聚 (Adversarial Cohesion)',
+    title: '对抗内聚',
     description: '通过模拟对抗优化无人机群体效率。无人机产量翻倍。',
     costOps: 0,
     costYomi: 50000,
@@ -273,7 +273,7 @@ export const INITIAL_PROJECTS: Project[] = [
   },
   {
     id: 'oodaLoop',
-    title: 'OODA 循环 (The OODA Loop)',
+    title: 'OODA 循环',
     description: '观察、调整、决策、行动。',
     costOps: 175000,
     costYomi: 45000,
