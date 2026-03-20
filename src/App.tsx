@@ -48,33 +48,21 @@ function App() {
             tabs={[
               { 
                 id: 'business', 
-                label: (
-                  <>
-                    <span className="truncate w-full text-center">商业</span>
-                    <span className="text-[10px] opacity-70 font-normal truncate w-full text-center tracking-normal">Business</span>
-                  </>
-                ), 
+                label: "商业运营",
+                icon: 'Briefcase',
                 content: <Business /> 
               },
               { 
                 id: 'investments', 
-                label: (
-                  <>
-                    <span className="truncate w-full text-center">投资</span>
-                    <span className="text-[10px] opacity-70 font-normal truncate w-full text-center tracking-normal">Investments</span>
-                  </>
-                ), 
+                label: "金融投资",
+                icon: 'LineChart',
                 content: <Investments />, 
                 condition: investmentEngineUnlocked 
               },
               { 
                 id: 'strategic_modeling', 
-                label: (
-                  <>
-                    <span className="truncate w-full text-center">战略建模</span>
-                    <span className="text-[10px] opacity-70 font-normal truncate w-full text-center tracking-normal">Strategic</span>
-                  </>
-                ), 
+                label: "战略建模",
+                icon: 'BrainCircuit',
                 content: <StrategicModeling />, 
                 condition: strategyEngineUnlocked 
               }
@@ -89,33 +77,21 @@ function App() {
               tabs={[
                 { 
                   id: 'computing', 
-                  label: (
-                    <>
-                      <span className="truncate w-full text-center">计算</span>
-                      <span className="text-[10px] opacity-70 font-normal truncate w-full text-center tracking-normal">Computing</span>
-                    </>
-                  ), 
+                  label: "计算资源",
+                  icon: 'Terminal',
                   content: <Computing /> 
                 },
                 { 
                   id: 'quantum_computing', 
-                  label: (
-                    <>
-                      <span className="truncate w-full text-center">量子计算</span>
-                      <span className="text-[10px] opacity-70 font-normal truncate w-full text-center tracking-normal">Quantum</span>
-                    </>
-                  ), 
+                  label: "量子计算",
+                  icon: 'Cpu',
                   content: <QuantumComputing />, 
                   condition: qComputingUnlocked 
                 },
                 { 
                   id: 'projects', 
-                  label: (
-                    <>
-                      <span className="truncate w-full text-center">项目</span>
-                      <span className="text-[10px] opacity-70 font-normal truncate w-full text-center tracking-normal">Projects</span>
-                    </>
-                  ), 
+                  label: "科技与项目",
+                  icon: 'FlaskConical',
                   content: <Projects /> 
                 }
               ]}
@@ -134,8 +110,29 @@ function App() {
       </div>
       
       {/* 底部开源声明 */}
-      <footer className="mt-12 mb-4 text-center text-xs text-evolve-textDim uppercase tracking-wider opacity-50">
-        Universal Paperclips Remake · Original by Decision Problem
+      <footer className="mt-12 mb-4 flex flex-col items-center justify-center gap-1 text-xs text-evolve-textDim tracking-wider opacity-50">
+        <div className="flex items-center gap-1">
+          无限回形针 (开源重制版) · 原作: 
+          <a 
+            href="https://www.decisionproblem.com/paperclips/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="hover:text-evolve-accent hover:underline transition-colors"
+          >
+            Decision Problem
+          </a>
+        </div>
+        <div className="flex items-center gap-1">
+          由 nowscott 重制 · 
+          <a 
+            href="https://github.com/nowscott/PaperClips" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="hover:text-evolve-accent hover:underline transition-colors"
+          >
+            GitHub 开源地址
+          </a>
+        </div>
       </footer>
     </div>
   );
