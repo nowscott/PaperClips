@@ -1,5 +1,5 @@
 import { useGameStore } from '../store/gameStore';
-import { Rocket, Factory, Cpu, Plus } from 'lucide-react';
+import { Rocket, Factory, Plus } from 'lucide-react';
 
 export const SpaceAndDrones = () => {
   const {
