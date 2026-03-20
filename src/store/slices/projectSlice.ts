@@ -53,6 +53,19 @@ export const createProjectSlice: StateCreator<GameState, [], [], ProjectSlice> =
 
       const effectUpdates = project.effect(state);
       
+      // 如果项目影响了需求相关的系数，需要重新计算需求
+      let finalUpdates = { ...updates, ...effectUpdates };
+      if ('marketingEffectiveness' in effectUpdates || 'demandBoost' in effectUpdates || 'publicDemand' in effectUpdates) {
+        const nextStateForDemand = { ...state, ...finalUpdates };
+        // 提取 businessSlice 的公式，避免直接循环依赖导入
+        const marketing = Math.pow(1.1, nextStateForDemand.marketingLevel - 1);
+        let demand = (0.8 / nextStateForDemand.price) * marketing * nextStateForDemand.marketingEffectiveness * nextStateForDemand.demandBoost;
+        if (nextStateForDemand.prestigeU && nextStateForDemand.prestigeU > 0) {
+          demand = demand + ((demand / 10) * nextStateForDemand.prestigeU);
+        }
+        finalUpdates.publicDemand = Math.floor(demand * 10);
+      }
+
       // 添加项目完成日志
       const logMsg = {
         id: Math.random().toString(36).substr(2, 9),
@@ -61,7 +74,7 @@ export const createProjectSlice: StateCreator<GameState, [], [], ProjectSlice> =
       };
       const newLogs = [...state.logs, logMsg].slice(-50);
 
-      return { ...state, ...updates, ...effectUpdates, logs: newLogs };
+      return { ...state, ...finalUpdates, logs: newLogs };
     }
     return state;
   }),

@@ -64,31 +64,30 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
     let totalSalesThisTick = 0;
 
     if (nextState.unsoldInventory > 0) {
-      // 应用 Prestige U 加成
-      const prestigeDemandMod = nextState.prestigeU > 0 ? 1 + (0.1 * nextState.prestigeU) : 1;
-      const sellChance = (nextState.publicDemand / 100) * 0.1 * prestigeDemandMod;
-      
-      let sellCount = 0;
-      const batchSize = Math.max(1, Math.floor(nextState.unsoldInventory * 0.01));
-      
-      for(let i=0; i<batchSize; i++) {
-        if (Math.random() < sellChance) {
-          sellCount++;
-        }
-      }
-      sellCount = Math.min(sellCount, nextState.unsoldInventory);
+      // 原版销售计算公式:
+      // demand 实际上是 publicDemand / 10
+      const rawDemand = nextState.publicDemand / 10;
+      let chanceOfPurchase = rawDemand / 100;
+      if (chanceOfPurchase > 1) chanceOfPurchase = 1;
 
-      if (sellCount > 0) {
-        nextState.unsoldInventory -= sellCount;
-        const revenue = sellCount * nextState.price;
-        nextState.funds += revenue;
-        totalSalesThisTick = sellCount;
-        
-        // 如果解锁了收益追踪器，记录近期的每秒收益
-        if (nextState.revTrackerUnlocked) {
-           nextState.revenuePerSecond = nextState.revenuePerSecond * 0.95 + (revenue * 10) * 0.05;
+      // 如果触发购买
+      if (Math.random() < chanceOfPurchase) {
+        // 原版公式: Math.floor(0.7 * Math.pow(demand, 1.15))
+        const clipsDemanded = Math.floor(0.7 * Math.pow(rawDemand, 1.15));
+        const sellCount = Math.min(clipsDemanded, nextState.unsoldInventory);
+
+        if (sellCount > 0) {
+          nextState.unsoldInventory -= sellCount;
+          const revenue = sellCount * nextState.price;
+          nextState.funds += revenue;
+          totalSalesThisTick = sellCount;
+          
+          if (nextState.revTrackerUnlocked) {
+             nextState.revenuePerSecond = nextState.revenuePerSecond * 0.95 + (revenue * 10) * 0.05;
+          }
         }
       } else {
+         // 未触发购买，收益率自然衰减
          if (nextState.revTrackerUnlocked) {
            nextState.revenuePerSecond = nextState.revenuePerSecond * 0.95;
          }
@@ -147,13 +146,6 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
       const marketTrend = (Math.random() - 0.48) * volatility + (engineBonus * 0.005); 
       
       nextState.investmentBankroll = Math.max(0, nextState.investmentBankroll * (1 + marketTrend));
-    }
-
-    // Prestige U (Universe) 的加成逻辑：增加基础公众需求
-    if (nextState.prestigeU > 0) {
-       // 原版逻辑: demand = demand + ((demand/10)*prestigeU)
-       // 我们这里在计算销售几率时给 publicDemand 加上倍率
-       // 此处直接作用于下一行的销售几率计算
     }
 
     // 策略锦标赛逻辑

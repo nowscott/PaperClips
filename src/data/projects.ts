@@ -56,6 +56,24 @@ export const INITIAL_PROJECTS: Project[] = [
     effect: (state) => ({ trust: state.trust + 1, availableTrust: state.availableTrust + 1 })
   },
   {
+    id: 'newSlogan',
+    title: '全新标语',
+    description: '将营销效果提升 50%。',
+    costOps: 2500,
+    costCreativity: 25,
+    isUnlocked: (state) => state.completedProjects.includes('lexicalProcessing'),
+    effect: (state) => ({ marketingEffectiveness: state.marketingEffectiveness * 1.5 })
+  },
+  {
+    id: 'catchyJingle',
+    title: '洗脑广告歌',
+    description: '将营销效果翻倍。',
+    costOps: 4500,
+    costCreativity: 45,
+    isUnlocked: (state) => state.completedProjects.includes('newSlogan'),
+    effect: (state) => ({ marketingEffectiveness: state.marketingEffectiveness * 2 })
+  },
+  {
     id: 'combinatoryHarmonics',
     title: '组合和声',
     description: 'Daisy, Daisy, give me your answer do... (+1 信任值)。',
@@ -160,21 +178,21 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'hostileTakeover',
     title: '恶意收购',
-    description: '收购竞争对手的资产。',
+    description: '收购竞争对手的资产 (+1 信任值，公众需求 x5)。',
     costOps: 0,
     costFunds: 1000000,
     isUnlocked: (state) => state.funds >= 1000000,
-    effect: (state) => ({ publicDemand: state.publicDemand + 10 })
+    effect: (state) => ({ demandBoost: state.demandBoost * 5, trust: state.trust + 1, availableTrust: state.availableTrust + 1 })
   },
   {
     id: 'fullMonopoly',
     title: '完全垄断',
-    description: '确立绝对的市场支配地位。',
+    description: '确立绝对的市场支配地位 (+1 信任值，公众需求 x10)。',
     costOps: 0,
     costFunds: 10000000,
     costYomi: 3000,
     isUnlocked: (state) => state.funds >= 10000000 && state.yomi >= 3000,
-    effect: (state) => ({ publicDemand: state.publicDemand * 10, trust: state.trust + 1, availableTrust: state.availableTrust + 1 })
+    effect: (state) => ({ demandBoost: state.demandBoost * 10, trust: state.trust + 1, availableTrust: state.availableTrust + 1 })
   },
   {
     id: 'coherentExtrapolatedVolition',
