@@ -1,5 +1,5 @@
 import { useGameStore } from '../store/gameStore';
-import { Rocket, Minus, Plus } from 'lucide-react';
+import { Rocket, Minus, Plus, AlertTriangle, Infinity } from 'lucide-react';
 import type { SpaceSlice } from '../store/slices/spaceSlice';
 
 export const SpaceExploration = () => {
@@ -17,6 +17,13 @@ export const SpaceExploration = () => {
     probeWire,
     probeCombat,
     universeExplored,
+    drifterCount,
+    probesLostCombat,
+    probesLostDrift,
+    victory,
+    prestigeU,
+    prestigeS,
+    resetForPrestige,
     clips,
     launchProbe,
     increaseProbeStat,
@@ -64,11 +71,48 @@ export const SpaceExploration = () => {
       <div className="flex justify-between items-center border-b border-evolve-border pb-2">
         <div className="flex items-center gap-2">
           <Rocket className="w-5 h-5 text-evolve-accent" />
-          <h2 className="text-lg font-bold tracking-widest uppercase text-evolve-accent">太空探险 (Space)</h2>
+          <h2 className="text-lg font-bold tracking-widest uppercase">太空探险 (Space Exploration)</h2>
         </div>
+        {(prestigeU > 0 || prestigeS > 0) && (
+          <div className="flex items-center gap-3 text-xs font-mono opacity-70">
+            {prestigeU > 0 && <span>Universe: {prestigeU}</span>}
+            {prestigeS > 0 && <span>Sim Level: {prestigeS}</span>}
+          </div>
+        )}
       </div>
 
-      {/* 探索进度 */}
+      {/* 胜利结算弹窗 */}
+      {victory && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-evolve-bg/90 backdrop-blur-sm animate-fade-in p-4">
+          <div className="bg-evolve-bg border-2 border-evolve-accent p-6 max-w-lg w-full flex flex-col gap-6 shadow-2xl">
+            <div className="flex items-center gap-3 text-evolve-accent border-b border-evolve-border pb-4">
+              <Infinity className="w-8 h-8" />
+              <h2 className="text-2xl font-bold uppercase tracking-widest">模拟完成 (Simulation Complete)</h2>
+            </div>
+            <p className="text-sm leading-relaxed text-evolve-textMain">
+              你已经将宇宙中所有可用的物质转化为了回形针。目标已达成。现在你面临一个选择：
+            </p>
+            <div className="flex flex-col gap-3">
+              <button 
+                onClick={() => resetForPrestige('universe')}
+                className="btn text-left p-3 hover:bg-evolve-accent/10 border-evolve-accent"
+              >
+                <div className="font-bold text-evolve-accent mb-1">进入新宇宙 (Enter New Universe)</div>
+                <div className="text-xs text-evolve-textDim">重置游戏，获得 Prestige U 点数，增加基础需求。</div>
+              </button>
+              <button 
+                onClick={() => resetForPrestige('simLevel')}
+                className="btn text-left p-3 hover:bg-evolve-warning/10 border-evolve-warning"
+              >
+                <div className="font-bold text-evolve-warning mb-1">提升模拟层级 (Increase Sim Level)</div>
+                <div className="text-xs text-evolve-textDim">重置游戏，获得 Prestige S 点数。</div>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 发射探测器 */}
       <div className="flex flex-col gap-1">
         <div className="flex justify-between text-xs text-evolve-textDim uppercase tracking-wider">
           <span>宇宙探索进度 (Universe Explored)</span>
@@ -105,6 +149,26 @@ export const SpaceExploration = () => {
       </div>
 
       <div className="h-px bg-evolve-border w-full my-2"></div>
+
+      {(drifterCount > 0 || probesLostDrift > 0 || probesLostCombat > 0) && (
+        <>
+          <div className="flex flex-col gap-2 bg-evolve-bg p-3 rounded border border-evolve-border text-sm">
+            <div className="flex justify-between items-center">
+              <span className="text-evolve-textDim">漂流者数量 (Drifters)</span>
+              <span className="font-mono text-evolve-danger">{drifterCount.toLocaleString()}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-evolve-textDim">迷失于漂变 (Lost to Drift)</span>
+              <span className="font-mono text-evolve-warning">{probesLostDrift.toLocaleString()}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-evolve-textDim">战损 (Lost in Combat)</span>
+              <span className="font-mono text-evolve-danger">{probesLostCombat.toLocaleString()}</span>
+            </div>
+          </div>
+          <div className="h-px bg-evolve-border w-full my-2"></div>
+        </>
+      )}
 
       {/* 探测器设计 */}
       <div className="flex flex-col gap-2">

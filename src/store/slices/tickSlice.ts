@@ -58,7 +58,10 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
     let totalSalesThisTick = 0;
 
     if (nextState.unsoldInventory > 0) {
-      const sellChance = (nextState.publicDemand / 100) * 0.1;
+      // 应用 Prestige U 加成
+      const prestigeDemandMod = nextState.prestigeU > 0 ? 1 + (0.1 * nextState.prestigeU) : 1;
+      const sellChance = (nextState.publicDemand / 100) * 0.1 * prestigeDemandMod;
+      
       let sellCount = 0;
       const batchSize = Math.max(1, Math.floor(nextState.unsoldInventory * 0.01));
       
@@ -138,6 +141,13 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
       const marketTrend = (Math.random() - 0.48) * volatility + (engineBonus * 0.005); 
       
       nextState.investmentBankroll = Math.max(0, nextState.investmentBankroll * (1 + marketTrend));
+    }
+
+    // Prestige U (Universe) 的加成逻辑：增加基础公众需求
+    if (nextState.prestigeU > 0) {
+       // 原版逻辑: demand = demand + ((demand/10)*prestigeU)
+       // 我们这里在计算销售几率时给 publicDemand 加上倍率
+       // 此处直接作用于下一行的销售几率计算
     }
 
     // 策略锦标赛逻辑
@@ -315,7 +325,60 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
         nextState.probesLostDrift += probesLostToHazard;
       }
       
+      // 5. 漂流者叛变 (Value Drift)
+      // 随着 Trust 增加，产生漂流者的概率增加 (代表着价值观对齐失败)
+      // 原版逻辑: amount = probeCount * probeDriftBaseRate * Math.pow(probeTrust, 1.2)
+      // 漂流者也会自我复制
+      const probeDriftBaseRate = 0.000001;
+      let driftAmount = Math.floor(nextState.probes * probeDriftBaseRate * Math.pow(nextState.maxProbeTrust, 1.2));
+      driftAmount = Math.min(driftAmount, nextState.probes);
+      
+      if (driftAmount > 0) {
+        nextState.probes -= driftAmount;
+        nextState.drifterCount += driftAmount;
+        nextState.probesLostDrift += driftAmount;
+      }
+
+      // 漂流者自我复制 (与玩家的探针共享一样的复制率，但不消耗物质，为了模拟敌人的强大)
+      if (nextState.drifterCount > 0) {
+        const drifterRepChance = 0.0005; // 简化的漂流者复制几率
+        if (Math.random() < drifterRepChance) {
+           const newDrifters = Math.max(1, Math.floor(nextState.drifterCount * 0.01));
+           nextState.drifterCount += newDrifters;
+        }
+      }
+
+      // 6. 星际战斗 (Combat)
+      // 如果漂流者数量大于 0 且触发了战斗 (我们简化为每 tick 都有几率交火)
+      if (nextState.drifterCount > 0 && nextState.probes > 0) {
+        // 玩家战斗力
+        const combatEffectiveness = 1; // 基础战斗力
+        // 漂流者伤亡 = 玩家探针数量 * 玩家战斗力属性 * 基础系数
+        let drifterCasualties = Math.floor(nextState.probes * Math.pow(nextState.probeCombat, 1.7) * combatEffectiveness * 0.01);
+        drifterCasualties = Math.min(drifterCasualties, nextState.drifterCount);
+        
+        // 玩家探针伤亡 = 漂流者数量 * 漂流者战斗力 (固定值) * 基础系数
+        const drifterCombatPower = 1; // 漂流者固定战斗力
+        let clipCasualties = Math.floor(nextState.drifterCount * drifterCombatPower * 0.01);
+        clipCasualties = Math.min(clipCasualties, nextState.probes);
+
+        // 结算伤亡
+        nextState.drifterCount -= drifterCasualties;
+        nextState.probes -= clipCasualties;
+        nextState.probesLostCombat += clipCasualties;
+      }
+      
       nextState.probes = Math.max(0, nextState.probes);
+
+      // 检查结局条件
+      if (nextState.universeExplored >= 100 && !nextState.victory) {
+        nextState.victory = true;
+        nextState.logs = [...nextState.logs, {
+          id: Math.random().toString(36).substr(2, 9),
+          text: "宇宙探索完毕。所有可用物质都已转化为回形针。(Universe Explored. All matter converted to paperclips.)",
+          timestamp: Date.now()
+        }].slice(-50);
+      }
     }
 
     // 更新每秒制造量 (平滑处理，假设 tick 是 100ms，即 1 秒 10 次 tick)
