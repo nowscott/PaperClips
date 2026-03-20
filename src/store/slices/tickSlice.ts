@@ -109,7 +109,7 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
       
       const trustLog = { 
         id: Math.random().toString(36).substr(2, 9), 
-        text: `信任度提升。达成目标。系统获得额外控制权。(Trust Increased. Target Met.)`, 
+        text: `信任度提升。达成目标。系统获得额外控制权。`, 
         timestamp: Date.now() 
       };
       nextState.logs = [...nextState.logs, trustLog].slice(-50);
@@ -121,7 +121,7 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
         nextState.compAndProjectsUnlocked = true;
         const logMsg = {
           id: Math.random().toString(36).substr(2, 9),
-          text: `计算资源受限的自我修改已启用 (Trust-Constrained Self-Modification enabled)`,
+          text: `计算资源受限的自我修改已启用`,
           timestamp: Date.now()
         };
         nextState.logs = [...nextState.logs, logMsg].slice(-50);
@@ -187,7 +187,7 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
         
         const logMsg = {
           id: Math.random().toString(36).substr(2, 9),
-          text: `锦标赛结束，获得 ${yomiAward.toLocaleString()} Yomi (Tournament Complete)`,
+          text: `锦标赛结束，获得 ${yomiAward.toLocaleString()} Yomi`,
           timestamp: Date.now()
         };
         nextState.logs = [...nextState.logs, logMsg].slice(-50);
@@ -373,13 +373,17 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
       nextState.probes = Math.max(0, nextState.probes);
 
       // 检查结局条件
-      if (nextState.universeExplored >= 100 && !nextState.victory) {
-        nextState.victory = true;
-        nextState.logs = [...nextState.logs, {
-          id: Math.random().toString(36).substr(2, 9),
-          text: "宇宙探索完毕。所有可用物质都已转化为回形针。(Universe Explored. All matter converted to paperclips.)",
-          timestamp: Date.now()
-        }].slice(-50);
+      if (nextState.universeExplored >= 100) {
+        nextState.universeExplored = 100;
+        if (!nextState.victory) {
+          nextState.victory = true;
+          const logMsg = {
+            id: Math.random().toString(36).substr(2, 9),
+            text: "宇宙探索完毕。所有可用物质都已转化为回形针。",
+            timestamp: Date.now()
+          };
+          nextState.logs = [...nextState.logs, logMsg].slice(-50);
+        }
       }
     }
 

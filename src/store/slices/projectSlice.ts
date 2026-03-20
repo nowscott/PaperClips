@@ -69,7 +69,7 @@ export const createProjectSlice: StateCreator<GameState, [], [], ProjectSlice> =
       // 添加项目完成日志
       const logMsg = {
         id: Math.random().toString(36).substr(2, 9),
-        text: `项目研发完成: ${project.title} (Project Completed)`,
+        text: `项目研发完成: ${project.title}`,
         timestamp: Date.now()
       };
       const newLogs = [...state.logs, logMsg].slice(-50);
