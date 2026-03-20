@@ -43,8 +43,14 @@ export const Settings = () => {
         if (!parsed.state) {
           throw new Error("Invalid save file structure");
         }
+        
+        // 直接将解析后的状态设置到 store 中
+        useGameStore.setState(parsed.state);
+        
+        // 同时更新 localStorage 以确保持久化
         localStorage.setItem('paperclips-storage', content);
-        alert("存档导入成功！游戏即将刷新以加载存档。");
+
+        alert("存档导入成功！");
         window.location.reload();
       } catch (err) {
         alert("存档文件格式错误！请确保导入的是有效的 JSON 文件。");
