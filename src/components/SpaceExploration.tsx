@@ -1,5 +1,5 @@
 import { useGameStore } from '../store/gameStore';
-import { Rocket, Minus, Plus, AlertTriangle, Infinity } from 'lucide-react';
+import { Rocket, Minus, Plus, Infinity } from 'lucide-react';
 import type { SpaceSlice } from '../store/slices/spaceSlice';
 
 export const SpaceExploration = () => {

@@ -247,10 +247,8 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
       // 1. 探索宇宙 (Explore Universe)
       // 原版逻辑: probeSpeed * probeExploration * 某个极小的基础值
       if (nextState.probeSpeed > 0 && nextState.probeExploration > 0) {
-        const exploreBaseRate = 0.000000000000000000000000000001; // 非常小的值，这里做了简化，原版用了更复杂的极大数处理
-        // 为了在普通数字范围内能看到效果，我们根据原版的 "totalMatter" (30 * 10^54) 来计算
-        // 探索到的物质 = 探测器数量 * 速度 * 探索力 * 基数
-        let matterFound = nextState.probes * nextState.probeSpeed * nextState.probeExploration * 10000; // 模拟探索力
+        // 探索到的物质 = 探测器数量 * 速度 * 探索力 * 模拟系数
+        let matterFound = nextState.probes * nextState.probeSpeed * nextState.probeExploration * 10000; 
         
         // 不能超过剩余的宇宙物质
         const remainingUniverseMatter = nextState.totalMatter - nextState.foundMatter;
