@@ -11,8 +11,8 @@ export interface BusinessSlice {
   revenuePerSecond: number;
   salesPerSecond: number;
   revTrackerUnlocked: boolean;
-  raisePrice: () => void;
-  lowerPrice: () => void;
+  raisePrice: (amount?: number) => void;
+  lowerPrice: (amount?: number) => void;
   upgradeMarketing: () => void;
 }
 
@@ -44,13 +44,13 @@ const updateDemand = (state: GameState): Partial<GameState> => {
 
 export const createBusinessSlice: StateCreator<GameState, [], [], BusinessSlice> = (set) => ({
   ...initialBusinessState,
-  raisePrice: () => set((state: GameState) => {
-    const newPrice = parseFloat((state.price + 0.01).toFixed(2));
+  raisePrice: (amount = 0.01) => set((state: GameState) => {
+    const newPrice = parseFloat((state.price + amount).toFixed(2));
     const nextState = { ...state, price: newPrice };
     return { ...nextState, ...updateDemand(nextState as GameState) };
   }),
-  lowerPrice: () => set((state: GameState) => {
-    const newPrice = Math.max(0.01, parseFloat((state.price - 0.01).toFixed(2)));
+  lowerPrice: (amount = 0.01) => set((state: GameState) => {
+    const newPrice = Math.max(0.01, parseFloat((state.price - amount).toFixed(2)));
     const nextState = { ...state, price: newPrice };
     return { ...nextState, ...updateDemand(nextState as GameState) };
   }),
