@@ -27,7 +27,7 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
     }
 
     // 自动购买铁丝逻辑 (WireBuyer 项目)
-    if (nextState.hasWireBuyer && nextState.wireBuyerOn && nextState.wire === 0 && nextState.funds >= nextState.wireCost) {
+    if (nextState.hasWireBuyer && nextState.wireBuyerOn && nextState.wire < 1 && nextState.funds >= nextState.wireCost) {
       // 购买时基础价格微涨 (原版: wireBasePrice = wireBasePrice + .05)
       nextState.wireBasePrice += 0.05;
       

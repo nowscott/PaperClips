@@ -24,7 +24,7 @@ export const ConsoleLog = () => {
       >
         <div className="flex items-center gap-2">
           <Terminal className="w-4 h-4" />
-          <h2 className="text-sm font-bold tracking-widest uppercase">系统终端</h2>
+          <h2 className="text-sm font-bold tracking-widest uppercase">无限回形针</h2>
         </div>
         <button className="text-evolve-textDim hover:text-evolve-textMain transition-colors">
           {isExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
