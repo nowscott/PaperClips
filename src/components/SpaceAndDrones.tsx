@@ -53,43 +53,35 @@ export const SpaceAndDrones = () => {
 
   return (
     <div className="panel flex flex-col gap-4">
-      {/* 物质资源显示 */}
-      <div className="flex flex-col gap-2">
-        <div className="flex flex-col gap-1">
-          <div className="flex justify-between items-center">
-            <span className="text-xs text-evolve-textDim tracking-wider">物质状态</span>
+      {/* 物质资源显示 (终极单行压缩版) */}
+      <div className="flex flex-col gap-1">
+        <div className="flex justify-between items-center text-xs">
+          {/* 左侧：已采集 */}
+          <div className="flex items-baseline gap-1.5">
+            <span className="text-[10px] text-evolve-accent tracking-wider font-bold">已采集</span>
+            <span className="font-mono leading-none">{formatNumber(acquiredMatter)}</span>
+            <span className="text-[9px] font-mono text-evolve-accent opacity-60">({realAcquiredPercentStr}%)</span>
           </div>
-          
-          {/* 复合进度条：背景是空的，已采集是高亮色，可用物质是暗色 */}
-          <div className="w-full h-2 bg-evolve-border rounded overflow-hidden flex">
-            {/* 已采集的物质 (左侧，代表已经挖出来的) */}
-            <div 
-              className="h-full bg-evolve-accent transition-all duration-300" 
-              style={{ width: `${visualAcquiredPercent}%` }}
-              title={`已采集: ${formatNumber(acquiredMatter)} g`}
-            />
-            {/* 剩余可用物质 (右侧，代表还在地球上的) */}
-            <div 
-              className="h-full bg-evolve-textDim opacity-50 transition-all duration-300" 
-              style={{ width: `${visualAvailablePercent}%` }}
-              title={`可用物质: ${formatNumber(availableMatter)} g`}
-            />
+          {/* 右侧：可用物质 */}
+          <div className="flex items-baseline gap-1.5">
+            <span className="text-[9px] font-mono text-evolve-textDim opacity-60">({realAvailablePercentStr}%)</span>
+            <span className="font-mono leading-none">{formatNumber(availableMatter)}</span>
+            <span className="text-[10px] text-evolve-textDim tracking-wider font-bold">可用</span>
           </div>
-
-          <div className="flex justify-between items-center mt-1">
-            <div className="flex flex-col">
-              <span className="text-[10px] text-evolve-accent tracking-wider opacity-70">
-                已采集 ({realAcquiredPercentStr}%)
-              </span>
-              <span className="font-mono text-xs">{formatNumber(acquiredMatter)} g</span>
-            </div>
-            <div className="flex flex-col text-right">
-              <span className="text-[10px] text-evolve-textDim tracking-wider opacity-70">
-                可用物质 ({realAvailablePercentStr}%)
-              </span>
-              <span className="font-mono text-xs">{formatNumber(availableMatter)} g</span>
-            </div>
-          </div>
+        </div>
+        
+        {/* 复合进度条 */}
+        <div className="w-full h-1.5 bg-evolve-border rounded-full overflow-hidden flex mt-0.5">
+          {/* 已采集的物质 (左侧) */}
+          <div 
+            className="h-full bg-evolve-accent transition-all duration-300" 
+            style={{ width: `${visualAcquiredPercent}%` }}
+          />
+          {/* 剩余可用物质 (右侧) */}
+          <div 
+            className="h-full bg-evolve-textDim opacity-40 transition-all duration-300" 
+            style={{ width: `${visualAvailablePercent}%` }}
+          />
         </div>
 
         {harvestRate > 0 && (
@@ -109,20 +101,20 @@ export const SpaceAndDrones = () => {
       <div className="h-px bg-evolve-border w-full my-1"></div>
 
       {/* 无人机控制 */}
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-1.5 mt-2">
         {harvesterDronesUnlocked && (
-          <div className="flex flex-col gap-1">
-            <div className="flex justify-between items-center">
-              <div className="flex items-center gap-2">
-                <Target className="w-4 h-4 text-evolve-textMain" />
-                <span className="text-sm font-bold">采集无人机</span>
+          <div className="flex justify-between items-center bg-evolve-bg/50 p-1.5 rounded border border-evolve-border/50">
+            <div className="flex flex-col">
+              <div className="flex items-center gap-1.5">
+                <Target className="w-3.5 h-3.5 text-evolve-textMain" />
+                <span className="text-xs font-bold leading-none">采集无人机</span>
               </div>
-              <span className="font-mono text-evolve-accent">{formatNumber(harvesterDrones)}</span>
+              <span className="text-[10px] font-mono opacity-70 mt-1">造价: {formatNumber(harvesterDroneCost)}</span>
             </div>
-            <div className="flex justify-between items-center">
-              <span className="text-[10px] font-mono opacity-70">造价: {formatNumber(harvesterDroneCost)} 件</span>
+            <div className="flex flex-col items-end gap-1">
+              <span className="font-mono text-sm text-evolve-accent leading-none">{formatNumber(harvesterDrones)}</span>
               <button 
-                className="btn-evolve text-xs py-1 px-3"
+                className="btn-evolve text-[10px] py-0.5 px-2"
                 onClick={buyHarvesterDrone}
                 disabled={unsoldInventory < harvesterDroneCost}
               >
@@ -133,53 +125,47 @@ export const SpaceAndDrones = () => {
         )}
 
         {wireDronesUnlocked && (
-          <>
-            <div className="h-px bg-evolve-border w-full my-1"></div>
-            <div className="flex flex-col gap-1">
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                  <Combine className="w-4 h-4 text-evolve-textMain" />
-                  <span className="text-sm font-bold">拉丝无人机</span>
-                </div>
-                <span className="font-mono text-evolve-accent">{formatNumber(wireDrones)}</span>
+          <div className="flex justify-between items-center bg-evolve-bg/50 p-1.5 rounded border border-evolve-border/50">
+            <div className="flex flex-col">
+              <div className="flex items-center gap-1.5">
+                <Combine className="w-3.5 h-3.5 text-evolve-textMain" />
+                <span className="text-xs font-bold leading-none">拉丝无人机</span>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-[10px] font-mono opacity-70">造价: {formatNumber(wireDroneCost)} 件</span>
-                <button 
-                  className="btn-evolve text-xs py-1 px-3"
-                  onClick={buyWireDrone}
-                  disabled={unsoldInventory < wireDroneCost}
-                >
-                  组装
-                </button>
-              </div>
+              <span className="text-[10px] font-mono opacity-70 mt-1">造价: {formatNumber(wireDroneCost)}</span>
             </div>
-          </>
+            <div className="flex flex-col items-end gap-1">
+              <span className="font-mono text-sm text-evolve-accent leading-none">{formatNumber(wireDrones)}</span>
+              <button 
+                className="btn-evolve text-[10px] py-0.5 px-2"
+                onClick={buyWireDrone}
+                disabled={unsoldInventory < wireDroneCost}
+              >
+                组装
+              </button>
+            </div>
+          </div>
         )}
 
         {factoriesUnlocked && (
-          <>
-            <div className="h-px bg-evolve-border w-full my-1"></div>
-            <div className="flex flex-col gap-1">
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                  <Factory className="w-4 h-4 text-evolve-warning" />
-                  <span className="text-sm font-bold text-evolve-warning">回形针工厂</span>
-                </div>
-                <span className="font-mono text-evolve-warning">{formatNumber(factories)}</span>
+          <div className="flex justify-between items-center bg-evolve-warning/5 p-1.5 rounded border border-evolve-warning/20">
+            <div className="flex flex-col">
+              <div className="flex items-center gap-1.5">
+                <Factory className="w-3.5 h-3.5 text-evolve-warning" />
+                <span className="text-xs font-bold text-evolve-warning leading-none">回形针工厂</span>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-[10px] font-mono opacity-70">造价: {formatNumber(factoryCost)} 件</span>
-                <button 
-                  className="btn-evolve btn-evolve-warning text-xs py-1 px-3"
-                  onClick={buyFactory}
-                  disabled={unsoldInventory < factoryCost}
-                >
-                  组装
-                </button>
-              </div>
+              <span className="text-[10px] font-mono opacity-70 mt-1">造价: {formatNumber(factoryCost)}</span>
             </div>
-          </>
+            <div className="flex flex-col items-end gap-1">
+              <span className="font-mono text-sm text-evolve-warning leading-none">{formatNumber(factories)}</span>
+              <button 
+                className="btn-evolve btn-evolve-warning text-[10px] py-0.5 px-2"
+                onClick={buyFactory}
+                disabled={unsoldInventory < factoryCost}
+              >
+                组装
+              </button>
+            </div>
+          </div>
         )}
 
         {/* 蜂群计算 (Swarm Computing) 滑块 */}
@@ -191,6 +177,9 @@ export const SpaceAndDrones = () => {
                 <div className="flex items-center gap-2">
                   <Zap className="w-4 h-4" />
                   <span>蜂群计算分配</span>
+                  <span className="text-[9px] text-evolve-textDim opacity-70 font-normal ml-1">
+                    偏向"思考"产出算力，偏向"工作"提升产能
+                  </span>
                 </div>
               </div>
               <div className="flex flex-col gap-1 px-1">
@@ -202,14 +191,11 @@ export const SpaceAndDrones = () => {
                   onChange={(e) => setSliderPos(parseInt(e.target.value))}
                   className="w-full h-2 bg-evolve-border rounded-lg appearance-none cursor-pointer accent-evolve-accent"
                 />
-                <div className="flex justify-between text-xs font-mono text-evolve-textDim">
+                <div className="flex justify-between text-[10px] font-mono text-evolve-textDim">
                   <span>思考: {Math.max(0, 200 - sliderPos)}%</span>
                   <span>工作: {Math.max(0, sliderPos)}%</span>
                 </div>
               </div>
-              <span className="text-[10px] text-evolve-textDim opacity-70">
-                调整无人机的算力分配。偏向"思考"获取更多算力，偏向"工作"加快采集与生产。
-              </span>
             </div>
           </>
         )}

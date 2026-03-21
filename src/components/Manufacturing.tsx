@@ -76,19 +76,18 @@ export const Manufacturing = () => {
         </div>
 
         {/* 自动制造机 */}
-        <div className="h-px bg-evolve-border w-full my-1"></div>
-        <div className="flex flex-col gap-2">
-          <div className="flex justify-between items-center mb-1">
-            <div className="flex items-center gap-2 text-sm text-evolve-textDim tracking-wider">
-              <Cpu className="w-4 h-4" />
-              <span>自动制造机</span>
+        <div className="flex justify-between items-center bg-evolve-bg/50 p-1.5 rounded border border-evolve-border/50 mt-2">
+          <div className="flex flex-col">
+            <div className="flex items-center gap-1.5">
+              <Cpu className="w-3.5 h-3.5 text-evolve-textDim" />
+              <span className="text-xs font-bold leading-none">自动制造机</span>
             </div>
-            <span className="font-mono text-lg">{formatNumber(autoClippers)}</span>
+            <span className="text-[10px] font-mono opacity-70 mt-1">造价: ${formatNumber(autoClipperCost, 2)}</span>
           </div>
-          <div className="flex justify-between items-center">
-            <span className="text-[10px] font-mono opacity-70">造价: ${formatNumber(autoClipperCost, 2)}</span>
+          <div className="flex flex-col items-end gap-1">
+            <span className="font-mono text-sm leading-none">{formatNumber(autoClippers)}</span>
             <button 
-              className="btn-evolve text-xs py-1 px-3"
+              className="btn-evolve text-[10px] py-0.5 px-2"
               onClick={buyAutoClipper}
               disabled={funds < autoClipperCost}
             >
@@ -99,46 +98,42 @@ export const Manufacturing = () => {
 
         {/* 巨型制造机 (解锁后显示) */}
         {megaClippersUnlocked && (
-          <>
-            <div className="h-px bg-evolve-border w-full my-1"></div>
-            <div className="flex flex-col gap-2">
-              <div className="flex justify-between items-center mb-1">
-                <div className="flex items-center gap-2 text-sm text-evolve-accent tracking-wider">
-                  <Factory className="w-4 h-4" />
-                  <span>巨型制造机</span>
-                </div>
-                <span className="font-mono text-lg text-evolve-accent">{formatNumber(megaClippers)}</span>
+          <div className="flex justify-between items-center bg-evolve-accent/5 p-1.5 rounded border border-evolve-accent/20">
+            <div className="flex flex-col">
+              <div className="flex items-center gap-1.5">
+                <Factory className="w-3.5 h-3.5 text-evolve-accent" />
+                <span className="text-xs font-bold text-evolve-accent leading-none">巨型制造机</span>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-[10px] font-mono opacity-70">造价: ${formatNumber(megaClipperCost, 2)}</span>
-                <button 
-                  className="btn-evolve btn-evolve-accent text-xs py-1 px-3"
-                  onClick={buyMegaClipper}
-                  disabled={funds < megaClipperCost}
-                >
-                  组装
-                </button>
-              </div>
+              <span className="text-[10px] font-mono opacity-70 mt-1">造价: ${formatNumber(megaClipperCost, 2)}</span>
             </div>
-          </>
+            <div className="flex flex-col items-end gap-1">
+              <span className="font-mono text-sm text-evolve-accent leading-none">{formatNumber(megaClippers)}</span>
+              <button 
+                className="btn-evolve btn-evolve-accent text-[10px] py-0.5 px-2"
+                onClick={buyMegaClipper}
+                disabled={funds < megaClipperCost}
+              >
+                组装
+              </button>
+            </div>
+          </div>
         )}
 
         {/* 回形针工厂 (tothFlag解锁) */}
         {tothFlag && (
           <>
-            <div className="h-px bg-evolve-border w-full my-1"></div>
-            <div className="flex flex-col gap-2">
-              <div className="flex justify-between items-center mb-1">
-                <div className="flex items-center gap-2 text-sm text-evolve-accent tracking-wider">
-                  <Factory className="w-4 h-4" />
-                  <span>回形针工厂</span>
+            <div className="flex justify-between items-center bg-evolve-warning/5 p-1.5 rounded border border-evolve-warning/20">
+              <div className="flex flex-col">
+                <div className="flex items-center gap-1.5">
+                  <Factory className="w-3.5 h-3.5 text-evolve-warning" />
+                  <span className="text-xs font-bold text-evolve-warning leading-none">回形针工厂</span>
                 </div>
-                <span className="font-mono text-lg text-evolve-accent">{formatNumber(clipFactories)}</span>
+                <span className="text-[10px] font-mono opacity-70 mt-1">造价: {formatNumber(factoryCost)} clips</span>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-[10px] font-mono opacity-70">造价: {formatNumber(factoryCost)}</span>
+              <div className="flex flex-col items-end gap-1">
+                <span className="font-mono text-sm text-evolve-warning leading-none">{formatNumber(clipFactories)}</span>
                 <button 
-                  className="btn-evolve btn-evolve-accent text-xs py-1 px-3"
+                  className="btn-evolve btn-evolve-warning text-[10px] py-0.5 px-2"
                   onClick={buyFactory}
                   disabled={unusedClips < factoryCost}
                 >
