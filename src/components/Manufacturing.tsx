@@ -19,12 +19,7 @@ export const Manufacturing = () => {
     hasWireBuyer,
     wireBuyerOn,
     toggleWireBuyer,
-    tothFlag,
-    clipFactories,
-    factoryCost,
-    unusedClips,
-    buyFactory,
-    factoryClipRate
+    tothFlag
   } = useGameStore();
   
   const maxWire = 1000;
@@ -117,41 +112,6 @@ export const Manufacturing = () => {
               </button>
             </div>
           </div>
-        )}
-
-        {/* 回形针工厂 (tothFlag解锁) */}
-        {tothFlag && (
-          <>
-            <div className="flex justify-between items-center bg-evolve-warning/5 p-1.5 rounded border border-evolve-warning/20">
-              <div className="flex flex-col">
-                <div className="flex items-center gap-1.5">
-                  <Factory className="w-3.5 h-3.5 text-evolve-warning" />
-                  <span className="text-xs font-bold text-evolve-warning leading-none">回形针工厂</span>
-                </div>
-                <span className="text-[10px] font-mono opacity-70 mt-1">造价: {formatNumber(factoryCost)} clips</span>
-              </div>
-              <div className="flex flex-col items-end gap-1">
-                <span className="font-mono text-sm text-evolve-warning leading-none">{formatNumber(clipFactories)}</span>
-                <button 
-                  className="btn-evolve btn-evolve-warning text-[10px] py-0.5 px-2"
-                  onClick={buyFactory}
-                  disabled={unusedClips < factoryCost}
-                >
-                  组装
-                </button>
-              </div>
-            </div>
-            <div className="flex justify-between items-center mt-1">
-              <span className="text-[10px] text-evolve-textDim tracking-wider opacity-70">可用回形针</span>
-              <span className="font-mono text-xs text-evolve-textDim">{formatNumber(unusedClips)}</span>
-            </div>
-            {factoryClipRate > 0 && (
-              <div className="flex justify-between items-center">
-                <span className="text-[10px] text-evolve-textDim tracking-wider opacity-70">工厂产能</span>
-                <span className="font-mono text-xs text-evolve-accent">{formatNumber(Math.floor(factoryClipRate))} 件/秒</span>
-              </div>
-            )}
-          </>
         )}
 
         {/* 产能统计 */}
