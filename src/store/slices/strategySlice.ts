@@ -29,7 +29,7 @@ export const initialStrategyState: Omit<StrategySlice, 'setStrategy' | 'runTourn
   tourneyInProg: false,
   tourneyCost: 1000,
   currentStrategy: 'RANDOM',
-  unlockedStrategies: ['RANDOM', 'A100', 'B100', 'GREEDY', 'GENEROUS', 'MINIMAX', 'TIT_FOR_TAT', 'BEAT_LAST'], // 原版随项目解锁，这里先默认解锁所有基础策略以便测试
+  unlockedStrategies: ['RANDOM'],
   tourneyProgress: 0,
   matchResults: [],
 };

@@ -8,6 +8,7 @@ export const Projects = () => {
     funds,
     creativity,
     yomi,
+    trust,
     completedProjects, 
     compAndProjectsUnlocked,
     completeProject 
@@ -44,8 +45,9 @@ export const Projects = () => {
             const canAffordFunds = project.costFunds === undefined || funds >= project.costFunds;
             const canAffordCreativity = project.costCreativity === undefined || creativity >= project.costCreativity;
             const canAffordYomi = project.costYomi === undefined || yomi >= project.costYomi;
+            const canAffordTrust = project.costTrust === undefined || trust >= project.costTrust;
             
-            const canAfford = canAffordOps && canAffordFunds && canAffordCreativity && canAffordYomi;
+            const canAfford = canAffordOps && canAffordFunds && canAffordCreativity && canAffordYomi && canAffordTrust;
 
             return (
               <div key={project.id} className="panel-inner flex flex-col gap-2">
@@ -81,6 +83,11 @@ export const Projects = () => {
                   {project.costYomi && (
                     <span className={canAffordYomi ? 'text-evolve-warning' : 'text-evolve-danger'}>
                       预判值: {project.costYomi.toLocaleString()}
+                    </span>
+                  )}
+                  {project.costTrust && (
+                    <span className={canAffordTrust ? 'text-evolve-textMain' : 'text-evolve-danger'}>
+                      信任值: {project.costTrust}
                     </span>
                   )}
                 </div>
