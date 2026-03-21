@@ -45,6 +45,7 @@ export type GameState = ResourceSlice &
   FactorySlice &
   SpaceSlice & {
     resetGame: () => void;
+    triggerPrestige?: string | null;
   };
 
 const initialState = {

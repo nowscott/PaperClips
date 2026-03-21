@@ -21,6 +21,7 @@ export interface SpaceSlice {
   probeHarvester: number;
   probeWire: number;
   probeCombat: number;
+  swarmComputeBonus: number; // 高级蜂群计算加成
   
   // 太空阶段探索进度
   universeExplored: number; // 0 to 100
@@ -34,6 +35,18 @@ export interface SpaceSlice {
   victory: boolean;
   prestigeU: number; // Universe prestige
   prestigeS: number; // Sim Level prestige
+  
+  // 太空战与剧情
+  driftersKilled: number;
+  probesLostInCombat: number;
+  honor: number;
+  probeSurvival: number; // 从后期科技获得的基础加成
+  
+  // 后期科技解锁
+  autoTourneyUnlocked: boolean;
+  theoryOfMindUnlocked: boolean;
+  nameTheBattlesUnlocked: boolean;
+  combatUnlocked: boolean;
   
   // Actions
   launchProbe: () => void;
@@ -59,6 +72,7 @@ export const initialSpaceState: Omit<SpaceSlice, 'launchProbe' | 'increaseProbeS
   probeHarvester: 0,
   probeWire: 0,
   probeCombat: 0,
+  swarmComputeBonus: 0,
 
   universeExplored: 0,
   totalMatter: Math.pow(10, 54) * 30, // 原版宇宙总物质
@@ -70,6 +84,15 @@ export const initialSpaceState: Omit<SpaceSlice, 'launchProbe' | 'increaseProbeS
   victory: false,
   prestigeU: 0,
   prestigeS: 0,
+
+  driftersKilled: 0,
+  probesLostInCombat: 0,
+  honor: 0,
+  probeSurvival: 1,
+  autoTourneyUnlocked: false,
+  theoryOfMindUnlocked: false,
+  nameTheBattlesUnlocked: false,
+  combatUnlocked: false,
 };
 
 export const createSpaceSlice: StateCreator<GameState, [], [], SpaceSlice> = (set) => ({
