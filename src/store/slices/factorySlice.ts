@@ -81,12 +81,12 @@ export const createFactorySlice: StateCreator<GameState, [], [], FactorySlice> =
   }),
   
   buyHarvesterDrone: () => set((state: GameState) => {
-    // 使用 unusedClips 代替 unsoldInventory
-    if (state.unusedClips >= state.harvesterDroneCost) {
+    // 使用 unsoldInventory 代替 clips
+    if (state.unsoldInventory >= state.harvesterDroneCost) {
       const nextLevel = state.harvesterDrones + 1;
       return {
         harvesterDrones: nextLevel,
-        unusedClips: state.unusedClips - state.harvesterDroneCost, // 扣除未使用的回形针
+        unsoldInventory: state.unsoldInventory - state.harvesterDroneCost, // 扣除未使用的回形针
         harvesterDroneCost: Math.pow(nextLevel + 1, 2.25) * 1000000 
       }
     }
@@ -94,12 +94,12 @@ export const createFactorySlice: StateCreator<GameState, [], [], FactorySlice> =
   }),
   
   buyWireDrone: () => set((state: GameState) => {
-    // 使用 unusedClips 代替 unsoldInventory
-    if (state.unusedClips >= state.wireDroneCost) {
+    // 使用 unsoldInventory 代替 clips
+    if (state.unsoldInventory >= state.wireDroneCost) {
       const nextLevel = state.wireDrones + 1;
       return {
         wireDrones: nextLevel,
-        unusedClips: state.unusedClips - state.wireDroneCost, // 扣除未使用的回形针
+        unsoldInventory: state.unsoldInventory - state.wireDroneCost, // 扣除未使用的回形针
         wireDroneCost: Math.pow(nextLevel + 1, 2.25) * 1000000
       }
     }
@@ -107,8 +107,8 @@ export const createFactorySlice: StateCreator<GameState, [], [], FactorySlice> =
   }),
   
   buyFactory: () => set((state: GameState) => {
-    // 使用 unusedClips 代替 unsoldInventory
-    if (state.unusedClips >= state.factoryCost) {
+    // 使用 unsoldInventory 代替 clips
+    if (state.unsoldInventory >= state.factoryCost) {
       const nextLevel = state.factories + 1;
       let fcmod = 1;
       if (nextLevel > 0 && nextLevel < 8) fcmod = 11 - nextLevel;
@@ -120,7 +120,7 @@ export const createFactorySlice: StateCreator<GameState, [], [], FactorySlice> =
 
       return {
         factories: nextLevel,
-        unusedClips: state.unusedClips - state.factoryCost, // 扣除未使用的回形针
+        unsoldInventory: state.unsoldInventory - state.factoryCost, // 扣除未使用的回形针
         factoryCost: state.factoryCost * fcmod
       }
     }

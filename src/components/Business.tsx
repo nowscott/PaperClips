@@ -8,13 +8,16 @@ export const Business = () => {
     funds, unsoldInventory, price, publicDemand, 
     wireCost, prevWireCost, buyWire, raisePrice, lowerPrice,
     marketingLevel, marketingCost, upgradeMarketing,
-    revTrackerUnlocked, revenuePerSecond, salesPerSecond
+    revTrackerUnlocked, revenuePerSecond, salesPerSecond,
+    hypnoDronesReleased
   } = useGameStore();
 
   const lowerFast = useContinuousClick(() => lowerPrice(0.10));
   const lowerSlow = useContinuousClick(() => lowerPrice(0.01));
   const raiseSlow = useContinuousClick(() => raisePrice(0.01));
   const raiseFast = useContinuousClick(() => raisePrice(0.10));
+
+  if (hypnoDronesReleased) return null;
 
   const isWireCostUp = wireCost > prevWireCost;
   const isWireCostDown = wireCost < prevWireCost;

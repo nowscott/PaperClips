@@ -9,20 +9,29 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
   tick: () => set((state: GameState) => {
     const nextState = { ...state };
 
-    // 1. 铁丝进货价格波动 (Wire Cost Volatility)
-    // 每 25个 tick (大概 2.5 秒) 波动一次
-    if (Math.random() < 0.04) {
+    // 1. 铁丝进货价格波动 (Wire Cost Volatility) - 对齐原版 sinusoidal 波动与衰减
+    nextState.wirePriceTimer++;
+    
+    // 基础价格随时间缓慢下降
+    if (nextState.wirePriceTimer > 250 && nextState.wireBasePrice > 15) {
+      nextState.wireBasePrice -= (nextState.wireBasePrice / 1000);
+      nextState.wirePriceTimer = 0;
+    }
+    
+    // 每 100ms (即每个 tick) 有几率波动
+    if (Math.random() < 0.015) {
+      nextState.wirePriceCounter++;
       nextState.prevWireCost = nextState.wireCost;
-      // 价格在 $14 到 $30 之间随机游走
-      const change = Math.floor(Math.random() * 5) - 2; // -2, -1, 0, 1, 2
-      nextState.wireCost = Math.max(14, Math.min(30, nextState.wireCost + change));
+      // 原版正弦波波动公式: wireCost = Math.ceil(wireBasePrice + 6 * Math.sin(counter))
+      nextState.wireCost = Math.ceil(nextState.wireBasePrice + 6 * Math.sin(nextState.wirePriceCounter));
     }
 
     // 自动购买铁丝逻辑 (WireBuyer 项目)
     if (nextState.hasWireBuyer && nextState.wireBuyerOn && nextState.wire === 0 && nextState.funds >= nextState.wireCost) {
-      // 在原版后期，单次进货不够巨型制造机塞牙缝，这里需要一个循环，能买多少买多少，直到没钱或者买够
+      // 购买时基础价格微涨 (原版: wireBasePrice = wireBasePrice + .05)
+      nextState.wireBasePrice += 0.05;
+      
       let purchases = 0;
-      // 限制一个最大批量，防止死循环
       while (nextState.funds >= nextState.wireCost && purchases < 1000) {
         nextState.wire += nextState.wireSupply;
         nextState.funds -= nextState.wireCost;
@@ -30,44 +39,39 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
       }
     }
 
+    // 2. 回形针制造逻辑 (第一阶段)
     let totalClipsProducedThisTick = 0;
 
-    if (nextState.autoClippers > 0 && nextState.wire > 0) {
-      let clipsProduced = 0;
-      const chance = 0.1 * nextState.clipperBoost;
-      for (let i = 0; i < nextState.autoClippers; i++) {
-        clipsProduced += Math.floor(chance);
-        if (Math.random() < chance % 1) {
-          clipsProduced++;
-        }
-      }
+    // 自动制造机逻辑 (AutoClippers)
+    if (nextState.autoClippers > 0 && nextState.wire > 0 && !nextState.hypnoDronesReleased) {
+      // 原版公式: 每 10ms 生产 (clipmakerLevel / 100)
+      // 我们的 tick 是 100ms，所以每 tick 生产 (autoClippers / 10)
+      let clipsProduced = (nextState.autoClippers / 10) * nextState.clipperBoost;
+      
       clipsProduced = Math.min(clipsProduced, nextState.wire);
       nextState.clips += clipsProduced;
       nextState.unsoldInventory += clipsProduced;
       nextState.wire -= clipsProduced;
       totalClipsProducedThisTick += clipsProduced;
-      // 在第一阶段末期 (tothFlag) 或第二阶段之后，生产的回形针算作 unusedClips
-      if (nextState.tothFlag || nextState.hypnoDronesReleased) {
+      
+      if (nextState.tothFlag) {
         nextState.unusedClips += clipsProduced;
       }
     }
 
-    // 巨型制造机逻辑 (MegaClippers) - 产量是普通制造机的 500 倍
-    if (nextState.megaClippersUnlocked && nextState.megaClippers > 0 && nextState.wire > 0) {
-      let megaClipsProduced = 0;
-      const chance = 0.1 * nextState.clipperBoost;
-      for (let i = 0; i < nextState.megaClippers; i++) {
-        megaClipsProduced += Math.floor(chance) * 500;
-        if (Math.random() < chance % 1) {
-          megaClipsProduced += 500; // 500倍产量
-        }
-      }
+    // 巨型制造机逻辑 (MegaClippers)
+    if (nextState.megaClippersUnlocked && nextState.megaClippers > 0 && nextState.wire > 0 && !nextState.hypnoDronesReleased) {
+      // 原版公式: 每 10ms 生产 (megaClipperLevel * 5)
+      // 我们的 tick 是 100ms，所以每 tick 生产 (megaClippers * 50)
+      let megaClipsProduced = (nextState.megaClippers * 50) * (nextState.megaClipperBoost || 1);
+      
       megaClipsProduced = Math.min(megaClipsProduced, nextState.wire);
       nextState.clips += megaClipsProduced;
       nextState.unsoldInventory += megaClipsProduced;
       nextState.wire -= megaClipsProduced;
       totalClipsProducedThisTick += megaClipsProduced;
-      if (nextState.tothFlag || nextState.hypnoDronesReleased) {
+      
+      if (nextState.tothFlag) {
         nextState.unusedClips += megaClipsProduced;
       }
     }
@@ -113,20 +117,6 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
        nextState.salesPerSecond = nextState.salesPerSecond * 0.95 + (totalSalesThisTick * 10) * 0.05;
     }
 
-    // 只有在未释放催眠无人机（第一阶段）时，才通过制造回形针获得信任值
-    if (!nextState.hypnoDronesReleased && nextState.clips >= nextState.nextTrustStage) {
-      nextState.trust += 1;
-      nextState.availableTrust += 1;
-      nextState.nextTrustStage = Math.floor(nextState.nextTrustStage * 1.5) + 500;
-      
-      const trustLog = { 
-        id: Math.random().toString(36).substr(2, 9), 
-        text: `信任度提升。达成目标。系统获得额外控制权。`, 
-        timestamp: Date.now() 
-      };
-      nextState.logs = [...nextState.logs, trustLog].slice(-50);
-    }
-
     // 计算与项目面板解锁逻辑 (2000 clips，或者发生资源卡死的特殊情况)
     if (!nextState.compAndProjectsUnlocked) {
       if (nextState.clips >= 2000 || (nextState.unsoldInventory < 1 && nextState.funds < nextState.wireCost && nextState.wire < 1)) {
@@ -140,22 +130,97 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
       }
     }
 
-    if (nextState.trust > 0 || nextState.processors > 1) {
-      if (nextState.ops < nextState.maxOps) {
-        nextState.ops = Math.min(nextState.maxOps, nextState.ops + nextState.processors);
-      } else if (nextState.creativityOn && nextState.ops === nextState.maxOps) {
-        nextState.creativity += (nextState.processors * 0.1); 
+    // 只有在未释放催眠无人机（第一阶段）时，才通过制造回形针获得信任值
+    if (!nextState.hypnoDronesReleased && nextState.clips >= nextState.nextTrustStage) {
+      let newTrustGained = 0;
+      while (nextState.clips >= nextState.nextTrustStage) {
+        newTrustGained++;
+        // 原版 Fibonacci 序列: 3000, 5000, 8000, 13000, 21000...
+        const fibNext = nextState.fib1 + nextState.fib2;
+        nextState.nextTrustStage = fibNext * 1000;
+        nextState.fib1 = nextState.fib2;
+        nextState.fib2 = fibNext;
+      }
+      
+      if (newTrustGained > 0) {
+        nextState.trust += newTrustGained;
+        nextState.availableTrust += newTrustGained;
+        
+        const trustLog = { 
+          id: Math.random().toString(36).substr(2, 9), 
+          text: `信任度提升。达成目标。系统获得额外控制权。`, 
+          timestamp: Date.now() 
+        };
+        nextState.logs = [...nextState.logs, trustLog].slice(-50);
       }
     }
 
+    // 3. 处理器/内存与算力/创造力生成
+    if (nextState.trust > 0 || nextState.processors > 1) {
+      // 临时算力 (tempOps) 衰减逻辑
+      if (nextState.tempOps > 0) {
+        nextState.opFadeTimer++;
+        // 800 个原版 tick (8秒) 后开始快速衰减
+        if (nextState.opFadeTimer > 80) { // 我们是 100ms 一个 tick，所以 80 就是 8秒
+          nextState.opFade = nextState.opFade + Math.pow(3, 3.5) / 100; // 放大 10 倍补偿 tick 频率
+        }
+        nextState.tempOps = Math.max(0, nextState.tempOps - nextState.opFade);
+      } else {
+        nextState.tempOps = 0;
+        nextState.opFade = 0;
+        nextState.opFadeTimer = 0;
+      }
+
+      // 基础算力生成
+      const totalOps = nextState.ops + nextState.tempOps;
+      if (totalOps < nextState.maxOps) {
+        // 原版公式: 每 10ms 增加 processors/10
+        // 我们的 tick 是 100ms，所以每 tick 增加 processors
+        // 优先填充标准算力 (ops)
+        const opsToAdd = nextState.processors;
+        const opsBuffer = nextState.maxOps - totalOps;
+        nextState.ops += Math.min(opsToAdd, opsBuffer);
+      } else if (nextState.creativityOn && totalOps >= nextState.maxOps) {
+        // 原版创造力公式:
+        // ss = creativitySpeed + (creativitySpeed * prestigeS / 10)
+        // creativitySpeed = Math.log10(processors) * Math.pow(processors, 1.1) + processors - 1
+        const creativitySpeed = Math.log10(nextState.processors) * Math.pow(nextState.processors, 1.1) + nextState.processors - 1;
+        const ss = creativitySpeed + (creativitySpeed * (nextState.prestigeS || 0) / 10);
+        
+        // 100ms tick 相当于 10 个原版 10ms tick
+        nextState.creativityCounter += 10;
+        const threshold = 400 / ss;
+        
+        while (nextState.creativityCounter >= threshold && threshold > 0) {
+          nextState.creativity++;
+          nextState.creativityCounter -= threshold;
+        }
+      }
+    }
+
+    // 锦标赛逻辑中使用算力时，优先扣除标准算力，不够再扣除临时算力
+    const deductOps = (amount: number) => {
+      if (nextState.ops >= amount) {
+        nextState.ops -= amount;
+      } else {
+        const remaining = amount - nextState.ops;
+        nextState.ops = 0;
+        nextState.tempOps = Math.max(0, nextState.tempOps - remaining);
+      }
+    };
+
     // 股市投资逻辑
     if (nextState.investmentEngineUnlocked && nextState.investmentBankroll > 0) {
+      // 投资等级加成 (原版每级提升 1% 的收益概率阈值)
       const engineBonus = nextState.investmentLevel * 0.01;
+      
       let volatility = 0.02; // Low risk default
       if (nextState.riskLevel === 'med') volatility = 0.05;
       if (nextState.riskLevel === 'high') volatility = 0.10;
 
-      const marketTrend = (Math.random() - 0.48) * volatility + (engineBonus * 0.005); 
+      // 模拟市场趋势：基础 48% 胜率 + 等级加成
+      // 原版是针对单只股票计算，这里简化为对整个本金计算，但逻辑权重保持一致
+      const marketTrend = (Math.random() - 0.48) * volatility + engineBonus; 
       
       nextState.investmentBankroll = Math.max(0, nextState.investmentBankroll * (1 + marketTrend));
     }
@@ -211,9 +276,9 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
         nextState.logs = [...nextState.logs, logMsg].slice(-50);
 
         // 自动锦标赛 (AutoTourney) 科技效果
-        if (nextState.autoTourneyUnlocked && nextState.autoTourneyStatus && nextState.ops >= nextState.tourneyCost) {
+        if (nextState.autoTourneyUnlocked && nextState.autoTourneyStatus && (nextState.ops + nextState.tempOps) >= nextState.tourneyCost) {
            nextState.tourneyInProg = true;
-           nextState.ops -= nextState.tourneyCost;
+           deductOps(nextState.tourneyCost);
         }
       }
     }
@@ -230,7 +295,7 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
          droneThinkRatio = (200 - nextState.sliderPos) / 100; // 2 to 0
          
          // 增加基于无人机数量的算力 (Ops)
-         const swarmOpsBonus = Math.floor((nextState.harvesterDrones + nextState.wireDrones) * 0.0001 * droneThinkRatio);
+         const swarmOpsBonus = (nextState.harvesterDrones + nextState.wireDrones) * 0.0001 * droneThinkRatio;
          if (swarmOpsBonus > 0) {
             nextState.ops = Math.min(nextState.maxOps, nextState.ops + swarmOpsBonus);
          }
@@ -282,17 +347,21 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
       // 工厂逻辑：如果解锁了工厂，工厂会自动且大量地消耗铁丝制造回形针
       let factoryProduction = 0;
       if (nextState.factories > 0 && nextState.wire > 0) {
-        // 原版工厂的基础产能非常恐怖，这里按比例大致估算 (每个工厂每秒上亿)
-        factoryProduction = nextState.factories * 100000000 * droneWorkRatio * nextState.factoryBoost; 
+        // 原版工厂的基础产能非常恐怖：1,000,000,000 (10亿)
+        factoryProduction = nextState.factories * 1000000000 * droneWorkRatio * nextState.factoryBoost; 
         factoryProduction = Math.min(factoryProduction, nextState.wire);
+        
         nextState.clips += factoryProduction;
         nextState.unsoldInventory += factoryProduction;
         nextState.wire -= factoryProduction;
         totalClipsProducedThisTick += factoryProduction;
+        
+        // 注意：工厂生产的也算作 unusedClips (原版逻辑中 unsoldInventory 和 unusedClips 在第二阶段其实是同一个东西的两种叫法，为了兼容之前的代码我们两边都加)
         if (nextState.tothFlag || nextState.hypnoDronesReleased) {
           nextState.unusedClips += factoryProduction;
         }
       }
+      // 恢复 factoryClipRate 以防其他地方依赖
       nextState.factoryClipRate = factoryProduction * 10;
     }
 

@@ -14,7 +14,7 @@ export interface InvestmentSlice {
 
 export const initialInvestmentState = {
   investmentEngineUnlocked: false,
-  investmentLevel: 1,
+  investmentLevel: 0,
   investmentBankroll: 0,
   riskLevel: 'low' as const,
 };

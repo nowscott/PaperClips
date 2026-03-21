@@ -11,6 +11,9 @@ export interface BusinessSlice {
   revenuePerSecond: number;
   salesPerSecond: number;
   revTrackerUnlocked: boolean;
+  wireBasePrice: number; // 新增：基础铁丝价格，会缓慢下降
+  wirePriceTimer: number; // 新增：用于计时基础价格下降
+  wirePriceCounter: number; // 新增：用于正弦波波动
   raisePrice: (amount?: number) => void;
   lowerPrice: (amount?: number) => void;
   upgradeMarketing: () => void;
@@ -26,6 +29,9 @@ export const initialBusinessState = {
   revenuePerSecond: 0,
   salesPerSecond: 0,
   revTrackerUnlocked: false,
+  wireBasePrice: 20,
+  wirePriceTimer: 0,
+  wirePriceCounter: 0,
 };
 
 // 辅助函数：根据原版公式计算真实需求并更新

@@ -9,13 +9,19 @@ export const Computing = () => {
     nextTrustStage, 
     clips, 
     processors, 
-    memory, 
-    ops, 
+    memory,
+    ops,
+    tempOps,
     maxOps,
     creativity,
     creativityOn,
     compAndProjectsUnlocked,
     hypnoDronesReleased,
+    swarmUnlocked,
+    swarmGiftsAvailable,
+    swarmGiftProgress,
+    nextSwarmGiftCost,
+    claimSwarmGift,
     addProcessor,
     addMemory
   } = useGameStore();
@@ -56,7 +62,11 @@ export const Computing = () => {
         <div className="flex items-center gap-2">
           <Unlock className="w-3.5 h-3.5 text-evolve-textMain" />
           <span className="text-xs font-bold leading-none">信任值: <span className="font-mono text-sm">{formatNumber(trust)}</span></span>
-          <span className="text-[10px] text-evolve-textDim opacity-70 border-l border-evolve-border/50 pl-2 hidden sm:inline">下一级: {formatNumber(nextTrustStage)} 件</span>
+          {!hypnoDronesReleased && (
+            <span className="text-[10px] text-evolve-textDim opacity-70 border-l border-evolve-border/50 pl-2 hidden sm:inline">
+              下一级: {formatNumber(nextTrustStage)} 件
+            </span>
+          )}
         </div>
         <div className="text-[10px] text-evolve-accent font-mono bg-evolve-accent/10 px-1.5 py-0.5 rounded border border-evolve-accent/20">
           可用: {formatNumber(availableTrust)}
@@ -106,12 +116,19 @@ export const Computing = () => {
       <div className="flex flex-col gap-0.5">
         <div className="flex justify-between items-end">
           <span className="text-[10px] text-evolve-textDim tracking-wider font-bold">算力</span>
-          <span className="font-mono text-[10px]">{formatNumber(Math.floor(ops))} / {formatNumber(maxOps)}</span>
+          <div className="flex items-baseline gap-1">
+            {tempOps > 0 && (
+              <span className="text-[9px] text-evolve-accent font-mono animate-pulse">
+                (+{formatNumber(Math.floor(tempOps))})
+              </span>
+            )}
+            <span className="font-mono text-[10px]">{formatNumber(Math.floor(ops + tempOps))} / {formatNumber(maxOps)}</span>
+          </div>
         </div>
         <div className="w-full h-1 bg-evolve-border rounded-full overflow-hidden flex">
           <div 
             className="h-full bg-evolve-textMain transition-all duration-300" 
-            style={{ width: `${(ops / maxOps) * 100}%` }}
+            style={{ width: `${Math.min(100, ((ops + tempOps) / maxOps) * 100)}%` }}
           />
         </div>
       </div>
@@ -121,6 +138,33 @@ export const Computing = () => {
         <div className="flex justify-between items-center bg-evolve-accent/5 p-1 rounded border border-evolve-accent/20">
           <span className="text-[10px] text-evolve-accent tracking-wider font-bold pl-1">创造力</span>
           <span className="font-mono text-sm text-evolve-accent leading-none pr-1">{formatNumber(Math.floor(creativity))}</span>
+        </div>
+      )}
+
+      {/* 蜂群礼物 (第二阶段获得信任值的方式) */}
+      {swarmUnlocked && (
+        <div className="flex flex-col gap-1 mt-1 bg-evolve-accent/5 p-1.5 rounded border border-evolve-accent/20">
+          <div className="flex justify-between items-center text-[10px]">
+            <span className="font-bold text-evolve-accent">蜂群礼物</span>
+            {swarmGiftsAvailable > 0 ? (
+              <button 
+                className="btn-evolve btn-evolve-accent text-[10px] py-0.5 px-2 animate-pulse"
+                onClick={claimSwarmGift}
+              >
+                接受 ({swarmGiftsAvailable})
+              </button>
+            ) : (
+              <span className="font-mono text-evolve-textDim">
+                {Math.floor((swarmGiftProgress / nextSwarmGiftCost) * 100)}%
+              </span>
+            )}
+          </div>
+          <div className="w-full h-1 bg-evolve-border rounded-full overflow-hidden flex">
+            <div 
+              className="h-full bg-evolve-accent transition-all duration-300" 
+              style={{ width: `${Math.min(100, (swarmGiftProgress / nextSwarmGiftCost) * 100)}%` }}
+            />
+          </div>
         </div>
       )}
     </div>

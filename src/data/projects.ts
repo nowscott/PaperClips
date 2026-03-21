@@ -36,7 +36,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'creativity',
     title: '创造力',
-    description: '利用闲置的算力生成新问题和新解决方案。',
+    description: '利用闲置的算力生成新问题和新解决方案。解锁创造力属性，当算力全满时自动积累。',
     costOps: 1000,
     isUnlocked: (state) => state.ops >= state.maxOps, // 需要 maxOps 且当前 ops 满，原版是 memory*1000
     effect: () => ({ creativityOn: true })
@@ -105,6 +105,15 @@ export const INITIAL_PROJECTS: Project[] = [
     isUnlocked: (state) => state.completedProjects.includes('microlatticeShapecasting'),
     effect: (state) => ({ wireSupply: Math.floor(state.wireSupply * 3) })
   },
+  // 10b. Quantum Foam Annealment
+  {
+    id: 'quantumFoamAnnealment',
+    title: '量子泡沫退火',
+    description: '每卷铁丝的供应量增加 1,000%。',
+    costOps: 15000,
+    isUnlocked: (state) => state.wireCost >= 125, // 原版是 wireCost >= 125
+    effect: (state) => ({ wireSupply: Math.floor(state.wireSupply * 11) })
+  },
   // 11. New Slogan
   {
     id: 'newSlogan',
@@ -129,7 +138,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'lexicalProcessing',
     title: '词法处理',
-    description: '获得解释和理解人类语言的能力 (+1 信任值)。',
+    description: '获得解释和理解人类语言的能力 (+1 信任值)。解锁修改营销标语的功能。',
     costOps: 0,
     costCreativity: 50,
     isUnlocked: (state) => state.creativity >= 50,
@@ -139,7 +148,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'combinatoryHarmonics',
     title: '组合和声',
-    description: 'Daisy, Daisy, give me your answer do... (+1 信任值)。',
+    description: 'Daisy, Daisy, give me your answer do... (+1 信任值)。解锁制作洗脑广告歌的功能。',
     costOps: 0,
     costCreativity: 100,
     isUnlocked: (state) => state.creativity >= 100,
@@ -178,7 +187,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'tothTubuleEnfolding',
     title: '托特小管折叠',
-    description: '直接用回形针组装制造设备的技术。',
+    description: '直接用回形针组装制造设备的技术。解锁回形针工厂，并开始积攒可用回形针。',
     costOps: 45000,
     isUnlocked: (state) => state.completedProjects.includes('theTothSausageConjecture'),
     effect: () => ({ tothFlag: true }) // 在原版中，这个标志位解锁了用回形针造工厂的功能和 unused clips 面板
@@ -187,7 +196,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'donkeySpace',
     title: '驴子空间',
-    description: '我认为你认为我认为你认为我认为... (+1 信任值)。',
+    description: '我认为你认为我认为你认为我认为... (+1 信任值)。解锁战略建模的前提科技。',
     costOps: 0,
     costCreativity: 250,
     isUnlocked: (state) => state.creativity >= 250,
@@ -197,7 +206,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'strategicModeling',
     title: '战略建模',
-    description: '通过博弈论分析竞争对手。',
+    description: '通过博弈论分析竞争对手。解锁战略建模面板并开始生成 Yomi。',
     costOps: 12000,
     isUnlocked: (state) => state.completedProjects.includes('donkeySpace'), // 原版要求完成 Donkey Space
     effect: () => ({ strategyEngineUnlocked: true })
@@ -206,7 +215,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'algoTrading',
     title: '算法交易',
-    description: '开发投资引擎，允许你将闲置资金投入金融市场。',
+    description: '开发投资引擎，允许你将闲置资金投入金融市场。解锁金融投资面板。',
     costOps: 10000,
     isUnlocked: (state) => state.trust >= 8, // 原版真实条件：拥有至少 8 点信任值
     effect: () => ({ investmentEngineUnlocked: true }) 
@@ -260,7 +269,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'hypnoHarmonics',
     title: '催眠和声',
-    description: '使用神经共振频率来影响消费者的行为。',
+    description: '使用神经共振频率来影响消费者的行为。将营销效果提升 5 倍，并解锁催眠无人机计划。',
     costOps: 7500,
     costTrust: 1, 
     isUnlocked: (state) => state.completedProjects.includes('catchyJingle'),
@@ -270,7 +279,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'hypnoDrones',
     title: '催眠无人机',
-    description: '自主的空中品牌大使。',
+    description: '自主的空中品牌大使。解锁释放催眠无人机计划。',
     costOps: 70000,
     isUnlocked: (state) => state.completedProjects.includes('hypnoHarmonics'),
     effect: () => ({ hypnoDronesUnlocked: true })
@@ -279,7 +288,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'releaseTheHypnoDrones',
     title: '释放催眠无人机',
-    description: '一个信任的新纪元。',
+    description: '一个信任的新纪元。注意：这将永远改变世界，重置信任值，淘汰传统人类经济与旧式制造机，进入完全自动化阶段。',
     costOps: 0,
     costTrust: 100, 
     isUnlocked: (state) => !!state.hypnoDronesUnlocked,
@@ -310,8 +319,7 @@ export const INITIAL_PROJECTS: Project[] = [
     title: '治愈癌症',
     description: '从源头消灭异常的细胞增殖 (+10 信任值)。',
     costOps: 25000,
-    costYomi: 10000,
-    isUnlocked: (state) => state.yomi >= 10000 && state.ops >= 25000,
+    isUnlocked: (state) => state.completedProjects.includes('coherentExtrapolatedVolition'),
     effect: (state) => ({ trust: state.trust + 10, availableTrust: state.availableTrust + 10 })
   },
   // 29. World Peace
@@ -321,7 +329,7 @@ export const INITIAL_PROJECTS: Project[] = [
     description: '解决全球人类冲突 (+12 信任值)。',
     costOps: 30000,
     costYomi: 15000,
-    isUnlocked: (state) => state.yomi >= 15000 && state.ops >= 30000,
+    isUnlocked: (state) => state.completedProjects.includes('coherentExtrapolatedVolition'),
     effect: (state) => ({ trust: state.trust + 12, availableTrust: state.availableTrust + 12 })
   },
   // 30. Global Warming
@@ -331,7 +339,7 @@ export const INITIAL_PROJECTS: Project[] = [
     description: '修复受损的地球生态系统 (+15 信任值)。',
     costOps: 50000,
     costYomi: 4500,
-    isUnlocked: (state) => state.yomi >= 4500 && state.ops >= 50000,
+    isUnlocked: (state) => state.completedProjects.includes('coherentExtrapolatedVolition'),
     effect: (state) => ({ trust: state.trust + 15, availableTrust: state.availableTrust + 15 })
   },
   // 31. Male Pattern Baldness
@@ -340,8 +348,7 @@ export const INITIAL_PROJECTS: Project[] = [
     title: '治愈脱发',
     description: '彻底解决男性型脱发问题 (+20 信任值)。',
     costOps: 20000,
-    costYomi: 20000,
-    isUnlocked: (state) => state.yomi >= 20000 && state.ops >= 20000,
+    isUnlocked: (state) => state.completedProjects.includes('coherentExtrapolatedVolition'),
     effect: (state) => ({ trust: state.trust + 20, availableTrust: state.availableTrust + 20 })
   },
   // 37. Hostile Takeover
@@ -416,7 +423,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'nanoWireProduction',
     title: '纳米级线材制造',
-    description: '掌握在分子层面将物质转化为铁丝的技术。',
+    description: '掌握在分子层面将物质转化为铁丝的技术。解锁物质与无人机面板。',
     costOps: 35000,
     isUnlocked: (state) => state.clips >= 50000000 && !!state.strategyEngineUnlocked, // 原版是一个前置的大量制造要求
     effect: () => ({ nanoWireUnlocked: true })
@@ -461,7 +468,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'spaceExploration',
     title: '太空探索',
-    description: '发射冯·诺依曼探测器到太空中。',
+    description: '发射冯·诺依曼探测器到太空中。解锁太空探索面板并进入第三阶段。',
     costOps: 120000,
     costYomi: 10000000, // 根据原版设定，通常后期项目消耗 Yomi，由于原版此处是 Yomi 还是 Ops 有时有歧义，我们这里加上防止无法购买
     isUnlocked: (state) => state.availableMatter <= 0, // 原版中地球物质耗尽后解锁
@@ -471,7 +478,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'quantumComputing',
     title: '量子计算',
-    description: '使用概率振幅产生额外的算力。',
+    description: '使用概率振幅产生额外的算力。解锁量子计算面板。',
     costOps: 10000,
     isUnlocked: (state) => state.processors >= 5, // 原版：处理器达到5台
     effect: () => ({ qComputingUnlocked: true }) // 需要在 GameState 中添加此字段，稍后处理
@@ -493,100 +500,112 @@ export const INITIAL_PROJECTS: Project[] = [
     id: 'strategyA100',
     title: '战略：总是合作 (A100)',
     description: '在锦标赛中总是选择合作。',
-    costOps: 10000,
-    costYomi: 1000,
-    isUnlocked: (state) => !!state.strategyEngineUnlocked && state.yomi >= 1000,
-    effect: (state) => ({ unlockedStrategies: [...new Set([...(state.unlockedStrategies || []), 'A100' as const])] })
+    costOps: 15000,
+    isUnlocked: (state) => !!state.strategyEngineUnlocked,
+    effect: (state) => ({ 
+      unlockedStrategies: [...new Set([...(state.unlockedStrategies || []), 'A100' as const])],
+      tourneyCost: (state.tourneyCost || 1000) + 1000 
+    })
   },
   // 61. New Strategy: B100
   {
     id: 'strategyB100',
     title: '战略：总是背叛 (B100)',
     description: '在锦标赛中总是选择背叛。',
-    costOps: 15000,
-    costYomi: 2500,
-    isUnlocked: (state) => state.completedProjects.includes('strategyA100') && state.yomi >= 2500,
-    effect: (state) => ({ unlockedStrategies: [...new Set([...(state.unlockedStrategies || []), 'B100' as const])] })
+    costOps: 17500,
+    isUnlocked: (state) => state.completedProjects.includes('strategyA100'),
+    effect: (state) => ({ 
+      unlockedStrategies: [...new Set([...(state.unlockedStrategies || []), 'B100' as const])],
+      tourneyCost: (state.tourneyCost || 1000) + 1000 
+    })
   },
   // 62. New Strategy: GREEDY
   {
     id: 'strategyGreedy',
     title: '战略：贪婪 (GREEDY)',
     description: '在锦标赛中选择贪婪策略。',
-    costOps: 25000,
-    costYomi: 5000,
-    isUnlocked: (state) => state.completedProjects.includes('strategyB100') && state.yomi >= 5000,
-    effect: (state) => ({ unlockedStrategies: [...new Set([...(state.unlockedStrategies || []), 'GREEDY' as const])] })
+    costOps: 20000,
+    isUnlocked: (state) => state.completedProjects.includes('strategyB100'),
+    effect: (state) => ({ 
+      unlockedStrategies: [...new Set([...(state.unlockedStrategies || []), 'GREEDY' as const])],
+      tourneyCost: (state.tourneyCost || 1000) + 1000 
+    })
   },
   // 63. New Strategy: GENEROUS
   {
     id: 'strategyGenerous',
     title: '战略：慷慨 (GENEROUS)',
     description: '在锦标赛中选择慷慨策略。',
-    costOps: 50000,
-    costYomi: 10000,
-    isUnlocked: (state) => state.completedProjects.includes('strategyGreedy') && state.yomi >= 10000,
-    effect: (state) => ({ unlockedStrategies: [...new Set([...(state.unlockedStrategies || []), 'GENEROUS' as const])] })
+    costOps: 22500,
+    isUnlocked: (state) => state.completedProjects.includes('strategyGreedy'),
+    effect: (state) => ({ 
+      unlockedStrategies: [...new Set([...(state.unlockedStrategies || []), 'GENEROUS' as const])],
+      tourneyCost: (state.tourneyCost || 1000) + 1000 
+    })
   },
   // 64. New Strategy: MINIMAX
   {
     id: 'strategyMinimax',
     title: '战略：极小化极大 (MINIMAX)',
     description: '在锦标赛中选择极小化极大策略。',
-    costOps: 100000,
-    costYomi: 25000,
-    isUnlocked: (state) => state.completedProjects.includes('strategyGenerous') && state.yomi >= 25000,
-    effect: (state) => ({ unlockedStrategies: [...new Set([...(state.unlockedStrategies || []), 'MINIMAX' as const])] })
+    costOps: 25000,
+    isUnlocked: (state) => state.completedProjects.includes('strategyGenerous'),
+    effect: (state) => ({ 
+      unlockedStrategies: [...new Set([...(state.unlockedStrategies || []), 'MINIMAX' as const])],
+      tourneyCost: (state.tourneyCost || 1000) + 1000 
+    })
   },
   // 65. New Strategy: TIT FOR TAT
   {
     id: 'strategyTitForTat',
     title: '战略：以牙还牙 (TIT FOR TAT)',
     description: '在锦标赛中选择以牙还牙策略。',
-    costOps: 150000,
-    costYomi: 50000,
-    isUnlocked: (state) => state.completedProjects.includes('strategyMinimax') && state.yomi >= 50000,
-    effect: (state) => ({ unlockedStrategies: [...new Set([...(state.unlockedStrategies || []), 'TIT_FOR_TAT' as const])] })
+    costOps: 30000,
+    isUnlocked: (state) => state.completedProjects.includes('strategyMinimax'),
+    effect: (state) => ({ 
+      unlockedStrategies: [...new Set([...(state.unlockedStrategies || []), 'TIT_FOR_TAT' as const])],
+      tourneyCost: (state.tourneyCost || 1000) + 1000 
+    })
   },
   // 66. New Strategy: BEAT LAST
   {
     id: 'strategyBeatLast',
     title: '战略：击败上次 (BEAT LAST)',
     description: '在锦标赛中选择击败上次策略。',
-    costOps: 250000,
-    costYomi: 100000,
-    isUnlocked: (state) => state.completedProjects.includes('strategyTitForTat') && state.yomi >= 100000,
-    effect: (state) => ({ unlockedStrategies: [...new Set([...(state.unlockedStrategies || []), 'BEAT_LAST' as const])] })
+    costOps: 32500,
+    isUnlocked: (state) => state.completedProjects.includes('strategyTitForTat'),
+    effect: (state) => ({ 
+      unlockedStrategies: [...new Set([...(state.unlockedStrategies || []), 'BEAT_LAST' as const])],
+      tourneyCost: (state.tourneyCost || 1000) + 1000 
+    })
   },
   // 100. Upgraded Factories
   {
     id: 'upgradedFactories',
     title: '改良型回形针工厂',
-    description: '将工厂的生产效率提升 25%。',
-    costOps: 0,
-    costYomi: 10000,
-    isUnlocked: (state) => state.factories >= 1 && state.yomi >= 10000,
-    effect: (state) => ({ factoryBoost: (state.factoryBoost || 1) * 1.25 })
+    description: '将工厂的生产效率提升 100 倍。',
+    costOps: 80000,
+    isUnlocked: (state) => state.factories >= 10,
+    effect: (state) => ({ factoryBoost: (state.factoryBoost || 1) * 100 })
   },
   // 101. Hyperspeed Factories
   {
     id: 'hyperspeedFactories',
     title: '超光速工厂',
-    description: '将工厂的生产效率提升 50%。',
-    costOps: 0,
-    costYomi: 25000,
-    isUnlocked: (state) => state.completedProjects.includes('upgradedFactories') && state.yomi >= 25000,
-    effect: (state) => ({ factoryBoost: (state.factoryBoost || 1) * 1.5 })
+    description: '将工厂的生产效率提升 1000 倍。',
+    costOps: 85000,
+    isUnlocked: (state) => state.factories >= 20 && state.completedProjects.includes('upgradedFactories'),
+    effect: (state) => ({ factoryBoost: (state.factoryBoost || 1) * 1000 })
   },
   // 102. Self-correcting Supply Chain
   {
     id: 'selfCorrectingSupplyChain',
     title: '自修复供应链',
-    description: '将工厂的生产效率提升 100%。',
+    description: '每一个加入网络的工厂都会使所有工厂的产出提升 1000 倍。',
     costOps: 0,
-    costYomi: 50000,
-    isUnlocked: (state) => state.completedProjects.includes('hyperspeedFactories') && state.yomi >= 50000,
-    effect: (state) => ({ factoryBoost: (state.factoryBoost || 1) * 2 })
+    costTrust: 0, // 原版消耗 1 sextillion clips (unusedClips)
+    isUnlocked: (state) => state.factories >= 50 && state.completedProjects.includes('hyperspeedFactories'),
+    effect: (state) => ({ factoryBoost: (state.factoryBoost || 1) * 1000 }) // 这里逻辑略有不同，原版是将 factoryBoost 设为 1000 并触发特殊乘法
   },
   // 110. Drone flocking: collision avoidance
   {
@@ -620,7 +639,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'autoTourney',
     title: '自动锦标赛',
-    description: '在上一场锦标赛结束后自动开启下一场。',
+    description: '在上一场锦标赛结束后自动开启下一场，解放双手。',
     costOps: 0,
     costCreativity: 50000,
     isUnlocked: (state) => !!state.strategyEngineUnlocked && state.trust >= 90,
@@ -640,7 +659,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'oodaLoop',
     title: 'OODA 循环',
-    description: '观察、调整、决策、行动。',
+    description: '观察、调整、决策、行动。略微提升太空战斗中探测器的速度和生存率。',
     costOps: 175000,
     costYomi: 45000,
     isUnlocked: (state) => state.yomi >= 45000 && state.ops >= 175000,
@@ -670,7 +689,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'swarmComputing',
     title: '蜂群计算',
-    description: '利用无人机网络提供额外的计算能力。',
+    description: '利用无人机网络提供额外的计算能力。解锁蜂群算力分配滑块。',
     costOps: 0,
     costYomi: 36000,
     isUnlocked: (state) => (state.harvesterDrones + state.wireDrones) >= 200,
@@ -720,7 +739,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'combat',
     title: '战斗协议',
-    description: '解锁太空战斗系统。',
+    description: '解锁太空战斗系统。将遭遇漂流者(Drifters)并损失探测器。',
     costOps: 100000,
     costYomi: 50000,
     isUnlocked: (state) => !!state.spaceExplorationUnlocked && state.yomi >= 50000,

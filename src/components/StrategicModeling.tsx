@@ -41,20 +41,20 @@ export const StrategicModeling = () => {
   const canAffordTourney = ops >= tourneyCost;
 
   return (
-    <div className="panel flex flex-col gap-4">
+    <div className="panel flex flex-col gap-3">
       {/* Yomi 资源显示 */}
-      <div className="flex justify-between items-center bg-evolve-accent/10 p-2 rounded border border-evolve-accent/30">
-        <span className="text-sm font-bold text-evolve-accent tracking-wider">预判值 (Yomi)</span>
-        <span className="text-lg font-mono text-evolve-accent">{formatNumber(yomi)}</span>
+      <div className="flex justify-between items-center bg-evolve-accent/10 p-1.5 rounded border border-evolve-accent/30">
+        <span className="text-xs font-bold text-evolve-accent tracking-wider pl-1">预判值 (Yomi)</span>
+        <span className="text-lg font-mono text-evolve-accent leading-none pr-1">{formatNumber(yomi)}</span>
       </div>
 
       {/* 策略选择与控制 */}
-      <div className="panel-inner flex flex-col gap-3">
-        <div className="flex flex-col gap-2">
-          <span className="text-xs text-evolve-textDim tracking-wider">选择策略</span>
+      <div className="panel-inner flex flex-col gap-2 p-2">
+        <div className="flex flex-col gap-1.5">
+          <span className="text-[10px] text-evolve-textDim tracking-wider">选择策略</span>
           <div className="flex gap-2 items-center">
             <select 
-              className="flex-1 bg-evolve-bg border border-evolve-border text-evolve-textMain p-1 rounded text-sm focus:outline-none focus:border-evolve-accent"
+              className="flex-1 bg-evolve-bg border border-evolve-border text-evolve-textMain p-1 rounded text-xs focus:outline-none focus:border-evolve-accent"
               value={currentStrategy}
               onChange={(e) => setStrategy(e.target.value as StrategyType)}
               disabled={tourneyInProg}
@@ -65,7 +65,7 @@ export const StrategicModeling = () => {
             </select>
             {autoTourneyUnlocked && (
               <button
-                className={`px-3 py-1 rounded text-xs font-bold transition-colors ${
+                className={`px-2 py-1 rounded text-[10px] font-bold transition-colors whitespace-nowrap ${
                   autoTourneyStatus 
                     ? 'bg-evolve-accent/20 text-evolve-accent border border-evolve-accent' 
                     : 'bg-evolve-border/20 text-evolve-textDim border border-evolve-border'
@@ -78,19 +78,23 @@ export const StrategicModeling = () => {
           </div>
         </div>
 
-        <button 
-          className={`btn flex items-center justify-center gap-2 py-2 mt-2 ${
-            canAffordTourney && !tourneyInProg ? 'btn-primary' : 'opacity-50 cursor-not-allowed border-evolve-border'
-          }`}
-          onClick={runTourney}
-          disabled={!canAffordTourney || tourneyInProg || autoTourneyStatus}
-        >
-          <Play className="w-4 h-4" />
-          <span>运行锦标赛</span>
-        </button>
-        
-        <div className="text-right text-xs font-mono text-evolve-textDim">
-          算力成本: {formatNumber(tourneyCost)}
+        <div className="flex items-center gap-2 mt-1">
+          <button 
+            className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 text-xs rounded border transition-colors ${
+              canAffordTourney && !tourneyInProg 
+                ? 'border-evolve-accent text-evolve-accent hover:bg-evolve-accent/10' 
+                : 'opacity-50 cursor-not-allowed border-evolve-border text-evolve-textDim'
+            }`}
+            onClick={runTourney}
+            disabled={!canAffordTourney || tourneyInProg || autoTourneyStatus}
+          >
+            <Play className="w-3.5 h-3.5" />
+            <span className="font-bold">运行锦标赛</span>
+          </button>
+          
+          <div className="text-right text-[10px] font-mono text-evolve-textDim whitespace-nowrap px-1">
+            成本: {formatNumber(tourneyCost)} ops
+          </div>
         </div>
       </div>
 
