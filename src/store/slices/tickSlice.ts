@@ -34,8 +34,10 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
 
     if (nextState.autoClippers > 0 && nextState.wire > 0) {
       let clipsProduced = 0;
+      const chance = 0.1 * nextState.clipperBoost;
       for (let i = 0; i < nextState.autoClippers; i++) {
-        if (Math.random() < (0.1 * nextState.clipperBoost)) {
+        clipsProduced += Math.floor(chance);
+        if (Math.random() < chance % 1) {
           clipsProduced++;
         }
       }
@@ -44,7 +46,8 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
       nextState.unsoldInventory += clipsProduced;
       nextState.wire -= clipsProduced;
       totalClipsProducedThisTick += clipsProduced;
-      if (nextState.tothFlag) {
+      // 在第一阶段末期 (tothFlag) 或第二阶段之后，生产的回形针算作 unusedClips
+      if (nextState.tothFlag || nextState.hypnoDronesReleased) {
         nextState.unusedClips += clipsProduced;
       }
     }
@@ -52,8 +55,10 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
     // 巨型制造机逻辑 (MegaClippers) - 产量是普通制造机的 500 倍
     if (nextState.megaClippersUnlocked && nextState.megaClippers > 0 && nextState.wire > 0) {
       let megaClipsProduced = 0;
+      const chance = 0.1 * nextState.clipperBoost;
       for (let i = 0; i < nextState.megaClippers; i++) {
-        if (Math.random() < (0.1 * nextState.clipperBoost)) {
+        megaClipsProduced += Math.floor(chance) * 500;
+        if (Math.random() < chance % 1) {
           megaClipsProduced += 500; // 500倍产量
         }
       }
@@ -62,7 +67,7 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
       nextState.unsoldInventory += megaClipsProduced;
       nextState.wire -= megaClipsProduced;
       totalClipsProducedThisTick += megaClipsProduced;
-      if (nextState.tothFlag) {
+      if (nextState.tothFlag || nextState.hypnoDronesReleased) {
         nextState.unusedClips += megaClipsProduced;
       }
     }
@@ -284,7 +289,7 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
         nextState.unsoldInventory += factoryProduction;
         nextState.wire -= factoryProduction;
         totalClipsProducedThisTick += factoryProduction;
-        if (nextState.tothFlag) {
+        if (nextState.tothFlag || nextState.hypnoDronesReleased) {
           nextState.unusedClips += factoryProduction;
         }
       }
