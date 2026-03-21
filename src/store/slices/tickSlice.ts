@@ -108,7 +108,8 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
        nextState.salesPerSecond = nextState.salesPerSecond * 0.95 + (totalSalesThisTick * 10) * 0.05;
     }
 
-    if (nextState.clips >= nextState.nextTrustStage) {
+    // 只有在未释放催眠无人机（第一阶段）时，才通过制造回形针获得信任值
+    if (!nextState.hypnoDronesReleased && nextState.clips >= nextState.nextTrustStage) {
       nextState.trust += 1;
       nextState.availableTrust += 1;
       nextState.nextTrustStage = Math.floor(nextState.nextTrustStage * 1.5) + 500;
@@ -227,6 +228,27 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
          const swarmOpsBonus = Math.floor((nextState.harvesterDrones + nextState.wireDrones) * 0.0001 * droneThinkRatio);
          if (swarmOpsBonus > 0) {
             nextState.ops = Math.min(nextState.maxOps, nextState.ops + swarmOpsBonus);
+         }
+
+         // 增加蜂群礼物进度 (Swarm Gifts)
+         const totalDrones = nextState.harvesterDrones + nextState.wireDrones;
+         const thinkPower = totalDrones * droneThinkRatio;
+         if (thinkPower > 0) {
+            // 原版中进度增长与无人机数量和think比例成正比
+            nextState.swarmGiftProgress += thinkPower * 0.01;
+            
+            if (nextState.swarmGiftProgress >= nextState.nextSwarmGiftCost) {
+               nextState.swarmGiftProgress -= nextState.nextSwarmGiftCost;
+               nextState.swarmGiftsAvailable += 1;
+               nextState.nextSwarmGiftCost *= 1.5; // 礼物阈值增加
+               
+               const logMsg = {
+                  id: Math.random().toString(36).substr(2, 9),
+                  text: `蜂群提供了一份礼物 (The swarm offers a gift)`,
+                  timestamp: Date.now()
+               };
+               nextState.logs = [...nextState.logs, logMsg].slice(-50);
+            }
          }
       }
 

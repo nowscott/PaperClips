@@ -25,6 +25,12 @@ export interface FactorySlice {
   droneBoost: number;
   setSliderPos: (pos: number) => void;
   
+  // 新增：蜂群礼物机制
+  swarmGiftProgress: number;
+  swarmGiftsAvailable: number;
+  nextSwarmGiftCost: number;
+  claimSwarmGift: () => void;
+  
   buyHarvesterDrone: () => void;
   buyWireDrone: () => void;
   buyFactory: () => void;
@@ -52,6 +58,10 @@ export const initialFactoryState = {
   swarmUnlocked: false,
   sliderPos: 100, // 默认中间，100% Work, 100% Think
   droneBoost: 1,
+  
+  swarmGiftProgress: 0,
+  swarmGiftsAvailable: 0,
+  nextSwarmGiftCost: 10000,
 };
 
 export const createFactorySlice: StateCreator<GameState, [], [], FactorySlice> = (set) => ({
@@ -59,13 +69,24 @@ export const createFactorySlice: StateCreator<GameState, [], [], FactorySlice> =
 
   setSliderPos: (pos: number) => set({ sliderPos: pos }),
   
+  claimSwarmGift: () => set((state: GameState) => {
+    if (state.swarmGiftsAvailable > 0) {
+      return {
+        swarmGiftsAvailable: state.swarmGiftsAvailable - 1,
+        trust: state.trust + 1,
+        availableTrust: state.availableTrust + 1
+      };
+    }
+    return state;
+  }),
+  
   buyHarvesterDrone: () => set((state: GameState) => {
-    // 使用 unsoldInventory 代替 clips
-    if (state.unsoldInventory >= state.harvesterDroneCost) {
+    // 使用 unusedClips 代替 unsoldInventory
+    if (state.unusedClips >= state.harvesterDroneCost) {
       const nextLevel = state.harvesterDrones + 1;
       return {
         harvesterDrones: nextLevel,
-        unsoldInventory: state.unsoldInventory - state.harvesterDroneCost, // 扣除未售出库存
+        unusedClips: state.unusedClips - state.harvesterDroneCost, // 扣除未使用的回形针
         harvesterDroneCost: Math.pow(nextLevel + 1, 2.25) * 1000000 
       }
     }
@@ -73,12 +94,12 @@ export const createFactorySlice: StateCreator<GameState, [], [], FactorySlice> =
   }),
   
   buyWireDrone: () => set((state: GameState) => {
-    // 使用 unsoldInventory 代替 clips
-    if (state.unsoldInventory >= state.wireDroneCost) {
+    // 使用 unusedClips 代替 unsoldInventory
+    if (state.unusedClips >= state.wireDroneCost) {
       const nextLevel = state.wireDrones + 1;
       return {
         wireDrones: nextLevel,
-        unsoldInventory: state.unsoldInventory - state.wireDroneCost, // 扣除未售出库存
+        unusedClips: state.unusedClips - state.wireDroneCost, // 扣除未使用的回形针
         wireDroneCost: Math.pow(nextLevel + 1, 2.25) * 1000000
       }
     }
@@ -86,8 +107,8 @@ export const createFactorySlice: StateCreator<GameState, [], [], FactorySlice> =
   }),
   
   buyFactory: () => set((state: GameState) => {
-    // 使用 unsoldInventory 代替 clips
-    if (state.unsoldInventory >= state.factoryCost) {
+    // 使用 unusedClips 代替 unsoldInventory
+    if (state.unusedClips >= state.factoryCost) {
       const nextLevel = state.factories + 1;
       let fcmod = 1;
       if (nextLevel > 0 && nextLevel < 8) fcmod = 11 - nextLevel;
@@ -99,7 +120,7 @@ export const createFactorySlice: StateCreator<GameState, [], [], FactorySlice> =
 
       return {
         factories: nextLevel,
-        unsoldInventory: state.unsoldInventory - state.factoryCost, // 扣除未售出库存
+        unusedClips: state.unusedClips - state.factoryCost, // 扣除未使用的回形针
         factoryCost: state.factoryCost * fcmod
       }
     }

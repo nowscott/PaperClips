@@ -15,6 +15,7 @@ export const Computing = () => {
     creativity,
     creativityOn,
     compAndProjectsUnlocked,
+    hypnoDronesReleased,
     addProcessor,
     addMemory
   } = useGameStore();
@@ -24,8 +25,8 @@ export const Computing = () => {
     return null;
   }
 
-  // 2000 个解锁面板后，但在 3000 个(或者首个信任值) 之前，显示未解锁/进度状态
-  if (trust === 0 && clips < nextTrustStage) {
+  // 第一阶段未解锁信任值前显示“系统离线”
+  if (!hypnoDronesReleased && trust === 0 && clips < nextTrustStage) {
     const progress = Math.min(100, (clips / nextTrustStage) * 100);
     return (
       <div className="panel flex flex-col gap-2 opacity-50">
