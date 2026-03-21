@@ -136,7 +136,7 @@ function App() {
       {/* 底部开源声明 */}
       <footer className="mt-12 mb-4 flex flex-col items-center justify-center gap-1 text-xs text-evolve-textDim tracking-wider opacity-50">
         <div className="flex items-center gap-1">
-          无限回形针 (开源重制版) · 原作: 
+          无限回形针 (开源重制版) <span className="font-mono ml-1">v{__APP_VERSION__}</span> · 原作: 
           <a 
             href="https://www.decisionproblem.com/paperclips/" 
             target="_blank" 

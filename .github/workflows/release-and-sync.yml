@@ -1,0 +1,105 @@
+name: Release and Sync
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+
+jobs:
+  release-and-sync:
+    # 仅当 PR 被合并时才执行
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # 允许创建 Release 和推送代码
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # 需要获取所有历史以同步分支和检查 tag
+
+      - name: Determine Version Bump Type
+        id: bump_type
+        run: |
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          PR_BODY="${{ github.event.pull_request.body }}"
+          PR_LABELS="${{ join(github.event.pull_request.labels.*.name, ',') }}"
+          
+          BUMP_TYPE="patch" # 默认小更新
+          
+          # 检查标签或标题以决定是否为 major/minor/patch
+          if [[ "$PR_LABELS" == *"major"* ]] || [[ "$PR_TITLE" == *"BREAKING CHANGE"* ]] || [[ "$PR_BODY" == *"BREAKING CHANGE"* ]]; then
+            BUMP_TYPE="major"
+          elif [[ "$PR_LABELS" == *"minor"* ]] || [[ "$PR_LABELS" == *"feature"* ]] || [[ "$PR_TITLE" == feat:* ]] || [[ "$PR_TITLE" == feature:* ]]; then
+            BUMP_TYPE="minor"
+          fi
+          
+          echo "BUMP_TYPE=$BUMP_TYPE" >> $GITHUB_ENV
+          echo "Determined bump type: $BUMP_TYPE"
+
+      - name: Calculate Next Version
+        id: calc_version
+        run: |
+          # 获取最新的 tag (假设格式为 vX.Y.Z)，如果没有则默认为 v0.0.0
+          LATEST_TAG=$(git describe --tags --abbrev=0 --match "v*" 2>/dev/null || echo "v0.0.0")
+          echo "Latest tag: $LATEST_TAG"
+          
+          # 移除 'v' 前缀
+          VERSION_NUM=${LATEST_TAG#v}
+          
+          # 拆分 major, minor, patch
+          IFS='.' read -r -a PARTS <<< "$VERSION_NUM"
+          MAJOR=${PARTS[0]:-0}
+          MINOR=${PARTS[1]:-0}
+          PATCH=${PARTS[2]:-0}
+          
+          if [ "$BUMP_TYPE" == "major" ]; then
+            MAJOR=$((MAJOR + 1))
+            MINOR=0
+            PATCH=0
+          elif [ "$BUMP_TYPE" == "minor" ]; then
+            MINOR=$((MINOR + 1))
+            PATCH=0
+          else
+            PATCH=$((PATCH + 1))
+          fi
+          
+          NEXT_VERSION="v${MAJOR}.${MINOR}.${PATCH}"
+          echo "NEXT_VERSION=$NEXT_VERSION" >> $GITHUB_ENV
+          echo "Calculated next version: $NEXT_VERSION"
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.NEXT_VERSION }}
+          name: Release ${{ env.NEXT_VERSION }}
+          body: |
+            Automated release generated from merged Pull Request: #${{ github.event.pull_request.number }}
+            Title: ${{ github.event.pull_request.title }}
+            Merged by: ${{ github.actor }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Sync main to developer
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # 获取最新的分支信息
+          git fetch origin
+          
+          # 检出 developer 分支，如果不存在则报错
+          git checkout developer || echo "Developer branch does not exist, skipping sync"
+          
+          if [ "$(git branch --show-current)" == "developer" ]; then
+            # 将 main 分支的代码合并到 developer
+            git merge origin/main --no-edit -m "chore: auto-sync main into developer after PR merge"
+            
+            # 推送回远程 developer 分支
+            git push origin developer
+          fi

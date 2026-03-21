@@ -156,7 +156,7 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
     }
 
     // 3. 处理器/内存与算力/创造力生成
-    if (nextState.trust > 0 || nextState.processors > 1) {
+    if (nextState.trust > 0 || nextState.processors > 1 && !nextState.hypnoDronesReleased) {
       // 临时算力 (tempOps) 衰减逻辑
       if (nextState.tempOps > 0) {
         nextState.opFadeTimer++;
@@ -211,16 +211,26 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
 
     // 股市投资逻辑
     if (nextState.investmentEngineUnlocked && nextState.investmentBankroll > 0 && !nextState.hypnoDronesReleased) {
-      // 投资等级加成 (原版每级提升 1% 的收益概率阈值)
-      const engineBonus = nextState.investmentLevel * 0.01;
-      
-      let volatility = 0.02; // Low risk default
-      if (nextState.riskLevel === 'med') volatility = 0.05;
-      if (nextState.riskLevel === 'high') volatility = 0.10;
+      // 重新平衡投资逻辑，对齐原版的节奏
+      // volatility 控制单次波动的幅度
+      let volatility = 0.002; // Low risk default (单次tick最大波动0.2%)
+      if (nextState.riskLevel === 'med') volatility = 0.006;
+      if (nextState.riskLevel === 'high') volatility = 0.015;
 
-      // 模拟市场趋势：基础 48% 胜率 + 等级加成
-      // 原版是针对单只股票计算，这里简化为对整个本金计算，但逻辑权重保持一致
-      const marketTrend = (Math.random() - 0.48) * volatility + engineBonus; 
+      // engineEdge 是由投资引擎等级带来的“胜率/算法优势”。
+      // 设定为每级提供大约 0.25% 每秒的期望收益（即每 tick 0.00025）
+      const engineEdge = nextState.investmentLevel * 0.00025;
+      
+      // 抵消几何平均数带来的波动损耗 (Volatility Drag)
+      const dragCompensation = (volatility * volatility) / 2;
+
+      // 基础市场存在微弱的正向漂移 (模拟整体经济向上，每秒约 0.1%)
+      const baseDrift = 0.0001;
+
+      // 最终的单次随机波动 = 随机游走 + 优势 + 基础增长 + 损耗补偿
+      // (Math.random() - 0.5) * 2 产生 -1 到 1 的随机数
+      const randomWalk = (Math.random() - 0.5) * 2 * volatility;
+      const marketTrend = randomWalk + engineEdge + baseDrift + dragCompensation; 
       
       nextState.investmentBankroll = Math.max(0, nextState.investmentBankroll * (1 + marketTrend));
     }
