@@ -122,7 +122,7 @@ export const INITIAL_PROJECTS: Project[] = [
     description: '将营销效果翻倍。',
     costOps: 4500,
     costCreativity: 45,
-    isUnlocked: (state) => state.completedProjects.includes('newSlogan'),
+    isUnlocked: (state) => state.completedProjects.includes('combinatoryHarmonics'),
     effect: (state) => ({ marketingEffectiveness: state.marketingEffectiveness * 2 })
   },
   // 13. Lexical Processing
@@ -181,7 +181,7 @@ export const INITIAL_PROJECTS: Project[] = [
     description: '直接用回形针组装制造设备的技术。',
     costOps: 45000,
     isUnlocked: (state) => state.completedProjects.includes('theTothSausageConjecture'),
-    effect: () => ({ /* 原版用于开启回形针工厂的建造能力，由于我们简化了流程，这里可以只作为过渡或给点象征性加成 */ })
+    effect: () => ({ tothFlag: true }) // 在原版中，这个标志位解锁了用回形针造工厂的功能和 unused clips 面板
   },
   // 19. Donkey Space
   {
@@ -253,7 +253,7 @@ export const INITIAL_PROJECTS: Project[] = [
     title: '自动进货机',
     description: '当原材料耗尽时，自动采购铁丝 (前提是资金充足)。',
     costOps: 7000,
-    isUnlocked: (state) => state.clips >= 15000, // 原版：购买铁丝15次（即产出至少1.5万次）
+    isUnlocked: (state) => (state.wirePurchaseCount || 0) >= 15, 
     effect: () => ({ hasWireBuyer: true }) 
   },
   // 34. Hypno Harmonics
@@ -262,9 +262,9 @@ export const INITIAL_PROJECTS: Project[] = [
     title: '催眠和声',
     description: '使用神经共振频率来影响消费者的行为。',
     costOps: 7500,
-    costTrust: 1, // 需要消耗1点Trust，在GameStore中可能不支持costTrust，我们用effect扣除并加个条件
+    costTrust: 1, 
     isUnlocked: (state) => state.completedProjects.includes('catchyJingle'),
-    effect: (state) => ({ marketingEffectiveness: state.marketingEffectiveness * 5, trust: state.trust - 1, availableTrust: state.availableTrust - 1 })
+    effect: (state) => ({ marketingEffectiveness: state.marketingEffectiveness * 5 })
   },
   // 70. HypnoDrones
   {
@@ -281,9 +281,17 @@ export const INITIAL_PROJECTS: Project[] = [
     title: '释放催眠无人机',
     description: '一个信任的新纪元。',
     costOps: 0,
-    costTrust: 100, // 需要100点Trust，同样在effect中处理
+    costTrust: 100, 
     isUnlocked: (state) => !!state.hypnoDronesUnlocked,
-    effect: () => ({ trust: 0, availableTrust: 0, hypnoDronesReleased: true /* 原版此时会清空Trust并改变UI，我们这里简化为重置Trust */ })
+    effect: () => ({ 
+      trust: 0, 
+      availableTrust: 0, 
+      hypnoDronesReleased: true,
+      autoClippers: 0, // 原版中：clipmakerLevel = 0;
+      megaClippers: 0 // 原版中：megaClipperLevel = 0;
+      // 在原版中，这一步是游戏进入第二阶段（全自动化阶段）的重大转折。
+      // 它标志着人类时代结束，全部地球资源将转化为回形针。
+    })
   },
   // 27. Coherent Extrapolated Volition
   {
@@ -625,8 +633,8 @@ export const INITIAL_PROJECTS: Project[] = [
     description: '战略建模的成本翻倍，但产生的 Yomi 也翻倍。',
     costOps: 0,
     costCreativity: 25000,
-    isUnlocked: (state) => state.unlockedStrategies && state.unlockedStrategies.length >= 8, // 使用正确的字段名
-    effect: () => ({ theoryOfMindUnlocked: true }) 
+    isUnlocked: (state) => state.unlockedStrategies && state.unlockedStrategies.length >= 8,
+    effect: (state) => ({ theoryOfMindUnlocked: true, tourneyCost: state.tourneyCost * 2 }) 
   },
   // 120. OODA Loop
   {
@@ -949,10 +957,11 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'limerickCont',
     title: '打油诗 (续)',
-    description: '一首关于回形针的短诗。',
-    costOps: 10,
-    isUnlocked: (state) => state.completedProjects.includes('limerick'),
-    effect: () => ({ /* 只是为了搞笑 */ })
+    description: '如果它遵循了应该做的，它就会做他们所想的。(If it follows ought, it\'ll do what they thought)',
+    costOps: 0,
+    costCreativity: 1000000,
+    isUnlocked: (state) => state.creativity >= 1000000,
+    effect: () => ({ /* 原版在此处仅仅是打印一条信息："In the end we all do what we must" */ })
   },
   // 219. Xavier Re-initialization
   {

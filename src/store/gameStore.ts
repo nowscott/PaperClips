@@ -8,7 +8,7 @@ import { createManufacturingSlice, initialManufacturingState } from './slices/ma
 import type { ManufacturingSlice } from './slices/manufacturingSlice';
 import { createComputingSlice, initialComputingState } from './slices/computingSlice';
 import type { ComputingSlice } from './slices/computingSlice';
-import { createProjectSlice, initialProjectState } from './slices/projectSlice';
+import { createProjectSlice, INITIAL_PROJECT_STATE } from './slices/projectSlice';
 import type { ProjectSlice } from './slices/projectSlice';
 import { createInvestmentSlice, initialInvestmentState } from './slices/investmentSlice';
 import type { InvestmentSlice } from './slices/investmentSlice';
@@ -53,7 +53,7 @@ const initialState = {
   ...initialBusinessState,
   ...initialManufacturingState,
   ...initialComputingState,
-  ...initialProjectState,
+  ...INITIAL_PROJECT_STATE,
   ...initialInvestmentState,
   ...initialStrategyState,
   ...initialLogState,

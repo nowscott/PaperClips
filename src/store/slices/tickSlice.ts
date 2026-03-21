@@ -44,6 +44,9 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
       nextState.unsoldInventory += clipsProduced;
       nextState.wire -= clipsProduced;
       totalClipsProducedThisTick += clipsProduced;
+      if (nextState.tothFlag) {
+        nextState.unusedClips += clipsProduced;
+      }
     }
 
     // 巨型制造机逻辑 (MegaClippers) - 产量是普通制造机的 500 倍
@@ -59,6 +62,9 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
       nextState.unsoldInventory += megaClipsProduced;
       nextState.wire -= megaClipsProduced;
       totalClipsProducedThisTick += megaClipsProduced;
+      if (nextState.tothFlag) {
+        nextState.unusedClips += megaClipsProduced;
+      }
     }
 
     let totalSalesThisTick = 0;
@@ -251,6 +257,9 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
         nextState.unsoldInventory += factoryProduction;
         nextState.wire -= factoryProduction;
         totalClipsProducedThisTick += factoryProduction;
+        if (nextState.tothFlag) {
+          nextState.unusedClips += factoryProduction;
+        }
       }
     }
 
