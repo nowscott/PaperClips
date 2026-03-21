@@ -28,18 +28,18 @@ export const Computing = () => {
   if (trust === 0 && clips < nextTrustStage) {
     const progress = Math.min(100, (clips / nextTrustStage) * 100);
     return (
-      <div className="panel flex flex-col gap-4 opacity-50">
-        <div className="py-6 flex flex-col items-center justify-center gap-4">
-          <p className="text-sm text-evolve-textDim tracking-wider">
+      <div className="panel flex flex-col gap-2 opacity-50">
+        <div className="py-2 flex flex-col items-center justify-center gap-2">
+          <p className="text-xs text-evolve-textDim tracking-wider">
             系统离线...
           </p>
-          <div className="panel-inner w-full">
-            <div className="flex justify-between text-xs mb-2 text-evolve-textDim tracking-wider">
+          <div className="panel-inner w-full py-1.5 px-2">
+            <div className="flex justify-between text-[10px] mb-1 text-evolve-textDim tracking-wider">
               <span>获取信任进度</span>
-              <span>{formatNumber(clips)} / {formatNumber(nextTrustStage)}</span>
+              <span className="font-mono">{formatNumber(clips)} / {formatNumber(nextTrustStage)}</span>
             </div>
-            <div className="progress-bar-container">
-              <div className="progress-bar-fill bg-evolve-textDim" style={{ width: `${progress}%` }} />
+            <div className="w-full h-1 bg-evolve-border rounded-full overflow-hidden flex">
+              <div className="h-full bg-evolve-textDim transition-all duration-300" style={{ width: `${progress}%` }} />
             </div>
           </div>
         </div>
@@ -49,35 +49,32 @@ export const Computing = () => {
 
   // 信任值系统已解锁
   return (
-    <div className="panel flex flex-col gap-3 border-evolve-accent/30 shadow-[0_0_15px_rgba(0,168,255,0.05)]">
-      {/* 信任值概览 (紧凑行) */}
-      <div className="flex justify-between items-center bg-evolve-bg/50 p-2 rounded border border-evolve-border/50">
-        <div className="flex flex-col">
-          <div className="flex items-center gap-1.5">
-            <Unlock className="w-3.5 h-3.5 text-evolve-textMain" />
-            <span className="text-xs text-evolve-textDim tracking-wider font-bold">信任值</span>
-          </div>
-          <span className="text-[10px] text-evolve-textDim opacity-70 mt-1">下一级: {formatNumber(nextTrustStage)} 件</span>
+    <div className="panel flex flex-col gap-2 border-evolve-accent/30 shadow-[0_0_15px_rgba(0,168,255,0.05)]">
+      {/* 信任值概览 (单行极简) */}
+      <div className="flex justify-between items-center bg-evolve-bg/50 p-1.5 rounded border border-evolve-border/50">
+        <div className="flex items-center gap-2">
+          <Unlock className="w-3.5 h-3.5 text-evolve-textMain" />
+          <span className="text-xs font-bold leading-none">信任值: <span className="font-mono text-sm">{formatNumber(trust)}</span></span>
+          <span className="text-[10px] text-evolve-textDim opacity-70 border-l border-evolve-border/50 pl-2 hidden sm:inline">下一级: {formatNumber(nextTrustStage)} 件</span>
         </div>
-        <div className="flex flex-col items-end">
-          <span className="font-mono text-lg leading-none">{formatNumber(trust)}</span>
-          <span className="text-[10px] text-evolve-accent font-mono mt-1">可用: {formatNumber(availableTrust)}</span>
+        <div className="text-[10px] text-evolve-accent font-mono bg-evolve-accent/10 px-1.5 py-0.5 rounded border border-evolve-accent/20">
+          可用: {formatNumber(availableTrust)}
         </div>
       </div>
 
       {/* 信任值分配 */}
-      <div className="grid grid-cols-2 gap-2 mt-1">
+      <div className="grid grid-cols-2 gap-1.5">
         {/* 处理器 */}
-        <div className="flex justify-between items-center bg-evolve-border/10 p-1.5 rounded border border-evolve-border/30">
-          <div className="flex flex-col gap-1">
+        <div className="flex justify-between items-center bg-evolve-bg/50 p-1.5 rounded border border-evolve-border/50">
+          <div className="flex flex-col gap-0.5">
             <div className="flex items-center gap-1">
               <Cpu className="w-3 h-3 text-evolve-textDim" />
-              <span className="text-[10px] text-evolve-textDim font-bold">处理器</span>
+              <span className="text-[10px] font-bold leading-none">处理器</span>
             </div>
-            <span className="font-mono text-xs">{formatNumber(processors)}</span>
+            <span className="font-mono text-sm leading-none pl-4">{formatNumber(processors)}</span>
           </div>
           <button 
-            className="btn-evolve text-[10px] py-1 px-2"
+            className="btn-evolve text-[10px] py-0.5 px-2 h-fit"
             onClick={addProcessor}
             disabled={availableTrust <= 0}
           >
@@ -86,16 +83,16 @@ export const Computing = () => {
         </div>
 
         {/* 内存 */}
-        <div className="flex justify-between items-center bg-evolve-border/10 p-1.5 rounded border border-evolve-border/30">
-          <div className="flex flex-col gap-1">
+        <div className="flex justify-between items-center bg-evolve-bg/50 p-1.5 rounded border border-evolve-border/50">
+          <div className="flex flex-col gap-0.5">
             <div className="flex items-center gap-1">
               <HardDrive className="w-3 h-3 text-evolve-textDim" />
-              <span className="text-[10px] text-evolve-textDim font-bold">内存</span>
+              <span className="text-[10px] font-bold leading-none">内存</span>
             </div>
-            <span className="font-mono text-xs">{formatNumber(memory)}</span>
+            <span className="font-mono text-sm leading-none pl-4">{formatNumber(memory)}</span>
           </div>
           <button 
-            className="btn-evolve text-[10px] py-1 px-2"
+            className="btn-evolve text-[10px] py-0.5 px-2 h-fit"
             onClick={addMemory}
             disabled={availableTrust <= 0}
           >
@@ -105,12 +102,12 @@ export const Computing = () => {
       </div>
 
       {/* 算力 Operations */}
-      <div className="flex flex-col gap-1 mt-1">
+      <div className="flex flex-col gap-0.5">
         <div className="flex justify-between items-end">
           <span className="text-[10px] text-evolve-textDim tracking-wider font-bold">算力</span>
           <span className="font-mono text-[10px]">{formatNumber(Math.floor(ops))} / {formatNumber(maxOps)}</span>
         </div>
-        <div className="w-full h-1.5 bg-evolve-border rounded-full overflow-hidden flex">
+        <div className="w-full h-1 bg-evolve-border rounded-full overflow-hidden flex">
           <div 
             className="h-full bg-evolve-textMain transition-all duration-300" 
             style={{ width: `${(ops / maxOps) * 100}%` }}
@@ -120,9 +117,9 @@ export const Computing = () => {
 
       {/* 创造力 Creativity (如果已解锁) */}
       {creativityOn && (
-        <div className="flex justify-between items-center bg-evolve-accent/5 p-1.5 rounded border border-evolve-accent/20 mt-1">
-          <span className="text-[10px] text-evolve-accent tracking-wider font-bold">创造力</span>
-          <span className="font-mono text-sm text-evolve-accent leading-none">{formatNumber(Math.floor(creativity))}</span>
+        <div className="flex justify-between items-center bg-evolve-accent/5 p-1 rounded border border-evolve-accent/20">
+          <span className="text-[10px] text-evolve-accent tracking-wider font-bold pl-1">创造力</span>
+          <span className="font-mono text-sm text-evolve-accent leading-none pr-1">{formatNumber(Math.floor(creativity))}</span>
         </div>
       )}
     </div>

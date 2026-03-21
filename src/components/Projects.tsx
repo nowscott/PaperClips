@@ -36,8 +36,8 @@ export const Projects = () => {
   }
 
   return (
-    <div className="panel flex flex-col gap-3 border-evolve-success/30 shadow-[0_0_15px_rgba(var(--color-success),0.05)]">
-      <div className="flex flex-col gap-2">
+    <div className="panel flex flex-col gap-2 border-evolve-success/30 shadow-[0_0_15px_rgba(var(--color-success),0.05)]">
+      <div className="flex flex-col gap-1.5">
         {/* 可用项目列表 */}
         {availableProjects.length > 0 ? (
           availableProjects.map((project) => {
@@ -50,16 +50,16 @@ export const Projects = () => {
             const canAfford = canAffordOps && canAffordFunds && canAffordCreativity && canAffordYomi && canAffordTrust;
 
             return (
-              <div key={project.id} className="flex flex-col bg-evolve-bg/50 p-2 rounded border border-evolve-border/50 gap-1.5 transition-all hover:border-evolve-success/30">
+              <div key={project.id} className="flex flex-col bg-evolve-bg/50 p-1.5 rounded border border-evolve-border/50 gap-1 transition-all hover:border-evolve-success/30">
                 <div className="flex justify-between items-start gap-2">
-                  <div className="flex flex-col gap-1 flex-1">
+                  <div className="flex flex-col flex-1">
                     <span className="text-xs font-bold text-evolve-textMain leading-tight">{project.title}</span>
-                    <p className="text-[10px] text-evolve-textDim leading-tight opacity-90">
+                    <p className="text-[10px] text-evolve-textDim leading-tight opacity-90 mt-0.5">
                       {project.description}
                     </p>
                   </div>
                   <button
-                    className="btn-evolve text-[10px] py-1 px-3 border-evolve-success text-evolve-success hover:bg-evolve-success/20 disabled:border-evolve-border disabled:text-evolve-textDim whitespace-nowrap shrink-0 h-fit"
+                    className="btn-evolve text-[10px] py-0.5 px-2 border-evolve-success text-evolve-success hover:bg-evolve-success/20 disabled:border-evolve-border disabled:text-evolve-textDim whitespace-nowrap shrink-0 h-fit"
                     onClick={() => completeProject(project.id)}
                     disabled={!canAfford}
                   >
@@ -67,7 +67,7 @@ export const Projects = () => {
                   </button>
                 </div>
                 
-                <div className="flex gap-3 text-[10px] font-mono flex-wrap bg-evolve-border/10 p-1 rounded">
+                <div className="flex gap-2 text-[10px] font-mono flex-wrap bg-evolve-border/10 px-1 py-0.5 rounded">
                   {project.costOps > 0 && (
                     <span className={canAffordOps ? 'text-evolve-textDim' : 'text-evolve-danger'}>
                       算力: {project.costOps}
@@ -98,19 +98,19 @@ export const Projects = () => {
             );
           })
         ) : (
-          <div className="text-center text-[10px] text-evolve-textDim italic py-2">
+          <div className="text-center text-[10px] text-evolve-textDim italic py-1">
             等待新发现...
           </div>
         )}
 
         {/* 已完成项目记录 */}
         {recentCompleted.length > 0 && (
-          <div className="mt-2 border-t border-evolve-border/50 pt-2">
-            <h3 className="text-[10px] text-evolve-textDim tracking-wider mb-1.5 font-bold">近期已完成</h3>
-            <div className="flex flex-col gap-1">
+          <div className="mt-1 border-t border-evolve-border/50 pt-1.5">
+            <h3 className="text-[10px] text-evolve-textDim tracking-wider mb-1 font-bold">近期已完成</h3>
+            <div className="flex flex-col gap-0.5">
               {recentCompleted.map((p: Project) => (
                 <div key={p.id} className="flex items-center gap-1.5 text-[10px] text-evolve-textDim opacity-70">
-                  <CheckCircle2 className="w-3 h-3 text-evolve-success shrink-0" />
+                  <CheckCircle2 className="w-2.5 h-2.5 text-evolve-success shrink-0" />
                   <span className="truncate">{p.title}</span>
                 </div>
               ))}
