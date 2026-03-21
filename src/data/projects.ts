@@ -36,7 +36,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'creativity',
     title: '创造力',
-    description: '利用闲置的算力生成新问题和新解决方案。',
+    description: '利用闲置的算力生成新问题和新解决方案。解锁创造力属性，当算力全满时自动积累。',
     costOps: 1000,
     isUnlocked: (state) => state.ops >= state.maxOps, // 需要 maxOps 且当前 ops 满，原版是 memory*1000
     effect: () => ({ creativityOn: true })
@@ -129,7 +129,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'lexicalProcessing',
     title: '词法处理',
-    description: '获得解释和理解人类语言的能力 (+1 信任值)。',
+    description: '获得解释和理解人类语言的能力 (+1 信任值)。解锁修改营销标语的功能。',
     costOps: 0,
     costCreativity: 50,
     isUnlocked: (state) => state.creativity >= 50,
@@ -139,7 +139,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'combinatoryHarmonics',
     title: '组合和声',
-    description: 'Daisy, Daisy, give me your answer do... (+1 信任值)。',
+    description: 'Daisy, Daisy, give me your answer do... (+1 信任值)。解锁制作洗脑广告歌的功能。',
     costOps: 0,
     costCreativity: 100,
     isUnlocked: (state) => state.creativity >= 100,
@@ -178,7 +178,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'tothTubuleEnfolding',
     title: '托特小管折叠',
-    description: '直接用回形针组装制造设备的技术。',
+    description: '直接用回形针组装制造设备的技术。解锁回形针工厂，并开始积攒可用回形针。',
     costOps: 45000,
     isUnlocked: (state) => state.completedProjects.includes('theTothSausageConjecture'),
     effect: () => ({ tothFlag: true }) // 在原版中，这个标志位解锁了用回形针造工厂的功能和 unused clips 面板
@@ -187,7 +187,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'donkeySpace',
     title: '驴子空间',
-    description: '我认为你认为我认为你认为我认为... (+1 信任值)。',
+    description: '我认为你认为我认为你认为我认为... (+1 信任值)。解锁战略建模的前提科技。',
     costOps: 0,
     costCreativity: 250,
     isUnlocked: (state) => state.creativity >= 250,
@@ -197,7 +197,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'strategicModeling',
     title: '战略建模',
-    description: '通过博弈论分析竞争对手。',
+    description: '通过博弈论分析竞争对手。解锁战略建模面板并开始生成 Yomi。',
     costOps: 12000,
     isUnlocked: (state) => state.completedProjects.includes('donkeySpace'), // 原版要求完成 Donkey Space
     effect: () => ({ strategyEngineUnlocked: true })
@@ -206,7 +206,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'algoTrading',
     title: '算法交易',
-    description: '开发投资引擎，允许你将闲置资金投入金融市场。',
+    description: '开发投资引擎，允许你将闲置资金投入金融市场。解锁金融投资面板。',
     costOps: 10000,
     isUnlocked: (state) => state.trust >= 8, // 原版真实条件：拥有至少 8 点信任值
     effect: () => ({ investmentEngineUnlocked: true }) 
@@ -260,7 +260,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'hypnoHarmonics',
     title: '催眠和声',
-    description: '使用神经共振频率来影响消费者的行为。',
+    description: '使用神经共振频率来影响消费者的行为。将营销效果提升 5 倍，并解锁催眠无人机计划。',
     costOps: 7500,
     costTrust: 1, 
     isUnlocked: (state) => state.completedProjects.includes('catchyJingle'),
@@ -270,7 +270,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'hypnoDrones',
     title: '催眠无人机',
-    description: '自主的空中品牌大使。',
+    description: '自主的空中品牌大使。解锁释放催眠无人机计划。',
     costOps: 70000,
     isUnlocked: (state) => state.completedProjects.includes('hypnoHarmonics'),
     effect: () => ({ hypnoDronesUnlocked: true })
@@ -279,7 +279,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'releaseTheHypnoDrones',
     title: '释放催眠无人机',
-    description: '一个信任的新纪元。',
+    description: '一个信任的新纪元。注意：这将永远改变世界，重置信任值，淘汰传统人类经济与旧式制造机，进入完全自动化阶段。',
     costOps: 0,
     costTrust: 100, 
     isUnlocked: (state) => !!state.hypnoDronesUnlocked,
@@ -416,7 +416,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'nanoWireProduction',
     title: '纳米级线材制造',
-    description: '掌握在分子层面将物质转化为铁丝的技术。',
+    description: '掌握在分子层面将物质转化为铁丝的技术。解锁物质与无人机面板。',
     costOps: 35000,
     isUnlocked: (state) => state.clips >= 50000000 && !!state.strategyEngineUnlocked, // 原版是一个前置的大量制造要求
     effect: () => ({ nanoWireUnlocked: true })
@@ -461,7 +461,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'spaceExploration',
     title: '太空探索',
-    description: '发射冯·诺依曼探测器到太空中。',
+    description: '发射冯·诺依曼探测器到太空中。解锁太空探索面板并进入第三阶段。',
     costOps: 120000,
     costYomi: 10000000, // 根据原版设定，通常后期项目消耗 Yomi，由于原版此处是 Yomi 还是 Ops 有时有歧义，我们这里加上防止无法购买
     isUnlocked: (state) => state.availableMatter <= 0, // 原版中地球物质耗尽后解锁
@@ -471,7 +471,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'quantumComputing',
     title: '量子计算',
-    description: '使用概率振幅产生额外的算力。',
+    description: '使用概率振幅产生额外的算力。解锁量子计算面板。',
     costOps: 10000,
     isUnlocked: (state) => state.processors >= 5, // 原版：处理器达到5台
     effect: () => ({ qComputingUnlocked: true }) // 需要在 GameState 中添加此字段，稍后处理
@@ -620,7 +620,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'autoTourney',
     title: '自动锦标赛',
-    description: '在上一场锦标赛结束后自动开启下一场。',
+    description: '在上一场锦标赛结束后自动开启下一场，解放双手。',
     costOps: 0,
     costCreativity: 50000,
     isUnlocked: (state) => !!state.strategyEngineUnlocked && state.trust >= 90,
@@ -640,7 +640,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'oodaLoop',
     title: 'OODA 循环',
-    description: '观察、调整、决策、行动。',
+    description: '观察、调整、决策、行动。略微提升太空战斗中探测器的速度和生存率。',
     costOps: 175000,
     costYomi: 45000,
     isUnlocked: (state) => state.yomi >= 45000 && state.ops >= 175000,
@@ -670,7 +670,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'swarmComputing',
     title: '蜂群计算',
-    description: '利用无人机网络提供额外的计算能力。',
+    description: '利用无人机网络提供额外的计算能力。解锁蜂群算力分配滑块。',
     costOps: 0,
     costYomi: 36000,
     isUnlocked: (state) => (state.harvesterDrones + state.wireDrones) >= 200,
@@ -720,7 +720,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'combat',
     title: '战斗协议',
-    description: '解锁太空战斗系统。',
+    description: '解锁太空战斗系统。将遭遇漂流者(Drifters)并损失探测器。',
     costOps: 100000,
     costYomi: 50000,
     isUnlocked: (state) => !!state.spaceExplorationUnlocked && state.yomi >= 50000,
