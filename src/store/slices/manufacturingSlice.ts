@@ -8,6 +8,7 @@ export interface ManufacturingSlice {
   autoClippers: number;
   autoClipperCost: number;
   clipperBoost: number;
+  megaClipperBoost: number;
   megaClippersUnlocked: boolean;
   megaClippers: number;
   megaClipperCost: number;
@@ -35,9 +36,10 @@ export const initialManufacturingState = {
   autoClippers: 0,
   autoClipperCost: 5.00,
   clipperBoost: 1,
+  megaClipperBoost: 1,
   megaClippersUnlocked: false,
   megaClippers: 0,
-  megaClipperCost: 500,
+  megaClipperCost: 1000,
   hasWireBuyer: false,
   wireBuyerOn: true,
   clipsPerSecond: 0,
@@ -77,7 +79,7 @@ export const createManufacturingSlice: StateCreator<GameState, [], [], Manufactu
       return {
         megaClippers: nextLevel,
         funds: state.funds - state.megaClipperCost,
-        megaClipperCost: parseFloat((Math.pow(1.07, nextLevel) * 1000).toFixed(2))
+        megaClipperCost: Math.pow(1.07, nextLevel) * 1000
       }
     }
     return state;

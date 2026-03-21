@@ -46,9 +46,22 @@ export const createStrategySlice: StateCreator<GameState, [], [], StrategySlice>
   })),
 
   runTourney: () => set((state: GameState) => {
-    if (state.ops >= state.tourneyCost && !state.tourneyInProg) {
+    const totalOps = state.ops + state.tempOps;
+    if (totalOps >= state.tourneyCost && !state.tourneyInProg) {
+      let newOps = state.ops;
+      let newTempOps = state.tempOps;
+      
+      if (newOps >= state.tourneyCost) {
+        newOps -= state.tourneyCost;
+      } else {
+        const remaining = state.tourneyCost - newOps;
+        newOps = 0;
+        newTempOps = Math.max(0, newTempOps - remaining);
+      }
+
       return {
-        ops: state.ops - state.tourneyCost,
+        ops: newOps,
+        tempOps: newTempOps,
         tourneyInProg: true,
         tourneyProgress: 0,
         matchResults: [],

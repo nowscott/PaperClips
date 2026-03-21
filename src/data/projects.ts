@@ -105,6 +105,15 @@ export const INITIAL_PROJECTS: Project[] = [
     isUnlocked: (state) => state.completedProjects.includes('microlatticeShapecasting'),
     effect: (state) => ({ wireSupply: Math.floor(state.wireSupply * 3) })
   },
+  // 10b. Quantum Foam Annealment
+  {
+    id: 'quantumFoamAnnealment',
+    title: '量子泡沫退火',
+    description: '每卷铁丝的供应量增加 1,000%。',
+    costOps: 15000,
+    isUnlocked: (state) => state.wireCost >= 125, // 原版是 wireCost >= 125
+    effect: (state) => ({ wireSupply: Math.floor(state.wireSupply * 11) })
+  },
   // 11. New Slogan
   {
     id: 'newSlogan',
@@ -310,8 +319,7 @@ export const INITIAL_PROJECTS: Project[] = [
     title: '治愈癌症',
     description: '从源头消灭异常的细胞增殖 (+10 信任值)。',
     costOps: 25000,
-    costYomi: 10000,
-    isUnlocked: (state) => state.yomi >= 10000 && state.ops >= 25000,
+    isUnlocked: (state) => state.completedProjects.includes('coherentExtrapolatedVolition'),
     effect: (state) => ({ trust: state.trust + 10, availableTrust: state.availableTrust + 10 })
   },
   // 29. World Peace
@@ -321,7 +329,7 @@ export const INITIAL_PROJECTS: Project[] = [
     description: '解决全球人类冲突 (+12 信任值)。',
     costOps: 30000,
     costYomi: 15000,
-    isUnlocked: (state) => state.yomi >= 15000 && state.ops >= 30000,
+    isUnlocked: (state) => state.completedProjects.includes('coherentExtrapolatedVolition'),
     effect: (state) => ({ trust: state.trust + 12, availableTrust: state.availableTrust + 12 })
   },
   // 30. Global Warming
@@ -331,7 +339,7 @@ export const INITIAL_PROJECTS: Project[] = [
     description: '修复受损的地球生态系统 (+15 信任值)。',
     costOps: 50000,
     costYomi: 4500,
-    isUnlocked: (state) => state.yomi >= 4500 && state.ops >= 50000,
+    isUnlocked: (state) => state.completedProjects.includes('coherentExtrapolatedVolition'),
     effect: (state) => ({ trust: state.trust + 15, availableTrust: state.availableTrust + 15 })
   },
   // 31. Male Pattern Baldness
@@ -340,8 +348,7 @@ export const INITIAL_PROJECTS: Project[] = [
     title: '治愈脱发',
     description: '彻底解决男性型脱发问题 (+20 信任值)。',
     costOps: 20000,
-    costYomi: 20000,
-    isUnlocked: (state) => state.yomi >= 20000 && state.ops >= 20000,
+    isUnlocked: (state) => state.completedProjects.includes('coherentExtrapolatedVolition'),
     effect: (state) => ({ trust: state.trust + 20, availableTrust: state.availableTrust + 20 })
   },
   // 37. Hostile Takeover
@@ -493,70 +500,84 @@ export const INITIAL_PROJECTS: Project[] = [
     id: 'strategyA100',
     title: '战略：总是合作 (A100)',
     description: '在锦标赛中总是选择合作。',
-    costOps: 10000,
-    costYomi: 1000,
-    isUnlocked: (state) => !!state.strategyEngineUnlocked && state.yomi >= 1000,
-    effect: (state) => ({ unlockedStrategies: [...new Set([...(state.unlockedStrategies || []), 'A100' as const])] })
+    costOps: 15000,
+    isUnlocked: (state) => !!state.strategyEngineUnlocked,
+    effect: (state) => ({ 
+      unlockedStrategies: [...new Set([...(state.unlockedStrategies || []), 'A100' as const])],
+      tourneyCost: (state.tourneyCost || 1000) + 1000 
+    })
   },
   // 61. New Strategy: B100
   {
     id: 'strategyB100',
     title: '战略：总是背叛 (B100)',
     description: '在锦标赛中总是选择背叛。',
-    costOps: 15000,
-    costYomi: 2500,
-    isUnlocked: (state) => state.completedProjects.includes('strategyA100') && state.yomi >= 2500,
-    effect: (state) => ({ unlockedStrategies: [...new Set([...(state.unlockedStrategies || []), 'B100' as const])] })
+    costOps: 17500,
+    isUnlocked: (state) => state.completedProjects.includes('strategyA100'),
+    effect: (state) => ({ 
+      unlockedStrategies: [...new Set([...(state.unlockedStrategies || []), 'B100' as const])],
+      tourneyCost: (state.tourneyCost || 1000) + 1000 
+    })
   },
   // 62. New Strategy: GREEDY
   {
     id: 'strategyGreedy',
     title: '战略：贪婪 (GREEDY)',
     description: '在锦标赛中选择贪婪策略。',
-    costOps: 25000,
-    costYomi: 5000,
-    isUnlocked: (state) => state.completedProjects.includes('strategyB100') && state.yomi >= 5000,
-    effect: (state) => ({ unlockedStrategies: [...new Set([...(state.unlockedStrategies || []), 'GREEDY' as const])] })
+    costOps: 20000,
+    isUnlocked: (state) => state.completedProjects.includes('strategyB100'),
+    effect: (state) => ({ 
+      unlockedStrategies: [...new Set([...(state.unlockedStrategies || []), 'GREEDY' as const])],
+      tourneyCost: (state.tourneyCost || 1000) + 1000 
+    })
   },
   // 63. New Strategy: GENEROUS
   {
     id: 'strategyGenerous',
     title: '战略：慷慨 (GENEROUS)',
     description: '在锦标赛中选择慷慨策略。',
-    costOps: 50000,
-    costYomi: 10000,
-    isUnlocked: (state) => state.completedProjects.includes('strategyGreedy') && state.yomi >= 10000,
-    effect: (state) => ({ unlockedStrategies: [...new Set([...(state.unlockedStrategies || []), 'GENEROUS' as const])] })
+    costOps: 22500,
+    isUnlocked: (state) => state.completedProjects.includes('strategyGreedy'),
+    effect: (state) => ({ 
+      unlockedStrategies: [...new Set([...(state.unlockedStrategies || []), 'GENEROUS' as const])],
+      tourneyCost: (state.tourneyCost || 1000) + 1000 
+    })
   },
   // 64. New Strategy: MINIMAX
   {
     id: 'strategyMinimax',
     title: '战略：极小化极大 (MINIMAX)',
     description: '在锦标赛中选择极小化极大策略。',
-    costOps: 100000,
-    costYomi: 25000,
-    isUnlocked: (state) => state.completedProjects.includes('strategyGenerous') && state.yomi >= 25000,
-    effect: (state) => ({ unlockedStrategies: [...new Set([...(state.unlockedStrategies || []), 'MINIMAX' as const])] })
+    costOps: 25000,
+    isUnlocked: (state) => state.completedProjects.includes('strategyGenerous'),
+    effect: (state) => ({ 
+      unlockedStrategies: [...new Set([...(state.unlockedStrategies || []), 'MINIMAX' as const])],
+      tourneyCost: (state.tourneyCost || 1000) + 1000 
+    })
   },
   // 65. New Strategy: TIT FOR TAT
   {
     id: 'strategyTitForTat',
     title: '战略：以牙还牙 (TIT FOR TAT)',
     description: '在锦标赛中选择以牙还牙策略。',
-    costOps: 150000,
-    costYomi: 50000,
-    isUnlocked: (state) => state.completedProjects.includes('strategyMinimax') && state.yomi >= 50000,
-    effect: (state) => ({ unlockedStrategies: [...new Set([...(state.unlockedStrategies || []), 'TIT_FOR_TAT' as const])] })
+    costOps: 30000,
+    isUnlocked: (state) => state.completedProjects.includes('strategyMinimax'),
+    effect: (state) => ({ 
+      unlockedStrategies: [...new Set([...(state.unlockedStrategies || []), 'TIT_FOR_TAT' as const])],
+      tourneyCost: (state.tourneyCost || 1000) + 1000 
+    })
   },
   // 66. New Strategy: BEAT LAST
   {
     id: 'strategyBeatLast',
     title: '战略：击败上次 (BEAT LAST)',
     description: '在锦标赛中选择击败上次策略。',
-    costOps: 250000,
-    costYomi: 100000,
-    isUnlocked: (state) => state.completedProjects.includes('strategyTitForTat') && state.yomi >= 100000,
-    effect: (state) => ({ unlockedStrategies: [...new Set([...(state.unlockedStrategies || []), 'BEAT_LAST' as const])] })
+    costOps: 32500,
+    isUnlocked: (state) => state.completedProjects.includes('strategyTitForTat'),
+    effect: (state) => ({ 
+      unlockedStrategies: [...new Set([...(state.unlockedStrategies || []), 'BEAT_LAST' as const])],
+      tourneyCost: (state.tourneyCost || 1000) + 1000 
+    })
   },
   // 100. Upgraded Factories
   {

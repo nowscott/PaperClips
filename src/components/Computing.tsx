@@ -9,8 +9,9 @@ export const Computing = () => {
     nextTrustStage, 
     clips, 
     processors, 
-    memory, 
-    ops, 
+    memory,
+    ops,
+    tempOps,
     maxOps,
     creativity,
     creativityOn,
@@ -115,12 +116,19 @@ export const Computing = () => {
       <div className="flex flex-col gap-0.5">
         <div className="flex justify-between items-end">
           <span className="text-[10px] text-evolve-textDim tracking-wider font-bold">算力</span>
-          <span className="font-mono text-[10px]">{formatNumber(Math.floor(ops))} / {formatNumber(maxOps)}</span>
+          <div className="flex items-baseline gap-1">
+            {tempOps > 0 && (
+              <span className="text-[9px] text-evolve-accent font-mono animate-pulse">
+                (+{formatNumber(Math.floor(tempOps))})
+              </span>
+            )}
+            <span className="font-mono text-[10px]">{formatNumber(Math.floor(ops + tempOps))} / {formatNumber(maxOps)}</span>
+          </div>
         </div>
         <div className="w-full h-1 bg-evolve-border rounded-full overflow-hidden flex">
           <div 
             className="h-full bg-evolve-textMain transition-all duration-300" 
-            style={{ width: `${(ops / maxOps) * 100}%` }}
+            style={{ width: `${Math.min(100, ((ops + tempOps) / maxOps) * 100)}%` }}
           />
         </div>
       </div>
