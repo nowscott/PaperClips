@@ -44,6 +44,7 @@ export interface SpaceSlice {
   
   // 后期科技解锁
   autoTourneyUnlocked: boolean;
+  autoTourneyStatus: boolean;
   theoryOfMindUnlocked: boolean;
   nameTheBattlesUnlocked: boolean;
   combatUnlocked: boolean;
@@ -54,9 +55,10 @@ export interface SpaceSlice {
   decreaseProbeStat: (statKey: keyof Pick<SpaceSlice, 'probeSpeed' | 'probeExploration' | 'probeReplication' | 'probeHazard' | 'probeFactory' | 'probeHarvester' | 'probeWire' | 'probeCombat'>) => void;
   triggerVictory: () => void;
   resetForPrestige: (type: 'universe' | 'simLevel') => void;
+  toggleAutoTourney: () => void;
 }
 
-export const initialSpaceState: Omit<SpaceSlice, 'launchProbe' | 'increaseProbeStat' | 'decreaseProbeStat' | 'triggerVictory' | 'resetForPrestige'> = {
+export const initialSpaceState: Omit<SpaceSlice, 'launchProbe' | 'increaseProbeStat' | 'decreaseProbeStat' | 'triggerVictory' | 'resetForPrestige' | 'toggleAutoTourney'> = {
   spaceExplorationUnlocked: false,
   oodaLoopUnlocked: false,
   probes: 0,
@@ -90,6 +92,7 @@ export const initialSpaceState: Omit<SpaceSlice, 'launchProbe' | 'increaseProbeS
   honor: 0,
   probeSurvival: 1,
   autoTourneyUnlocked: false,
+  autoTourneyStatus: false,
   theoryOfMindUnlocked: false,
   nameTheBattlesUnlocked: false,
   combatUnlocked: false,
@@ -98,6 +101,10 @@ export const initialSpaceState: Omit<SpaceSlice, 'launchProbe' | 'increaseProbeS
 export const createSpaceSlice: StateCreator<GameState, [], [], SpaceSlice> = (set) => ({
   ...initialSpaceState,
   
+  toggleAutoTourney: () => set((state) => ({
+    autoTourneyStatus: !state.autoTourneyStatus
+  })),
+
   launchProbe: () => set((state: GameState) => {
     if (state.clips >= state.probeCost) {
       return {

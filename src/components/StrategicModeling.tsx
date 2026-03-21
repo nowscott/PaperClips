@@ -26,6 +26,9 @@ export const StrategicModeling = () => {
     unlockedStrategies,
     tourneyProgress,
     matchResults,
+    autoTourneyUnlocked,
+    autoTourneyStatus,
+    toggleAutoTourney,
     setStrategy,
     runTourney
   } = useGameStore();
@@ -49,16 +52,30 @@ export const StrategicModeling = () => {
       <div className="panel-inner flex flex-col gap-3">
         <div className="flex flex-col gap-2">
           <span className="text-xs text-evolve-textDim tracking-wider">选择策略</span>
-          <select 
-            className="bg-evolve-bg border border-evolve-border text-evolve-textMain p-1 rounded text-sm focus:outline-none focus:border-evolve-accent"
-            value={currentStrategy}
-            onChange={(e) => setStrategy(e.target.value as StrategyType)}
-            disabled={tourneyInProg}
-          >
-            {unlockedStrategies.map(strat => (
-              <option key={strat} value={strat}>{STRATEGY_NAMES[strat] || strat.replace(/_/g, ' ')}</option>
-            ))}
-          </select>
+          <div className="flex gap-2 items-center">
+            <select 
+              className="flex-1 bg-evolve-bg border border-evolve-border text-evolve-textMain p-1 rounded text-sm focus:outline-none focus:border-evolve-accent"
+              value={currentStrategy}
+              onChange={(e) => setStrategy(e.target.value as StrategyType)}
+              disabled={tourneyInProg}
+            >
+              {unlockedStrategies.map(strat => (
+                <option key={strat} value={strat}>{STRATEGY_NAMES[strat] || strat.replace(/_/g, ' ')}</option>
+              ))}
+            </select>
+            {autoTourneyUnlocked && (
+              <button
+                className={`px-3 py-1 rounded text-xs font-bold transition-colors ${
+                  autoTourneyStatus 
+                    ? 'bg-evolve-accent/20 text-evolve-accent border border-evolve-accent' 
+                    : 'bg-evolve-border/20 text-evolve-textDim border border-evolve-border'
+                }`}
+                onClick={toggleAutoTourney}
+              >
+                自动: {autoTourneyStatus ? '开' : '关'}
+              </button>
+            )}
+          </div>
         </div>
 
         <button 
@@ -66,7 +83,7 @@ export const StrategicModeling = () => {
             canAffordTourney && !tourneyInProg ? 'btn-primary' : 'opacity-50 cursor-not-allowed border-evolve-border'
           }`}
           onClick={runTourney}
-          disabled={!canAffordTourney || tourneyInProg}
+          disabled={!canAffordTourney || tourneyInProg || autoTourneyStatus}
         >
           <Play className="w-4 h-4" />
           <span>运行锦标赛</span>

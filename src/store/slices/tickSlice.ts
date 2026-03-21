@@ -199,7 +199,7 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
         nextState.logs = [...nextState.logs, logMsg].slice(-50);
 
         // 自动锦标赛 (AutoTourney) 科技效果
-        if (nextState.autoTourneyUnlocked && nextState.ops >= nextState.tourneyCost) {
+        if (nextState.autoTourneyUnlocked && nextState.autoTourneyStatus && nextState.ops >= nextState.tourneyCost) {
            nextState.tourneyInProg = true;
            nextState.ops -= nextState.tourneyCost;
         }
