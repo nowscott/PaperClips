@@ -42,7 +42,7 @@ export const initialFactoryState = {
   wireDronesUnlocked: false,
   factoriesUnlocked: false,
   
-  availableMatter: 1000000000000000000, // 初始地球可用物质，极大
+  availableMatter: 6000000000000000000000, // 原版地球物质: 6 Octillion (6 * 10^21)
   acquiredMatter: 0,
   
   harvesterDrones: 0,

@@ -333,22 +333,34 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
          }
       }
 
+      // 在原版中，无人机的工作效率并不是线性增长的！
+      // 蜂群不仅有一个基础的工作/思考比例，还会根据无人机数量提供一个非常夸张的“集群效率加成”(Drone Flocking)
+      // 这就是为什么原版中你能把几十 Octillion 的地球物质快速吃光的原因。
+      
+      // 我们来模拟原版的集群效应 (Flocking Bonus)
+      // 如果没有专门解锁蜂群加速项目，原版也有一个基础的规模效应（通常是无人机数量带来略微的指数级或乘数级提升）
+      // 这里我们使用一个平滑的规模系数：每 10,000 台无人机，整体效率提升一倍（这会让你在拥有几百万无人机时速率爆炸，对齐原版节奏）
+      const totalDrones = nextState.harvesterDrones + nextState.wireDrones;
+      const flockingMultiplier = 1 + (totalDrones / 10000); 
+      
+      const finalDroneBoost = droneWorkRatio * nextState.droneBoost * flockingMultiplier;
+
       // 采集无人机：将可用物质(Available Matter)转化为已采集物质(Acquired Matter)
       let harvestAmount = 0;
       if (nextState.harvesterDrones > 0 && nextState.availableMatter > 0) {
-        // 原版基础采集率：26,180,337
-        harvestAmount = nextState.harvesterDrones * 26180337 * droneWorkRatio * nextState.droneBoost; 
+        // 原版基础采集率：26,180,337 * (10 / tick_rate)
+        harvestAmount = nextState.harvesterDrones * 26180337 * finalDroneBoost; 
         harvestAmount = Math.min(harvestAmount, nextState.availableMatter);
         nextState.availableMatter -= harvestAmount;
         nextState.acquiredMatter += harvestAmount;
       }
-      nextState.harvestRate = harvestAmount * 10; // Assuming TICK_RATE is 100ms (10 ticks/sec)
+      nextState.harvestRate = harvestAmount * 10; // 乘以 10 得到每秒速率
 
       // 铁丝加工无人机：将已采集物质(Acquired Matter)转化为铁丝(Wire)
       let processAmount = 0;
       if (nextState.wireDrones > 0 && nextState.acquiredMatter > 0) {
-        // 原版基础加工率：16,180,339
-        processAmount = nextState.wireDrones * 16180339 * droneWorkRatio * nextState.droneBoost;
+        // 原版基础加工率：16,180,339 * (10 / tick_rate)
+        processAmount = nextState.wireDrones * 16180339 * finalDroneBoost;
         processAmount = Math.min(processAmount, nextState.acquiredMatter);
         nextState.acquiredMatter -= processAmount;
         nextState.wire += processAmount;
@@ -358,8 +370,9 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
       // 工厂逻辑：如果解锁了工厂，工厂会自动且大量地消耗铁丝制造回形针
       let factoryProduction = 0;
       if (nextState.factories > 0 && nextState.wire > 0) {
-        // 原版工厂的基础产能非常恐怖：1,000,000,000 (10亿)
-        factoryProduction = nextState.factories * 1000000000 * droneWorkRatio * nextState.factoryBoost; 
+        // 原版工厂的基础产能: 1,000,000,000 (10亿) 每秒
+        // 工厂同样享受蜂群算力的全局工作效率加成
+        factoryProduction = nextState.factories * 100000000 * finalDroneBoost * nextState.factoryBoost; 
         factoryProduction = Math.min(factoryProduction, nextState.wire);
         
         nextState.clips += factoryProduction;
