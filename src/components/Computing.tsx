@@ -62,9 +62,13 @@ export const Computing = () => {
         <div className="flex items-center gap-2">
           <Unlock className="w-3.5 h-3.5 text-evolve-textMain" />
           <span className="text-xs font-bold leading-none">信任值: <span className="font-mono text-sm">{formatNumber(trust)}</span></span>
-          {!hypnoDronesReleased && (
+          {!hypnoDronesReleased ? (
             <span className="text-[10px] text-evolve-textDim opacity-70 border-l border-evolve-border/50 pl-2 hidden sm:inline">
               下一级: {formatNumber(nextTrustStage)} 件
+            </span>
+          ) : (
+            <span className="text-[9px] text-evolve-warning opacity-70 border-l border-evolve-border/50 pl-2 hidden sm:inline italic">
+              制造量不再提供信任
             </span>
           )}
         </div>
@@ -127,7 +131,7 @@ export const Computing = () => {
         </div>
         <div className="w-full h-1 bg-evolve-border rounded-full overflow-hidden flex">
           <div 
-            className="h-full bg-evolve-textMain transition-all duration-300" 
+            className="h-full bg-evolve-accent transition-all duration-300" 
             style={{ width: `${Math.min(100, ((ops + tempOps) / maxOps) * 100)}%` }}
           />
         </div>

@@ -6,6 +6,7 @@ import { formatNumber } from '../utils/formatNumber';
 export const Manufacturing = () => {
   const { 
     wire, 
+    wireSupply,
     makePaperclip, 
     autoClippers, 
     autoClipperCost, 
@@ -23,8 +24,9 @@ export const Manufacturing = () => {
     hypnoDronesReleased
   } = useGameStore();
   
-  const maxWire = 1000;
-  const wirePercent = Math.min(100, Math.max(0, (wire / maxWire) * 100));
+  // 原版逻辑：进度条代表当前这“卷”铁丝的剩余量
+  // 为了视觉反馈，如果有铁丝但比例极低，我们也显示至少 1% 的宽度
+  const wirePercent = wire > 0 ? Math.min(100, Math.max(1, (wire / wireSupply) * 100)) : 0;
 
   const makePaperclipContinuous = useContinuousClick(makePaperclip, 50, 200);
 
@@ -49,7 +51,7 @@ export const Manufacturing = () => {
           </div>
           <div className="h-1.5 bg-evolve-border rounded-full overflow-hidden flex">
             <div 
-              className="h-full bg-evolve-textMain transition-all duration-300" 
+              className="h-full bg-evolve-accent transition-all duration-300" 
               style={{ width: `${wirePercent}%` }}
             />
           </div>
