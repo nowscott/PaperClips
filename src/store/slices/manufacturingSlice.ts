@@ -21,6 +21,11 @@ export interface ManufacturingSlice {
   clipFactories: number;
   factoryCost: number;
 
+  // 新增：记录当前产能状态以供UI显示
+  harvestRate: number; // 物质采集率/秒
+  wireProcessRate: number; // 铁丝加工率/秒
+  factoryClipRate: number; // 工厂回形针产出率/秒
+
   buyAutoClipper: () => void;
   buyMegaClipper: () => void;
   buyFactory: () => void;
@@ -42,6 +47,9 @@ export const initialManufacturingState = {
   clipFactories: 0,
   factoryCost: 100000000,
   unusedClips: 0,
+  harvestRate: 0,
+  wireProcessRate: 0,
+  factoryClipRate: 0,
 };
 
 export const createManufacturingSlice: StateCreator<GameState, [], [], ManufacturingSlice> = (set) => ({
