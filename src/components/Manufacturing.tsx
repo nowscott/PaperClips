@@ -34,6 +34,8 @@ export const Manufacturing = () => {
 
   const netWireRate = wireProcessRate - wireConsumptionRate;
   const makePaperclipContinuous = useContinuousClick(makePaperclip, 50, 200);
+  const buyAutoClipperContinuous = useContinuousClick(buyAutoClipper, 50, 200);
+  const buyMegaClipperContinuous = useContinuousClick(buyMegaClipper, 50, 200);
 
   return (
     <div className="panel flex flex-col gap-3">
@@ -100,34 +102,34 @@ export const Manufacturing = () => {
             <div className="flex flex-col items-end gap-1">
               <span className="font-mono text-sm leading-none">{formatNumber(autoClippers)}</span>
               <button 
-                className="btn-evolve text-[10px] py-0.5 px-2"
-                onClick={buyAutoClipper}
+                className="btn-evolve text-[10px] py-0.5 px-2 select-none touch-none"
+                {...buyAutoClipperContinuous}
                 disabled={funds < autoClipperCost}
               >
-                组装
+                购买
               </button>
             </div>
           </div>
         )}
 
-        {/* 巨型制造机 (第一阶段显示) */}
+        {/* 巨型制造机 */}
         {!hypnoDronesReleased && megaClippersUnlocked && (
-          <div className="flex justify-between items-center bg-evolve-accent/5 p-1.5 rounded border border-evolve-accent/20">
+          <div className="flex justify-between items-center bg-evolve-bg/50 p-1.5 rounded border border-evolve-border/50 mt-1">
             <div className="flex flex-col">
               <div className="flex items-center gap-1.5">
-                <Factory className="w-3.5 h-3.5 text-evolve-accent" />
-                <span className="text-xs font-bold text-evolve-accent leading-none">巨型制造机</span>
+                <Factory className="w-3.5 h-3.5 text-evolve-textDim" />
+                <span className="text-xs font-bold leading-none">巨型制造机</span>
               </div>
               <span className="text-[10px] font-mono opacity-70 mt-1">造价: ${formatNumber(megaClipperCost, 2)}</span>
             </div>
             <div className="flex flex-col items-end gap-1">
-              <span className="font-mono text-sm text-evolve-accent leading-none">{formatNumber(megaClippers)}</span>
+              <span className="font-mono text-sm leading-none">{formatNumber(megaClippers)}</span>
               <button 
-                className="btn-evolve btn-evolve-accent text-[10px] py-0.5 px-2"
-                onClick={buyMegaClipper}
+                className="btn-evolve text-[10px] py-0.5 px-2 select-none touch-none"
+                {...buyMegaClipperContinuous}
                 disabled={funds < megaClipperCost}
               >
-                组装
+                购买
               </button>
             </div>
           </div>

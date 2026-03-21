@@ -131,9 +131,16 @@ export const sanitizeSaveData = (state: GameState): { updates: Partial<GameState
       updates.wireDroneCost = initialFactoryState.wireDroneCost;
       updates.factories = initialFactoryState.factories;
       updates.factoryCost = initialFactoryState.factoryCost;
-      updates.availableMatter = initialFactoryState.availableMatter;
+      updates.availableMatter = 6000000000000000000000; // 修复时恢复正确的地球物质
       reasons.push(`修复阶段冲突: 催眠无人机未释放，已清空所有无人机和工厂数据`);
     }
+    
+    // 如果没有释放无人机，但物质不是初始值且也没有无人机（或者因为之前版本导致了坏数据）
+    if (state.availableMatter !== 6000000000000000000000 && state.harvesterDrones === 0 && !updates.availableMatter) {
+      updates.availableMatter = 6000000000000000000000;
+      reasons.push(`修复数据损坏: 催眠无人机未释放，已重置地球物质为初始值 (6.00 Octillion)`);
+    }
+
     // 不应该解锁太空阶段
     if (state.spaceExplorationUnlocked) {
       updates.spaceExplorationUnlocked = false;
@@ -153,6 +160,20 @@ export const sanitizeSaveData = (state: GameState): { updates: Partial<GameState
     
     if (hasPhase2Clear) {
       reasons.push(`清理后台冗余: 已进入第二阶段，强制清零旧版资金和制造机后台数据`);
+    }
+
+    // 如果总物质因为老版本代码停留在一个错误的值（例如 1000000000000000000），且还没有开始消耗（或者消耗极少导致不到 6 Octillion），强制重置
+    // 但必须确保不会误伤那些已经挖了半个地球的玩家
+    // 如果可用物质+已采集物质 的总和明显不等于 6 Octillion，说明初始池子不对
+    const currentTotalMatter = state.availableMatter + state.acquiredMatter;
+    const targetEarthMatter = 6000000000000000000000;
+    // 如果总和相差很大（比如因为老代码只有 1e18，而新代码是 6e21，差距达到 1000 倍以上）
+    if (Math.abs(currentTotalMatter - targetEarthMatter) > 1000000000000000000) {
+      // 重新调整可用物质，保留玩家已经挖到的量，只要不超过地球总质量就行
+      // 但这里我们用 state.acquiredMatter + state.wire 来近似估算玩家已经从地球上挖走的物质
+      const totalExcavated = state.acquiredMatter + state.wire;
+      updates.availableMatter = Math.max(0, targetEarthMatter - totalExcavated);
+      reasons.push(`修复数据损坏: 检测到旧版地球总物质异常，已扩充至 6.00 Octillion (已扣除您当前挖掘量)`);
     }
     
     // 如果还没解锁纳米线材，却有了无人机，强制清零无人机

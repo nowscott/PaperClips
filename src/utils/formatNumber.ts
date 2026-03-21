@@ -43,5 +43,7 @@ export const formatNumber = (num: number, decimals: number = 0): string => {
 
   // 5. 超过 1000万亿 (1e15)，使用标准的科学计数法 (如 3.14e+20)
   // toExponential(2) 会返回如 "3.14e+20" 的格式
-  return sign + absNum.toExponential(2).replace('+', '');
+  const expStr = absNum.toExponential(2);
+  // 把类似 6.00e+21 转换成 6.00e21，去掉那个加号，并且如果是 e0 就去掉
+  return sign + expStr.replace('e+', 'e');
 };

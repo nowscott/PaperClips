@@ -42,7 +42,7 @@ export const SpaceAndDrones = () => {
 
   if (!nanoWireUnlocked) return null;
 
-  const EARTH_MATTER = 10 ** 24; // 简化的地球物质总量，用于计算进度条比例
+  const EARTH_MATTER = 6000000000000000000000; // 原版地球总物质 (6 Octillion)
 
   // 为了视觉体验：因为早期已采集物质相对地球总量太小，几乎看不见
   // 我们使用对数比例或强制最小显示宽度来保证视觉反馈

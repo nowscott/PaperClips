@@ -72,15 +72,27 @@ jobs:
             PATCH=$((PATCH + 1))
           fi
           
-          NEXT_VERSION="v${MAJOR}.${MINOR}.${PATCH}"
+          NEXT_VERSION="${MAJOR}.${MINOR}.${PATCH}"
           echo "NEXT_VERSION=$NEXT_VERSION" >> $GITHUB_ENV
           echo "Calculated next version: $NEXT_VERSION"
+
+      - name: Update package.json version
+        run: |
+          # 使用 npm version 更新 package.json 中的版本号，不自动创建 git tag
+          npm version ${{ env.NEXT_VERSION }} --no-git-tag-version
+          
+          # 提交更改到 main 分支
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add package.json package-lock.json
+          git commit -m "chore(release): bump version to ${{ env.NEXT_VERSION }} [skip ci]"
+          git push origin main
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ env.NEXT_VERSION }}
-          name: Release ${{ env.NEXT_VERSION }}
+          tag_name: v${{ env.NEXT_VERSION }}
+          name: Release v${{ env.NEXT_VERSION }}
           body: |
             Automated release generated from merged Pull Request: #${{ github.event.pull_request.number }}
             Title: ${{ github.event.pull_request.title }}
@@ -102,6 +114,9 @@ jobs:
           git checkout developer || echo "Developer branch does not exist, skipping sync"
           
           if [ "$(git branch --show-current)" == "developer" ]; then
+            # 先把刚刚在 main 分支提交的 package.json 版本更新拉取下来
+            git fetch origin main
+            
             # 将 main 分支的代码合并到 developer
             git merge origin/main --no-edit -m "chore: auto-sync main into developer after PR merge"
             
