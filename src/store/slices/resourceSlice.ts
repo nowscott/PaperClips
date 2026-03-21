@@ -19,11 +19,12 @@ export const initialResourceState = {
 export const createResourceSlice: StateCreator<GameState, [], [], ResourceSlice> = (set) => ({
   ...initialResourceState,
   makePaperclip: () => set((state: GameState) => {
-    if (state.wire > 0) {
-      return { 
-        clips: state.clips + 1, 
+    if (state.wire >= 1) {
+      return {
+        clips: state.clips + 1,
         unsoldInventory: state.unsoldInventory + 1,
         wire: state.wire - 1,
+        unusedClips: state.tothFlag ? state.unusedClips + 1 : state.unusedClips
       };
     }
     return state;

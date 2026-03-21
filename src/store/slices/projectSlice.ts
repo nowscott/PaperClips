@@ -14,6 +14,7 @@ export interface ProjectSlice {
   wireDronesUnlocked: boolean;
   factoriesUnlocked: boolean;
   spaceExplorationUnlocked: boolean;
+  tothFlag: boolean;
   hypnoDronesUnlocked: boolean;
   hypnoDronesReleased: boolean;
   
@@ -21,7 +22,7 @@ export interface ProjectSlice {
   completeProject: (projectId: string) => void;
 }
 
-export const initialProjectState = {
+export const INITIAL_PROJECT_STATE = {
   completedProjects: [],
   activeProjects: [],
   hasWireBuyer: false,
@@ -31,12 +32,13 @@ export const initialProjectState = {
   wireDronesUnlocked: false,
   factoriesUnlocked: false,
   spaceExplorationUnlocked: false,
+  tothFlag: false,
   hypnoDronesUnlocked: false,
   hypnoDronesReleased: false,
 };
 
 export const createProjectSlice: StateCreator<GameState, [], [], ProjectSlice> = (set) => ({
-  ...initialProjectState,
+  ...INITIAL_PROJECT_STATE,
   completeProject: (projectId: string) => set((state: GameState) => {
     const project = INITIAL_PROJECTS.find(p => p.id === projectId);
     if (!project || state.completedProjects.includes(projectId)) return state;
@@ -66,11 +68,8 @@ export const createProjectSlice: StateCreator<GameState, [], [], ProjectSlice> =
       }
 
       if (project.costTrust) {
-        // 如果项目消耗了 Trust，我们在 effect 中通常会有处理，但为了统一，我们在这里也扣除（如果 effect 里没覆盖的话）
-        // 最好是在 effect 里自己定义，因为有些项目是加 trust，有些是减。
-        // 原版中只有 Release the HypnoDrones (重置) 和 Hypno Harmonics (减1)
-        // 我们已经在这些项目的 effect 里写了 trust: state.trust - 1，所以这里不自动扣除，而是依赖 effect，或者我们统一在这里扣除并把 effect 里的扣除删掉？
-        // 为了安全起见，我们在 effect 里处理。所以这里不需要写 updates.trust = ...
+        updates.trust = state.trust - project.costTrust;
+        updates.availableTrust = state.availableTrust - project.costTrust;
       }
 
       // 处理特殊项目效果

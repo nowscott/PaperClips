@@ -16,8 +16,14 @@ export interface ManufacturingSlice {
   clipsPerSecond: number; // 新增：每秒制造量统计
   buyWire: () => void;
   toggleWireBuyer: () => void; // 新增：切换自动进货机开关
+  // 新增：未使用的回形针（用于建造工厂等）
+  unusedClips: number;
+  clipFactories: number;
+  factoryCost: number;
+
   buyAutoClipper: () => void;
   buyMegaClipper: () => void;
+  buyFactory: () => void;
 }
 
 export const initialManufacturingState = {
@@ -33,6 +39,9 @@ export const initialManufacturingState = {
   hasWireBuyer: false,
   wireBuyerOn: true,
   clipsPerSecond: 0,
+  clipFactories: 0,
+  factoryCost: 100000000,
+  unusedClips: 0,
 };
 
 export const createManufacturingSlice: StateCreator<GameState, [], [], ManufacturingSlice> = (set) => ({
@@ -66,6 +75,17 @@ export const createManufacturingSlice: StateCreator<GameState, [], [], Manufactu
         funds: state.funds - state.megaClipperCost,
         megaClipperCost: parseFloat((Math.pow(1.07, nextLevel) * 1000).toFixed(2))
       }
+    }
+    return state;
+  }),
+  buyFactory: () => set((state: GameState) => {
+    if (state.unusedClips >= state.factoryCost) {
+      return {
+        unusedClips: state.unusedClips - state.factoryCost,
+        clipFactories: state.clipFactories + 1,
+        // 根据原版逻辑，这里需要增加价格等，这里简化处理只涨价或保持原样
+        factoryCost: state.factoryCost // 原版前几级工厂造价相同
+      };
     }
     return state;
   }),

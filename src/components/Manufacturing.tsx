@@ -18,7 +18,12 @@ export const Manufacturing = () => {
     clipsPerSecond,
     hasWireBuyer,
     wireBuyerOn,
-    toggleWireBuyer
+    toggleWireBuyer,
+    tothFlag,
+    clipFactories,
+    factoryCost,
+    unusedClips,
+    buyFactory
   } = useGameStore();
   
   const maxWire = 1000;
@@ -113,6 +118,35 @@ export const Manufacturing = () => {
                   组装
                 </button>
               </div>
+            </div>
+          </>
+        )}
+
+        {/* 回形针工厂 (tothFlag解锁) */}
+        {tothFlag && (
+          <>
+            <div className="h-px bg-evolve-border w-full my-1"></div>
+            <div className="flex flex-col gap-2">
+              <div className="flex justify-between items-center mb-1">
+                <div className="flex items-center gap-2 text-sm text-evolve-accent tracking-wider">
+                  <Factory className="w-4 h-4" />
+                  <span>回形针工厂</span>
+                </div>
+                <span className="font-mono text-lg text-evolve-accent">{formatNumber(clipFactories)}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-xs font-mono opacity-70">造价: {formatNumber(factoryCost)} clips</span>
+                <button 
+                  className="btn-evolve btn-evolve-accent text-xs py-1.5 px-3"
+                  onClick={buyFactory}
+                  disabled={unusedClips < factoryCost}
+                >
+                  组装
+                </button>
+              </div>
+            </div>
+            <div className="mt-1 text-xs text-evolve-textDim font-mono">
+              可用回形针: {formatNumber(unusedClips)}
             </div>
           </>
         )}
