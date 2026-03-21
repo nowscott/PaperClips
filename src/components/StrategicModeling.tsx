@@ -30,7 +30,8 @@ export const StrategicModeling = () => {
     autoTourneyStatus,
     toggleAutoTourney,
     setStrategy,
-    runTourney
+    runTourney,
+    tempOps
   } = useGameStore();
 
   // 添加一个状态来控制矩阵的折叠/展开，默认隐藏以节省空间
@@ -38,7 +39,7 @@ export const StrategicModeling = () => {
 
   if (!strategyEngineUnlocked) return null;
 
-  const canAffordTourney = ops >= tourneyCost;
+  const canAffordTourney = (ops + tempOps) >= tourneyCost;
 
   return (
     <div className="panel flex flex-col gap-3">
