@@ -22,7 +22,8 @@ function App() {
     qComputingUnlocked,
     harvesterDronesUnlocked,
     wireDronesUnlocked,
-    factoriesUnlocked
+    factoriesUnlocked,
+    hypnoDronesReleased
   } = useGameStore();
 
   return (
@@ -72,14 +73,15 @@ function App() {
                 id: 'business', 
                 label: "商业运营",
                 icon: 'Briefcase',
-                content: <Business /> 
+                content: <Business />,
+                condition: !hypnoDronesReleased
               },
               { 
                 id: 'investments', 
                 label: "金融投资",
                 icon: 'LineChart',
                 content: <Investments />, 
-                condition: investmentEngineUnlocked 
+                condition: investmentEngineUnlocked && !hypnoDronesReleased
               },
               { 
                 id: 'strategic_modeling', 

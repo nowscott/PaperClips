@@ -19,7 +19,8 @@ export const Manufacturing = () => {
     hasWireBuyer,
     wireBuyerOn,
     toggleWireBuyer,
-    tothFlag
+    tothFlag,
+    hypnoDronesReleased
   } = useGameStore();
   
   const maxWire = 1000;
@@ -53,7 +54,7 @@ export const Manufacturing = () => {
             />
           </div>
           
-          {hasWireBuyer && (
+          {!hypnoDronesReleased && hasWireBuyer && (
             <div className="flex items-center justify-between mt-3 animate-fade-in">
               <span className="text-xs text-evolve-textDim tracking-wider">自动采购机</span>
               <button 
@@ -70,29 +71,31 @@ export const Manufacturing = () => {
           )}
         </div>
 
-        {/* 自动制造机 */}
-        <div className="flex justify-between items-center bg-evolve-bg/50 p-1.5 rounded border border-evolve-border/50 mt-2">
-          <div className="flex flex-col">
-            <div className="flex items-center gap-1.5">
-              <Cpu className="w-3.5 h-3.5 text-evolve-textDim" />
-              <span className="text-xs font-bold leading-none">自动制造机</span>
+        {/* 自动制造机 (第一阶段显示) */}
+        {!hypnoDronesReleased && (
+          <div className="flex justify-between items-center bg-evolve-bg/50 p-1.5 rounded border border-evolve-border/50 mt-2">
+            <div className="flex flex-col">
+              <div className="flex items-center gap-1.5">
+                <Cpu className="w-3.5 h-3.5 text-evolve-textDim" />
+                <span className="text-xs font-bold leading-none">自动制造机</span>
+              </div>
+              <span className="text-[10px] font-mono opacity-70 mt-1">造价: ${formatNumber(autoClipperCost, 2)}</span>
             </div>
-            <span className="text-[10px] font-mono opacity-70 mt-1">造价: ${formatNumber(autoClipperCost, 2)}</span>
+            <div className="flex flex-col items-end gap-1">
+              <span className="font-mono text-sm leading-none">{formatNumber(autoClippers)}</span>
+              <button 
+                className="btn-evolve text-[10px] py-0.5 px-2"
+                onClick={buyAutoClipper}
+                disabled={funds < autoClipperCost}
+              >
+                组装
+              </button>
+            </div>
           </div>
-          <div className="flex flex-col items-end gap-1">
-            <span className="font-mono text-sm leading-none">{formatNumber(autoClippers)}</span>
-            <button 
-              className="btn-evolve text-[10px] py-0.5 px-2"
-              onClick={buyAutoClipper}
-              disabled={funds < autoClipperCost}
-            >
-              组装
-            </button>
-          </div>
-        </div>
+        )}
 
-        {/* 巨型制造机 (解锁后显示) */}
-        {megaClippersUnlocked && (
+        {/* 巨型制造机 (第一阶段显示) */}
+        {!hypnoDronesReleased && megaClippersUnlocked && (
           <div className="flex justify-between items-center bg-evolve-accent/5 p-1.5 rounded border border-evolve-accent/20">
             <div className="flex flex-col">
               <div className="flex items-center gap-1.5">
@@ -115,7 +118,7 @@ export const Manufacturing = () => {
         )}
 
         {/* 产能统计 */}
-        {(autoClippers > 0 || megaClippers > 0) && !tothFlag && (
+        {!hypnoDronesReleased && (autoClippers > 0 || megaClippers > 0) && !tothFlag && (
           <div className="mt-2 text-right text-xs font-mono text-evolve-textDim animate-fade-in">
             当前产能: {formatNumber(Math.floor(clipsPerSecond))} 件/秒
           </div>

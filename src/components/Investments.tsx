@@ -12,10 +12,11 @@ export const Investments = () => {
     depositFunds,
     withdrawFunds,
     upgradeInvestmentEngine,
-    setRiskLevel
+    setRiskLevel,
+    hypnoDronesReleased
   } = useGameStore();
 
-  if (!investmentEngineUnlocked) return null;
+  if (!investmentEngineUnlocked || hypnoDronesReleased) return null;
 
   const upgradeCost = Math.floor(Math.pow(investmentLevel + 1, Math.E) * 100);
   const canUpgrade = yomi >= upgradeCost;

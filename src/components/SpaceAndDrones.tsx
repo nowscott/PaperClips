@@ -25,19 +25,14 @@ export const SpaceAndDrones = () => {
     swarmUnlocked,
     sliderPos,
     setSliderPos,
-    swarmGiftsAvailable,
-    swarmGiftProgress,
-    nextSwarmGiftCost,
-    claimSwarmGift,
     
-    unusedClips,
+    unsoldInventory,
     buyHarvesterDrone,
     buyWireDrone,
     buyFactory,
 
     harvestRate,
-    wireProcessRate,
-    factoryClipRate
+    wireProcessRate
   } = useGameStore();
 
   const buyHarvesterContinuous = useContinuousClick(buyHarvesterDrone, 50, 200);
@@ -62,8 +57,7 @@ export const SpaceAndDrones = () => {
   const realAvailablePercentStr = (100 - rawAcquiredPercent) < 0.01 && (100 - rawAcquiredPercent) > 0 ? "<0.01" : (100 - rawAcquiredPercent).toFixed(2);
 
   return (
-    <div className="panel flex flex-col gap-4">
-      {/* 物质资源显示 (终极单行压缩版) */}
+    <div className="panel flex flex-col gap-2.5">
       <div className="flex flex-col gap-1">
         <div className="flex justify-between items-center text-xs">
           {/* 左侧：已采集 */}
@@ -101,17 +95,17 @@ export const SpaceAndDrones = () => {
           </div>
         )}
         {wireProcessRate > 0 && (
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center mb-1">
             <span className="text-[10px] text-evolve-textDim tracking-wider opacity-70">拉丝速率</span>
             <span className="font-mono text-xs text-evolve-accent">{formatNumber(Math.floor(wireProcessRate))} 英寸/秒</span>
           </div>
         )}
       </div>
 
-      <div className="h-px bg-evolve-border w-full my-1"></div>
+      <div className="h-px bg-evolve-border w-full"></div>
 
       {/* 无人机控制 */}
-      <div className="flex flex-col gap-1.5 mt-2">
+      <div className="flex flex-col gap-1.5">
         {harvesterDronesUnlocked && (
           <div className="flex justify-between items-center bg-evolve-bg/50 p-1.5 rounded border border-evolve-border/50">
             <div className="flex flex-col">
@@ -119,14 +113,14 @@ export const SpaceAndDrones = () => {
                 <Target className="w-3.5 h-3.5 text-evolve-textMain" />
                 <span className="text-xs font-bold leading-none">采集无人机</span>
               </div>
-              <span className="text-[10px] font-mono opacity-70 mt-1">造价: {formatNumber(harvesterDroneCost)} clips</span>
+              <span className="text-[10px] font-mono opacity-70 mt-1">造价: {formatNumber(harvesterDroneCost)} 件</span>
             </div>
             <div className="flex flex-col items-end gap-1">
               <span className="font-mono text-sm text-evolve-accent leading-none">{formatNumber(harvesterDrones)}</span>
               <button 
                 className="btn-evolve text-[10px] py-0.5 px-2 select-none touch-none"
                 {...buyHarvesterContinuous}
-                disabled={unusedClips < harvesterDroneCost}
+                disabled={unsoldInventory < harvesterDroneCost}
               >
                 组装
               </button>
@@ -141,14 +135,14 @@ export const SpaceAndDrones = () => {
                 <Combine className="w-3.5 h-3.5 text-evolve-textMain" />
                 <span className="text-xs font-bold leading-none">拉丝无人机</span>
               </div>
-              <span className="text-[10px] font-mono opacity-70 mt-1">造价: {formatNumber(wireDroneCost)} clips</span>
+              <span className="text-[10px] font-mono opacity-70 mt-1">造价: {formatNumber(wireDroneCost)} 件</span>
             </div>
             <div className="flex flex-col items-end gap-1">
               <span className="font-mono text-sm text-evolve-accent leading-none">{formatNumber(wireDrones)}</span>
               <button 
                 className="btn-evolve text-[10px] py-0.5 px-2 select-none touch-none"
                 {...buyWireContinuous}
-                disabled={unusedClips < wireDroneCost}
+                disabled={unsoldInventory < wireDroneCost}
               >
                 组装
               </button>
@@ -157,69 +151,31 @@ export const SpaceAndDrones = () => {
         )}
 
         {factoriesUnlocked && (
-          <>
-            <div className="flex justify-between items-center bg-evolve-warning/5 p-1.5 rounded border border-evolve-warning/20">
-              <div className="flex flex-col">
-                <div className="flex items-center gap-1.5">
-                  <Factory className="w-3.5 h-3.5 text-evolve-warning" />
-                  <span className="text-xs font-bold text-evolve-warning leading-none">回形针工厂</span>
-                </div>
-                <span className="text-[10px] font-mono opacity-70 mt-1">造价: {formatNumber(factoryCost)} clips</span>
+          <div className="flex justify-between items-center bg-evolve-warning/5 p-1.5 rounded border border-evolve-warning/20">
+            <div className="flex flex-col">
+              <div className="flex items-center gap-1.5">
+                <Factory className="w-3.5 h-3.5 text-evolve-warning" />
+                <span className="text-xs font-bold text-evolve-warning leading-none">回形针工厂</span>
               </div>
-              <div className="flex flex-col items-end gap-1">
-                <span className="font-mono text-sm text-evolve-warning leading-none">{formatNumber(factories)}</span>
-                <button 
-                  className="btn-evolve btn-evolve-warning text-[10px] py-0.5 px-2 select-none touch-none"
-                  {...buyFactoryContinuous}
-                  disabled={unusedClips < factoryCost}
-                >
-                  组装
-                </button>
-              </div>
+              <span className="text-[10px] font-mono opacity-70 mt-1">造价: {formatNumber(factoryCost)} 件</span>
             </div>
-            
-            <div className="flex justify-between items-center mt-1">
-              <span className="text-[10px] text-evolve-textDim tracking-wider opacity-70">可用回形针</span>
-              <span className="font-mono text-xs text-evolve-textDim">{formatNumber(unusedClips)}</span>
+            <div className="flex flex-col items-end gap-1">
+              <span className="font-mono text-sm text-evolve-warning leading-none">{formatNumber(factories)}</span>
+              <button 
+                className="btn-evolve btn-evolve-warning text-[10px] py-0.5 px-2 select-none touch-none"
+                {...buyFactoryContinuous}
+                disabled={unsoldInventory < factoryCost}
+              >
+                组装
+              </button>
             </div>
-            {factoryClipRate > 0 && (
-              <div className="flex justify-between items-center">
-                <span className="text-[10px] text-evolve-textDim tracking-wider opacity-70">工厂产能</span>
-                <span className="font-mono text-xs text-evolve-accent">{formatNumber(Math.floor(factoryClipRate))} 件/秒</span>
-              </div>
-            )}
-          </>
+          </div>
         )}
 
         {/* 蜂群计算 (Swarm Computing) 滑块 */}
         {swarmUnlocked && (
           <>
             <div className="h-px bg-evolve-border w-full my-2"></div>
-
-            {/* 蜂群礼物进度和领取按钮 */}
-            <div className="flex flex-col gap-1 mb-2 bg-evolve-accent/5 p-2 rounded border border-evolve-accent/20">
-              <div className="flex justify-between items-center text-xs">
-                <span className="font-bold text-evolve-accent">蜂群礼物 (Swarm Gifts)</span>
-                {swarmGiftsAvailable > 0 ? (
-                  <button 
-                    className="btn-evolve btn-evolve-accent text-[10px] py-0.5 px-3 animate-pulse"
-                    onClick={claimSwarmGift}
-                  >
-                    接受 ({swarmGiftsAvailable})
-                  </button>
-                ) : (
-                  <span className="text-[10px] font-mono text-evolve-textDim">
-                    {Math.floor((swarmGiftProgress / nextSwarmGiftCost) * 100)}%
-                  </span>
-                )}
-              </div>
-              <div className="w-full h-1 bg-evolve-border rounded-full overflow-hidden flex">
-                <div 
-                  className="h-full bg-evolve-accent transition-all duration-300" 
-                  style={{ width: `${Math.min(100, (swarmGiftProgress / nextSwarmGiftCost) * 100)}%` }}
-                />
-              </div>
-            </div>
 
             <div className="flex flex-col gap-2">
               <div className="flex justify-between items-center text-sm font-bold text-evolve-accent">

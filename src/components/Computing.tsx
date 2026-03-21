@@ -16,6 +16,11 @@ export const Computing = () => {
     creativityOn,
     compAndProjectsUnlocked,
     hypnoDronesReleased,
+    swarmUnlocked,
+    swarmGiftsAvailable,
+    swarmGiftProgress,
+    nextSwarmGiftCost,
+    claimSwarmGift,
     addProcessor,
     addMemory
   } = useGameStore();
@@ -121,6 +126,33 @@ export const Computing = () => {
         <div className="flex justify-between items-center bg-evolve-accent/5 p-1 rounded border border-evolve-accent/20">
           <span className="text-[10px] text-evolve-accent tracking-wider font-bold pl-1">创造力</span>
           <span className="font-mono text-sm text-evolve-accent leading-none pr-1">{formatNumber(Math.floor(creativity))}</span>
+        </div>
+      )}
+
+      {/* 蜂群礼物 (第二阶段获得信任值的方式) */}
+      {swarmUnlocked && (
+        <div className="flex flex-col gap-1 mt-1 bg-evolve-accent/5 p-1.5 rounded border border-evolve-accent/20">
+          <div className="flex justify-between items-center text-[10px]">
+            <span className="font-bold text-evolve-accent">蜂群礼物</span>
+            {swarmGiftsAvailable > 0 ? (
+              <button 
+                className="btn-evolve btn-evolve-accent text-[10px] py-0.5 px-2 animate-pulse"
+                onClick={claimSwarmGift}
+              >
+                接受 ({swarmGiftsAvailable})
+              </button>
+            ) : (
+              <span className="font-mono text-evolve-textDim">
+                {Math.floor((swarmGiftProgress / nextSwarmGiftCost) * 100)}%
+              </span>
+            )}
+          </div>
+          <div className="w-full h-1 bg-evolve-border rounded-full overflow-hidden flex">
+            <div 
+              className="h-full bg-evolve-accent transition-all duration-300" 
+              style={{ width: `${Math.min(100, (swarmGiftProgress / nextSwarmGiftCost) * 100)}%` }}
+            />
+          </div>
         </div>
       )}
     </div>
