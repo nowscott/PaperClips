@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { useGameStore } from '../store/gameStore';
-import { Settings as SettingsIcon, X, Download, Upload, RefreshCw, Info } from 'lucide-react';
+import { Settings as SettingsIcon, X, Download, Upload, RefreshCw, Info, Wrench, AlertTriangle } from 'lucide-react';
+import { sanitizeSaveData } from '../utils/saveSanitizer';
 
 export const Settings = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { resetGame } = useGameStore();
+  const gameState = useGameStore();
+  const { resetGame } = gameState;
 
   const handleReset = () => {
     if (window.confirm("警告：确定要硬重置游戏吗？所有当前进度将丢失（不保留转生点数）。")) {
@@ -126,6 +128,44 @@ export const Settings = () => {
                 <p className="text-xs text-evolve-textDim mt-2">
                   * 游戏会自动实时保存在浏览器中。导入存档将覆盖当前进度并刷新页面。
                 </p>
+              </section>
+
+              {/* 存档修复区 */}
+              <section>
+                <h3 className="text-lg font-bold text-evolve-accent mb-3 flex items-center gap-2">
+                  <Wrench className="w-5 h-5" />
+                  <span>存档修复与开发调试</span>
+                </h3>
+                <div className="bg-evolve-border/20 p-4 rounded border border-evolve-border/50">
+                  <p className="text-sm text-evolve-textDim mb-3">
+                    系统提供了一键修复功能，可以自动检测那些<strong className="text-evolve-danger">缺少前置条件却已被完成</strong>的异常项目。如果你因为早期的 Bug 导致了这些项目被错误解锁，可以在这里将其一键修复。
+                  </p>
+                  
+                  <div className="flex items-center justify-between mb-3 bg-evolve-bg p-3 rounded border border-evolve-border">
+                    <span className="text-sm font-bold text-evolve-textMain">自动诊断与修复</span>
+                    <button 
+                      onClick={() => {
+                        if(window.confirm("确定要执行一键修复吗？\n\n这会自动移除所有非法解锁的项目，并尝试恢复它们对游戏状态（如策略列表、成本等）的影响。\n\n执行后将自动刷新页面！")) {
+                          const { updates, reasons } = sanitizeSaveData(useGameStore.getState());
+                          if (Object.keys(updates).length > 0) {
+                            useGameStore.setState(updates);
+                            const reasonText = reasons.length > 0 
+                              ? "\n\n修复详情:\n" + reasons.join("\n") 
+                              : "";
+                            alert("已修复异常存档！页面即将刷新。" + reasonText);
+                            setTimeout(() => window.location.reload(), 100);
+                          } else {
+                            alert("你的存档非常健康，没有发现需要修复的异常项目！");
+                          }
+                        }
+                      }}
+                      className="btn-evolve btn-evolve-accent py-1.5 px-4 font-bold flex items-center gap-2"
+                    >
+                      <AlertTriangle className="w-4 h-4" />
+                      一键修复存档
+                    </button>
+                  </div>
+                </div>
               </section>
 
               {/* 玩法介绍区 */}

@@ -652,8 +652,8 @@ export const INITIAL_PROJECTS: Project[] = [
     description: '战略建模的成本翻倍，但产生的 Yomi 也翻倍。',
     costOps: 0,
     costCreativity: 25000,
-    isUnlocked: (state) => state.unlockedStrategies && state.unlockedStrategies.length >= 8,
-    effect: (state) => ({ theoryOfMindUnlocked: true, tourneyCost: state.tourneyCost * 2 }) 
+    isUnlocked: (state) => state.completedProjects.includes('strategyTitForTat'), // 确保其在后期出现
+    effect: (state) => ({ theoryOfMindUnlocked: true, tourneyCost: (state.tourneyCost || 1000) * 2 }) 
   },
   // 120. OODA Loop
   {

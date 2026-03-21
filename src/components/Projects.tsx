@@ -1,8 +1,11 @@
+import { useState } from 'react';
 import { useGameStore } from '../store/gameStore';
 import { INITIAL_PROJECTS, type Project } from '../data/projects';
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, ChevronDown, ChevronUp } from 'lucide-react';
 
 export const Projects = () => {
+  const [showAllCompleted, setShowAllCompleted] = useState(false);
+  
   const { 
     ops, 
     funds,
@@ -24,16 +27,20 @@ export const Projects = () => {
     (p) => !completedProjects.includes(p.id) && p.isUnlocked(useGameStore.getState())
   );
 
-  // 获取最近完成的3个项目用于展示记录
-  const recentCompleted = completedProjects
+  // 获取已完成的项目
+  const allCompletedProjects = completedProjects
     .map((id: string) => INITIAL_PROJECTS.find(p => p.id === id))
     .filter((p: Project | undefined): p is Project => p !== undefined)
-    .slice(-3)
-    .reverse();
+    .reverse(); // 最新完成的在前面
 
-  if (availableProjects.length === 0 && recentCompleted.length === 0) {
+  // 获取最近完成的3个项目用于默认展示
+  const recentCompleted = allCompletedProjects.slice(0, 3);
+
+  if (availableProjects.length === 0 && allCompletedProjects.length === 0) {
     return null; // 如果没有任何项目解锁，完全隐藏该面板
   }
+
+  const completedToDisplay = showAllCompleted ? allCompletedProjects : recentCompleted;
 
   return (
     <div className="panel flex flex-col gap-2 border-evolve-success/30 shadow-[0_0_15px_rgba(var(--color-success),0.05)]">
@@ -104,17 +111,39 @@ export const Projects = () => {
         )}
 
         {/* 已完成项目记录 */}
-        {recentCompleted.length > 0 && (
+        {allCompletedProjects.length > 0 && (
           <div className="mt-1 border-t border-evolve-border/50 pt-1.5">
-            <h3 className="text-[10px] text-evolve-textDim tracking-wider mb-1 font-bold">近期已完成</h3>
-            <div className="flex flex-col gap-0.5">
-              {recentCompleted.map((p: Project) => (
-                <div key={p.id} className="flex items-center gap-1.5 text-[10px] text-evolve-textDim opacity-70">
+            <div 
+              className="flex items-center justify-between cursor-pointer group mb-1"
+              onClick={() => setShowAllCompleted(!showAllCompleted)}
+            >
+              <h3 className="text-[10px] text-evolve-textDim tracking-wider font-bold group-hover:text-evolve-textMain transition-colors">
+                {showAllCompleted ? '全部已完成项目' : '近期已完成'} ({allCompletedProjects.length})
+              </h3>
+              {showAllCompleted ? (
+                <ChevronUp className="w-3 h-3 text-evolve-textDim group-hover:text-evolve-textMain" />
+              ) : (
+                <ChevronDown className="w-3 h-3 text-evolve-textDim group-hover:text-evolve-textMain" />
+              )}
+            </div>
+            
+            <div className={`flex flex-col gap-0.5 ${showAllCompleted ? 'max-h-60 overflow-y-auto pr-1 custom-scrollbar' : ''}`}>
+              {completedToDisplay.map((p: Project) => (
+                <div key={p.id} className="flex items-center gap-1.5 text-[10px] text-evolve-textDim opacity-70 hover:opacity-100 transition-opacity py-0.5">
                   <CheckCircle2 className="w-2.5 h-2.5 text-evolve-success shrink-0" />
                   <span className="truncate">{p.title}</span>
                 </div>
               ))}
             </div>
+            
+            {!showAllCompleted && allCompletedProjects.length > 3 && (
+              <div 
+                className="text-[9px] text-evolve-textDim/50 text-center mt-1 cursor-pointer hover:text-evolve-textDim transition-colors"
+                onClick={() => setShowAllCompleted(true)}
+              >
+                点击展开全部...
+              </div>
+            )}
           </div>
         )}
       </div>

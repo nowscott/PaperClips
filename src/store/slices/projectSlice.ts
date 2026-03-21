@@ -115,5 +115,5 @@ export const createProjectSlice: StateCreator<GameState, [], [], ProjectSlice> =
       return { ...state, ...finalUpdates, logs: newLogs };
     }
     return state;
-  }),
+  })
 });
