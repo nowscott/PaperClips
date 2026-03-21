@@ -512,6 +512,7 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
 
     // 更新每秒制造量 (平滑处理，假设 tick 是 100ms，即 1 秒 10 次 tick)
     nextState.clipsPerSecond = nextState.clipsPerSecond * 0.9 + (totalClipsProducedThisTick * 10) * 0.1;
+    nextState.wireConsumptionRate = nextState.clipsPerSecond; // 1 clip = 1 inch of wire
 
     return nextState;
   })

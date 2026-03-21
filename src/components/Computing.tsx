@@ -64,12 +64,20 @@ export const Computing = () => {
           <span className="text-xs font-bold leading-none">信任值: <span className="font-mono text-sm">{formatNumber(trust)}</span></span>
           {!hypnoDronesReleased ? (
             <span className="text-[10px] text-evolve-textDim opacity-70 border-l border-evolve-border/50 pl-2 hidden sm:inline">
-              下一级: {formatNumber(nextTrustStage)} 件
+              下一级: {formatNumber(nextTrustStage)} 件 
+              <span className="ml-1 text-evolve-accent opacity-80">(还需: {formatNumber(Math.max(0, nextTrustStage - clips))} 件)</span>
             </span>
           ) : (
-            <span className="text-[9px] text-evolve-warning opacity-70 border-l border-evolve-border/50 pl-2 hidden sm:inline italic">
-              制造量不再提供信任
-            </span>
+            <div className="flex items-center gap-2 border-l border-evolve-border/50 pl-2">
+              <span className="text-[9px] text-evolve-warning opacity-70 italic">
+                制造量不再提供信任
+              </span>
+              {swarmUnlocked && (
+                <span className="text-[9px] text-evolve-accent font-mono">
+                  礼物进度: {Math.floor((swarmGiftProgress / nextSwarmGiftCost) * 100)}%
+                </span>
+              )}
+            </div>
           )}
         </div>
         <div className="text-[10px] text-evolve-accent font-mono bg-evolve-accent/10 px-1.5 py-0.5 rounded border border-evolve-accent/20">

@@ -729,7 +729,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'rebootTheSwarm',
     title: '重启蜂群',
-    description: '消除累积的错误。',
+    description: '重启无人机蜂群网络。通过重新同步控制协议，消除累积的系统误差，使所有无人机的工作和思考效率永久提升 50%。',
     costOps: 500000,
     costYomi: 300000,
     isUnlocked: (state) => !!state.swarmUnlocked && state.yomi >= 300000,
