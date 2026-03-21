@@ -101,9 +101,38 @@ export const initialSpaceState: Omit<SpaceSlice, 'launchProbe' | 'increaseProbeS
 export const createSpaceSlice: StateCreator<GameState, [], [], SpaceSlice> = (set) => ({
   ...initialSpaceState,
   
-  toggleAutoTourney: () => set((state) => ({
-    autoTourneyStatus: !state.autoTourneyStatus
-  })),
+  toggleAutoTourney: () => set((state: GameState) => {
+    const newStatus = !state.autoTourneyStatus;
+    const totalOps = state.ops + state.tempOps;
+    
+    let tourneyUpdate = {};
+    // 如果开启自动且当前没在跑，且算力足够，则立即开始一场
+    if (newStatus && !state.tourneyInProg && totalOps >= state.tourneyCost) {
+      let newOps = state.ops;
+      let newTempOps = state.tempOps;
+      
+      if (newOps >= state.tourneyCost) {
+        newOps -= state.tourneyCost;
+      } else {
+        const remaining = state.tourneyCost - newOps;
+        newOps = 0;
+        newTempOps = Math.max(0, newTempOps - remaining);
+      }
+      
+      tourneyUpdate = {
+        ops: newOps,
+        tempOps: newTempOps,
+        tourneyInProg: true,
+        tourneyProgress: 0,
+        matchResults: [],
+      };
+    }
+
+    return {
+      autoTourneyStatus: newStatus,
+      ...tourneyUpdate
+    };
+  }),
 
   launchProbe: () => set((state: GameState) => {
     if (state.clips >= state.probeCost) {
