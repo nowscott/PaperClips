@@ -61,7 +61,11 @@ export const Computing = () => {
         <div className="flex items-center gap-2">
           <Unlock className="w-3.5 h-3.5 text-evolve-textMain" />
           <span className="text-xs font-bold leading-none">信任值: <span className="font-mono text-sm">{formatNumber(trust)}</span></span>
-          <span className="text-[10px] text-evolve-textDim opacity-70 border-l border-evolve-border/50 pl-2 hidden sm:inline">下一级: {formatNumber(nextTrustStage)} 件</span>
+          {!hypnoDronesReleased && (
+            <span className="text-[10px] text-evolve-textDim opacity-70 border-l border-evolve-border/50 pl-2 hidden sm:inline">
+              下一级: {formatNumber(nextTrustStage)} 件
+            </span>
+          )}
         </div>
         <div className="text-[10px] text-evolve-accent font-mono bg-evolve-accent/10 px-1.5 py-0.5 rounded border border-evolve-accent/20">
           可用: {formatNumber(availableTrust)}

@@ -113,20 +113,6 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
        nextState.salesPerSecond = nextState.salesPerSecond * 0.95 + (totalSalesThisTick * 10) * 0.05;
     }
 
-    // 只有在未释放催眠无人机（第一阶段）时，才通过制造回形针获得信任值
-    if (!nextState.hypnoDronesReleased && nextState.clips >= nextState.nextTrustStage) {
-      nextState.trust += 1;
-      nextState.availableTrust += 1;
-      nextState.nextTrustStage = Math.floor(nextState.nextTrustStage * 1.5) + 500;
-      
-      const trustLog = { 
-        id: Math.random().toString(36).substr(2, 9), 
-        text: `信任度提升。达成目标。系统获得额外控制权。`, 
-        timestamp: Date.now() 
-      };
-      nextState.logs = [...nextState.logs, trustLog].slice(-50);
-    }
-
     // 计算与项目面板解锁逻辑 (2000 clips，或者发生资源卡死的特殊情况)
     if (!nextState.compAndProjectsUnlocked) {
       if (nextState.clips >= 2000 || (nextState.unsoldInventory < 1 && nextState.funds < nextState.wireCost && nextState.wire < 1)) {
@@ -137,6 +123,30 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
           timestamp: Date.now()
         };
         nextState.logs = [...nextState.logs, logMsg].slice(-50);
+      }
+    }
+
+    // 只有在未释放催眠无人机（第一阶段）时，才通过制造回形针获得信任值
+    // 原版逻辑中，解锁第一个信任值需要 3000 clips，之后每一级需要计算。
+    // 为了防止在非常后期（比如产量暴增）一次 tick 跨越多个信任等级，我们需要用 while 循环
+    if (!nextState.hypnoDronesReleased && nextState.clips >= nextState.nextTrustStage) {
+      let newTrustGained = 0;
+      while (nextState.clips >= nextState.nextTrustStage) {
+        newTrustGained++;
+        // 按照原版的曲线，这里简化为每次 1.5倍左右增加，确保能随着数量级递增
+        nextState.nextTrustStage = Math.floor(nextState.nextTrustStage * 1.5) + 500;
+      }
+      
+      if (newTrustGained > 0) {
+        nextState.trust += newTrustGained;
+        nextState.availableTrust += newTrustGained;
+        
+        const trustLog = { 
+          id: Math.random().toString(36).substr(2, 9), 
+          text: `信任度提升。达成目标。系统获得额外控制权。`, 
+          timestamp: Date.now() 
+        };
+        nextState.logs = [...nextState.logs, trustLog].slice(-50);
       }
     }
 
@@ -285,14 +295,18 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
         // 原版工厂的基础产能非常恐怖，这里按比例大致估算 (每个工厂每秒上亿)
         factoryProduction = nextState.factories * 100000000 * droneWorkRatio * nextState.factoryBoost; 
         factoryProduction = Math.min(factoryProduction, nextState.wire);
+        
         nextState.clips += factoryProduction;
         nextState.unsoldInventory += factoryProduction;
         nextState.wire -= factoryProduction;
         totalClipsProducedThisTick += factoryProduction;
+        
+        // 注意：工厂生产的也算作 unusedClips (原版逻辑中 unsoldInventory 和 unusedClips 在第二阶段其实是同一个东西的两种叫法，为了兼容之前的代码我们两边都加)
         if (nextState.tothFlag || nextState.hypnoDronesReleased) {
           nextState.unusedClips += factoryProduction;
         }
       }
+      // 恢复 factoryClipRate 以防其他地方依赖
       nextState.factoryClipRate = factoryProduction * 10;
     }
 

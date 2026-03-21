@@ -32,7 +32,8 @@ export const SpaceAndDrones = () => {
     buyFactory,
 
     harvestRate,
-    wireProcessRate
+    wireProcessRate,
+    hypnoDronesReleased
   } = useGameStore();
 
   const buyHarvesterContinuous = useContinuousClick(buyHarvesterDrone, 50, 200);
@@ -95,9 +96,17 @@ export const SpaceAndDrones = () => {
           </div>
         )}
         {wireProcessRate > 0 && (
-          <div className="flex justify-between items-center mb-1">
+          <div className="flex justify-between items-center mt-1">
             <span className="text-[10px] text-evolve-textDim tracking-wider opacity-70">拉丝速率</span>
             <span className="font-mono text-xs text-evolve-accent">{formatNumber(Math.floor(wireProcessRate))} 英寸/秒</span>
+          </div>
+        )}
+        
+        {/* 第二阶段后显示可用回形针 (原积压库存) 以供组装消耗 */}
+        {hypnoDronesReleased && (
+          <div className="flex justify-between items-center mt-1">
+            <span className="text-[10px] text-evolve-textDim tracking-wider opacity-70">可用回形针</span>
+            <span className="font-mono text-xs text-evolve-accent">{formatNumber(unsoldInventory)} 件</span>
           </div>
         )}
       </div>
