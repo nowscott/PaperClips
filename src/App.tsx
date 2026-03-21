@@ -46,13 +46,13 @@ function App() {
             tabs={[
               { 
                 id: 'manufacturing', 
-                label: "生产制造",
+                label: "制造",
                 icon: 'Hammer',
                 content: <Manufacturing /> 
               },
               { 
                 id: 'space_and_drones', 
-                label: "物质与无人机",
+                label: "资源",
                 icon: 'Rocket',
                 content: <SpaceAndDrones />,
                 // 当至少有一个无人机相关科技解锁时才显示此 Tab
@@ -71,21 +71,21 @@ function App() {
             tabs={[
               { 
                 id: 'business', 
-                label: "商业运营",
+                label: "商业",
                 icon: 'Briefcase',
                 content: <Business />,
                 condition: !hypnoDronesReleased
               },
               { 
                 id: 'investments', 
-                label: "金融投资",
+                label: "投资",
                 icon: 'LineChart',
                 content: <Investments />, 
                 condition: investmentEngineUnlocked && !hypnoDronesReleased
               },
               { 
                 id: 'strategic_modeling', 
-                label: "战略建模",
+                label: "战略",
                 icon: 'BrainCircuit',
                 content: <StrategicModeling />, 
                 condition: strategyEngineUnlocked 
@@ -101,20 +101,20 @@ function App() {
               tabs={[
                 { 
                   id: 'computing', 
-                  label: "计算资源",
+                  label: "计算",
                   icon: 'Terminal',
                   content: <Computing /> 
                 },
                 { 
                   id: 'quantum_computing', 
-                  label: "量子计算",
+                  label: "量子",
                   icon: 'Cpu',
                   content: <QuantumComputing />, 
                   condition: qComputingUnlocked 
                 },
                 { 
                   id: 'projects', 
-                  label: "科技与项目",
+                  label: "项目",
                   icon: 'FlaskConical',
                   content: <Projects /> 
                 }

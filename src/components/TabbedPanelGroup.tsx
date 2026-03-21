@@ -40,15 +40,15 @@ export const TabbedPanelGroup: React.FC<TabbedPanelGroupProps> = ({ tabs, classN
             <button
               key={tab.id}
               onClick={() => setActiveTabId(tab.id)}
-              className={`flex-1 min-w-0 px-2 py-3 text-sm font-bold tracking-wider transition-all duration-200 flex flex-col items-center justify-center gap-1.5
+              className={`flex-1 min-w-0 px-1 py-1 text-[11px] font-bold tracking-wider transition-all duration-200 flex flex-row items-center justify-center gap-1
                 ${
                   activeTabId === tab.id
                     ? 'text-evolve-accent border-b-2 border-evolve-accent bg-evolve-accent/10 shadow-[inset_0_-2px_10px_rgba(0,168,255,0.05)]'
                     : 'text-evolve-textDim hover:text-evolve-textMain hover:bg-evolve-border/20 border-b-2 border-transparent'
                 }`}
             >
-              {IconComponent && <IconComponent className={`w-5 h-5 ${activeTabId === tab.id ? 'animate-pulse-slow' : ''}`} />}
-              <span className="truncate w-full text-center">{tab.label}</span>
+              {IconComponent && <IconComponent className={`w-3 h-3 ${activeTabId === tab.id ? 'animate-pulse-slow' : ''}`} />}
+              <span className="truncate leading-none">{tab.label}</span>
             </button>
           );
         })}
