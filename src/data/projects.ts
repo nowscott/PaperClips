@@ -253,7 +253,7 @@ export const INITIAL_PROJECTS: Project[] = [
     title: '自动进货机',
     description: '当原材料耗尽时，自动采购铁丝 (前提是资金充足)。',
     costOps: 7000,
-    isUnlocked: (state) => state.clips >= 15000, // 原版：购买铁丝15次（即产出至少1.5万次）
+    isUnlocked: (state) => (state.wirePurchaseCount || 0) >= 15, 
     effect: () => ({ hasWireBuyer: true }) 
   },
   // 34. Hypno Harmonics

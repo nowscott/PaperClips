@@ -48,9 +48,10 @@ export const createManufacturingSlice: StateCreator<GameState, [], [], Manufactu
   ...initialManufacturingState,
   buyWire: () => set((state: GameState) => {
     if (state.funds >= state.wireCost) {
-      return { 
-        wire: state.wire + state.wireSupply, 
-        funds: state.funds - state.wireCost 
+      return {
+        funds: state.funds - state.wireCost,
+        wire: state.wire + state.wireSupply,
+        wirePurchaseCount: (state.wirePurchaseCount || 0) + 1
       };
     }
     return state;
