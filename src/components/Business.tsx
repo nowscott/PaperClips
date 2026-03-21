@@ -49,81 +49,86 @@ export const Business = () => {
           </div>
         </div>
 
+      <div className="flex flex-col gap-1 mt-1">
         {/* 定价控制 */}
-        <div className="flex justify-between items-center">
-          <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-1.5 text-sm text-evolve-textDim tracking-wider">
-              <DollarSign className="w-4 h-4" />
-              <span>产品单价</span>
+        <div className="flex flex-col bg-evolve-bg/50 p-1.5 rounded border border-evolve-border/50 gap-1.5">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-1.5">
+              <DollarSign className="w-3.5 h-3.5 text-evolve-textMain" />
+              <span className="text-xs font-bold leading-none">产品单价</span>
             </div>
-            <div className="flex items-center gap-1.5 text-xs pl-5">
-              <TrendingUp className="w-3.5 h-3.5 text-evolve-textDim" />
+            <div className="flex items-center gap-1.5 text-[10px] font-mono">
+              <TrendingUp className="w-2.5 h-2.5 text-evolve-textDim" />
               <span className="text-evolve-textDim">需求</span>
-              <span className="font-mono">{formatNumber(publicDemand)}%</span>
+              <span>{formatNumber(publicDemand)}%</span>
             </div>
           </div>
-          <div className="flex items-center gap-1">
-            <button className="btn-evolve p-1 select-none flex items-center justify-center" {...lowerFast} title="降价 $0.10 (长按连续降价)">
-              <ChevronsDown className="w-4 h-4 pointer-events-none" />
-            </button>
-            <button className="btn-evolve p-1 select-none flex items-center justify-center" {...lowerSlow} title="降价 $0.01 (长按连续降价)">
-              <ChevronDown className="w-4 h-4 pointer-events-none" />
-            </button>
-            <span className="font-mono w-16 text-center select-none">${formatNumber(price, 2)}</span>
-            <button className="btn-evolve p-1 select-none flex items-center justify-center" {...raiseSlow} title="涨价 $0.01 (长按连续涨价)">
-              <ChevronUp className="w-4 h-4 pointer-events-none" />
-            </button>
-            <button className="btn-evolve p-1 select-none flex items-center justify-center" {...raiseFast} title="涨价 $0.10 (长按连续涨价)">
-              <ChevronsUp className="w-4 h-4 pointer-events-none" />
-            </button>
+          
+          <div className="flex justify-between items-center bg-evolve-border/20 rounded p-1">
+            <div className="flex gap-1">
+              <button className="btn-evolve p-1 hover:bg-evolve-danger/10 hover:text-evolve-danger hover:border-evolve-danger/50" {...lowerFast} title="大降价 $0.10">
+                <ChevronsDown className="w-3.5 h-3.5 pointer-events-none" />
+              </button>
+              <button className="btn-evolve p-1 hover:bg-evolve-danger/10 hover:text-evolve-danger hover:border-evolve-danger/50" {...lowerSlow} title="小降价 $0.01">
+                <ChevronDown className="w-3.5 h-3.5 pointer-events-none" />
+              </button>
+            </div>
+            
+            <span className="font-mono text-sm text-evolve-success font-bold">${formatNumber(price, 2)}</span>
+            
+            <div className="flex gap-1">
+              <button className="btn-evolve p-1 hover:bg-evolve-success/10 hover:text-evolve-success hover:border-evolve-success/50" {...raiseSlow} title="小涨价 $0.01">
+                <ChevronUp className="w-3.5 h-3.5 pointer-events-none" />
+              </button>
+              <button className="btn-evolve p-1 hover:bg-evolve-success/10 hover:text-evolve-success hover:border-evolve-success/50" {...raiseFast} title="大涨价 $0.10">
+                <ChevronsUp className="w-3.5 h-3.5 pointer-events-none" />
+              </button>
+            </div>
           </div>
         </div>
 
-        <div className="h-px bg-evolve-border w-full my-1"></div>
-
         {/* 营销系统 */}
-        <div className="flex justify-between items-center">
-          <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-1.5 text-sm text-evolve-textDim tracking-wider">
-              <Megaphone className="w-4 h-4" />
-              <span>营销 Lv.{marketingLevel}</span>
+        <div className="flex justify-between items-center bg-evolve-bg/50 p-1.5 rounded border border-evolve-border/50">
+          <div className="flex flex-col">
+            <div className="flex items-center gap-1.5">
+              <Megaphone className="w-3.5 h-3.5 text-evolve-textMain" />
+              <span className="text-xs font-bold leading-none">营销 Lv.{marketingLevel}</span>
             </div>
-            <span className="text-xs font-mono opacity-70 pl-5">成本: ${formatNumber(marketingCost, 2)}</span>
+            <span className="text-[10px] font-mono opacity-70 mt-1">成本: ${formatNumber(marketingCost, 2)}</span>
           </div>
           <button 
-            className="btn-evolve flex items-center justify-center gap-1.5 py-1.5 px-3 text-xs tracking-wider"
+            className="btn-evolve text-[10px] py-0.5 px-2 flex items-center gap-1"
             onClick={upgradeMarketing}
             disabled={funds < marketingCost}
           >
-            <TrendingUp className="w-3.5 h-3.5" />
-            <span>扩大宣传</span>
+            <TrendingUp className="w-3 h-3" />
+            扩大宣传
           </button>
         </div>
 
-        <div className="h-px bg-evolve-border w-full my-1"></div>
-
         {/* 购买铁丝 */}
-        <div className="flex justify-between items-center">
-          <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-1.5 text-sm text-evolve-textDim tracking-wider">
-              <ShoppingCart className="w-4 h-4" />
-              <span>采购原材料</span>
+        <div className="flex justify-between items-center bg-evolve-bg/50 p-1.5 rounded border border-evolve-border/50">
+          <div className="flex flex-col">
+            <div className="flex items-center gap-1.5">
+              <ShoppingCart className="w-3.5 h-3.5 text-evolve-textMain" />
+              <span className="text-xs font-bold leading-none">采购原材料</span>
             </div>
-            <div className="flex items-center gap-1 text-xs font-mono pl-5">
+            <div className="flex items-center gap-1 text-[10px] font-mono mt-1">
               <span className="opacity-70">市价: ${formatNumber(wireCost)}</span>
-              {isWireCostUp && <TrendingUp className="w-3 h-3 text-evolve-danger" />}
-              {isWireCostDown && <TrendingUp className="w-3 h-3 text-evolve-success transform rotate-180 scale-y-[-1]" />}
+              {isWireCostUp && <TrendingUp className="w-2.5 h-2.5 text-evolve-danger" />}
+              {isWireCostDown && <TrendingUp className="w-2.5 h-2.5 text-evolve-success transform rotate-180 scale-y-[-1]" />}
             </div>
           </div>
           <button 
-            className="btn-evolve flex items-center justify-center gap-1.5 py-1.5 px-3 text-xs tracking-wider"
+            className="btn-evolve text-[10px] py-0.5 px-2 flex items-center gap-1"
             onClick={buyWire}
             disabled={funds < wireCost}
           >
-            <ShoppingCart className="w-3.5 h-3.5" />
-            <span>进货</span>
+            <ShoppingCart className="w-3 h-3" />
+            进货
           </button>
         </div>
+      </div>
       </div>
     </div>
   );

@@ -49,93 +49,82 @@ export const Computing = () => {
 
   // 信任值系统已解锁
   return (
-    <div className="panel flex flex-col gap-4 border-evolve-accent/30 shadow-[0_0_15px_rgba(0,168,255,0.05)]">
-      <div className="flex flex-col gap-5">
-        {/* 信任值概览 */}
-        <div className="panel-inner flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <Unlock className="w-4 h-4 text-evolve-textMain" />
-            <span className="text-sm text-evolve-textDim tracking-wider">信任值</span>
+    <div className="panel flex flex-col gap-3 border-evolve-accent/30 shadow-[0_0_15px_rgba(0,168,255,0.05)]">
+      {/* 信任值概览 (紧凑行) */}
+      <div className="flex justify-between items-center bg-evolve-bg/50 p-2 rounded border border-evolve-border/50">
+        <div className="flex flex-col">
+          <div className="flex items-center gap-1.5">
+            <Unlock className="w-3.5 h-3.5 text-evolve-textMain" />
+            <span className="text-xs text-evolve-textDim tracking-wider font-bold">信任值</span>
           </div>
-          <span className="font-mono text-lg">{formatNumber(trust)}</span>
+          <span className="text-[10px] text-evolve-textDim opacity-70 mt-1">下一级: {formatNumber(nextTrustStage)} 件</span>
         </div>
-
-        {/* 信任值分配 */}
-        <div className="flex flex-col gap-3">
-          <div className="flex justify-between items-end text-sm">
-            <span className="text-evolve-textDim tracking-wider">下一信任值阈值:</span>
-            <span className="font-mono">{formatNumber(nextTrustStage)} 件</span>
-          </div>
-          
-          <div className="text-sm text-evolve-accent font-mono bg-evolve-accent/10 px-3 py-1 rounded w-fit">
-            可用信任: {formatNumber(availableTrust)}
-          </div>
-
-          <div className="grid grid-cols-2 gap-3 mt-1">
-            {/* 处理器 */}
-            <div className="panel-inner flex flex-col gap-3">
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-1.5 text-sm text-evolve-textDim">
-                  <Cpu className="w-4 h-4" />
-                  <span>处理器</span>
-                </div>
-                <span className="font-mono">{formatNumber(processors)}</span>
-              </div>
-              <button 
-                className="btn-evolve text-xs py-1"
-                onClick={addProcessor}
-                disabled={availableTrust <= 0}
-              >
-                分配
-              </button>
-            </div>
-
-            {/* 内存 */}
-            <div className="panel-inner flex flex-col gap-3">
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-1.5 text-sm text-evolve-textDim">
-                  <HardDrive className="w-4 h-4" />
-                  <span>内存</span>
-                </div>
-                <span className="font-mono">{formatNumber(memory)}</span>
-              </div>
-              <button 
-                className="btn-evolve text-xs py-1"
-                onClick={addMemory}
-                disabled={availableTrust <= 0}
-              >
-                分配
-              </button>
-            </div>
-          </div>
+        <div className="flex flex-col items-end">
+          <span className="font-mono text-lg leading-none">{formatNumber(trust)}</span>
+          <span className="text-[10px] text-evolve-accent font-mono mt-1">可用: {formatNumber(availableTrust)}</span>
         </div>
-
-        <div className="h-px bg-evolve-border w-full my-1"></div>
-
-        {/* 算力 Operations */}
-        <div className="flex flex-col gap-2">
-          <div className="flex justify-between items-end mb-1">
-            <span className="text-sm text-evolve-textDim tracking-wider">算力</span>
-            <span className="font-mono">{formatNumber(Math.floor(ops))} / {formatNumber(maxOps)}</span>
-          </div>
-          <div className="progress-bar-container h-2">
-            <div 
-              className="progress-bar-fill" 
-              style={{ width: `${(ops / maxOps) * 100}%` }}
-            />
-          </div>
-        </div>
-
-        {/* 创造力 Creativity (如果已解锁) */}
-        {creativityOn && (
-          <div className="flex flex-col gap-2 mt-1">
-            <div className="flex justify-between items-end mb-1">
-              <span className="text-sm text-evolve-accent tracking-wider">创造力</span>
-              <span className="font-mono text-evolve-accent">{formatNumber(Math.floor(creativity))}</span>
-            </div>
-          </div>
-        )}
       </div>
+
+      {/* 信任值分配 */}
+      <div className="grid grid-cols-2 gap-2 mt-1">
+        {/* 处理器 */}
+        <div className="flex justify-between items-center bg-evolve-border/10 p-1.5 rounded border border-evolve-border/30">
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center gap-1">
+              <Cpu className="w-3 h-3 text-evolve-textDim" />
+              <span className="text-[10px] text-evolve-textDim font-bold">处理器</span>
+            </div>
+            <span className="font-mono text-xs">{formatNumber(processors)}</span>
+          </div>
+          <button 
+            className="btn-evolve text-[10px] py-1 px-2"
+            onClick={addProcessor}
+            disabled={availableTrust <= 0}
+          >
+            分配
+          </button>
+        </div>
+
+        {/* 内存 */}
+        <div className="flex justify-between items-center bg-evolve-border/10 p-1.5 rounded border border-evolve-border/30">
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center gap-1">
+              <HardDrive className="w-3 h-3 text-evolve-textDim" />
+              <span className="text-[10px] text-evolve-textDim font-bold">内存</span>
+            </div>
+            <span className="font-mono text-xs">{formatNumber(memory)}</span>
+          </div>
+          <button 
+            className="btn-evolve text-[10px] py-1 px-2"
+            onClick={addMemory}
+            disabled={availableTrust <= 0}
+          >
+            分配
+          </button>
+        </div>
+      </div>
+
+      {/* 算力 Operations */}
+      <div className="flex flex-col gap-1 mt-1">
+        <div className="flex justify-between items-end">
+          <span className="text-[10px] text-evolve-textDim tracking-wider font-bold">算力</span>
+          <span className="font-mono text-[10px]">{formatNumber(Math.floor(ops))} / {formatNumber(maxOps)}</span>
+        </div>
+        <div className="w-full h-1.5 bg-evolve-border rounded-full overflow-hidden flex">
+          <div 
+            className="h-full bg-evolve-textMain transition-all duration-300" 
+            style={{ width: `${(ops / maxOps) * 100}%` }}
+          />
+        </div>
+      </div>
+
+      {/* 创造力 Creativity (如果已解锁) */}
+      {creativityOn && (
+        <div className="flex justify-between items-center bg-evolve-accent/5 p-1.5 rounded border border-evolve-accent/20 mt-1">
+          <span className="text-[10px] text-evolve-accent tracking-wider font-bold">创造力</span>
+          <span className="font-mono text-sm text-evolve-accent leading-none">{formatNumber(Math.floor(creativity))}</span>
+        </div>
+      )}
     </div>
   );
 };

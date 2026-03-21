@@ -36,8 +36,8 @@ export const Projects = () => {
   }
 
   return (
-    <div className="panel flex flex-col gap-4 border-evolve-success/30 shadow-[0_0_15px_rgba(var(--color-success),0.05)]">
-      <div className="flex flex-col gap-3">
+    <div className="panel flex flex-col gap-3 border-evolve-success/30 shadow-[0_0_15px_rgba(var(--color-success),0.05)]">
+      <div className="flex flex-col gap-2">
         {/* 可用项目列表 */}
         {availableProjects.length > 0 ? (
           availableProjects.map((project) => {
@@ -50,28 +50,31 @@ export const Projects = () => {
             const canAfford = canAffordOps && canAffordFunds && canAffordCreativity && canAffordYomi && canAffordTrust;
 
             return (
-              <div key={project.id} className="panel-inner flex flex-col gap-2">
-                <div className="flex justify-between items-start gap-3">
-                  <span className="font-bold text-evolve-textMain break-words flex-1">{project.title}</span>
+              <div key={project.id} className="flex flex-col bg-evolve-bg/50 p-2 rounded border border-evolve-border/50 gap-1.5 transition-all hover:border-evolve-success/30">
+                <div className="flex justify-between items-start gap-2">
+                  <div className="flex flex-col gap-1 flex-1">
+                    <span className="text-xs font-bold text-evolve-textMain leading-tight">{project.title}</span>
+                    <p className="text-[10px] text-evolve-textDim leading-tight opacity-90">
+                      {project.description}
+                    </p>
+                  </div>
                   <button
-                    className="btn-evolve text-xs py-1 px-3 border-evolve-success text-evolve-success hover:bg-evolve-success/20 disabled:border-evolve-border disabled:text-evolve-textDim whitespace-nowrap shrink-0"
+                    className="btn-evolve text-[10px] py-1 px-3 border-evolve-success text-evolve-success hover:bg-evolve-success/20 disabled:border-evolve-border disabled:text-evolve-textDim whitespace-nowrap shrink-0 h-fit"
                     onClick={() => completeProject(project.id)}
                     disabled={!canAfford}
                   >
                     研发
                   </button>
                 </div>
-                <p className="text-xs text-evolve-textDim leading-relaxed">
-                  {project.description}
-                </p>
-                <div className="flex gap-4 mt-1 text-xs font-mono flex-wrap">
+                
+                <div className="flex gap-3 text-[10px] font-mono flex-wrap bg-evolve-border/10 p-1 rounded">
                   {project.costOps > 0 && (
-                    <span className={canAffordOps ? 'text-evolve-textMain' : 'text-evolve-danger'}>
+                    <span className={canAffordOps ? 'text-evolve-textDim' : 'text-evolve-danger'}>
                       算力: {project.costOps}
                     </span>
                   )}
                   {project.costFunds && (
-                    <span className={canAffordFunds ? 'text-evolve-textMain' : 'text-evolve-danger'}>
+                    <span className={canAffordFunds ? 'text-evolve-textDim' : 'text-evolve-danger'}>
                       资金: ${project.costFunds.toFixed(2)}
                     </span>
                   )}
@@ -86,7 +89,7 @@ export const Projects = () => {
                     </span>
                   )}
                   {project.costTrust && (
-                    <span className={canAffordTrust ? 'text-evolve-textMain' : 'text-evolve-danger'}>
+                    <span className={canAffordTrust ? 'text-evolve-textDim' : 'text-evolve-danger'}>
                       信任值: {project.costTrust}
                     </span>
                   )}
@@ -95,20 +98,20 @@ export const Projects = () => {
             );
           })
         ) : (
-          <div className="text-center text-sm text-evolve-textDim italic py-4">
+          <div className="text-center text-[10px] text-evolve-textDim italic py-2">
             等待新发现...
           </div>
         )}
 
         {/* 已完成项目记录 */}
         {recentCompleted.length > 0 && (
-          <div className="mt-4 border-t border-evolve-border pt-4">
-            <h3 className="text-xs text-evolve-textDim tracking-wider mb-2">近期已完成</h3>
+          <div className="mt-2 border-t border-evolve-border/50 pt-2">
+            <h3 className="text-[10px] text-evolve-textDim tracking-wider mb-1.5 font-bold">近期已完成</h3>
             <div className="flex flex-col gap-1">
               {recentCompleted.map((p: Project) => (
-                <div key={p.id} className="flex items-center gap-2 text-sm text-evolve-textDim opacity-70">
-                  <CheckCircle2 className="w-3 h-3 text-evolve-success" />
-                  <span>{p.title}</span>
+                <div key={p.id} className="flex items-center gap-1.5 text-[10px] text-evolve-textDim opacity-70">
+                  <CheckCircle2 className="w-3 h-3 text-evolve-success shrink-0" />
+                  <span className="truncate">{p.title}</span>
                 </div>
               ))}
             </div>

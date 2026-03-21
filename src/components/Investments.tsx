@@ -21,48 +21,57 @@ export const Investments = () => {
   const canUpgrade = yomi >= upgradeCost;
 
   return (
-    <div className="panel flex flex-col gap-4 border-evolve-accent/30 shadow-[0_0_15px_rgba(0,168,255,0.05)]">
-      <div className="text-right text-xs text-evolve-textDim font-mono border-b border-evolve-border pb-2">
-        引擎等级: {investmentLevel}
+    <div className="panel flex flex-col gap-3 border-evolve-accent/30 shadow-[0_0_15px_rgba(0,168,255,0.05)]">
+      {/* 顶部标题栏 & 升级按钮合并 */}
+      <div className="flex justify-between items-end border-b border-evolve-border pb-2">
+        <div className="flex flex-col">
+          <span className="text-xs text-evolve-textDim tracking-wider font-bold">引擎等级: {investmentLevel}</span>
+          <span className="text-[10px] font-mono opacity-70">升级成本: {formatNumber(upgradeCost)} Yomi</span>
+        </div>
+        <button 
+          className="btn-evolve flex items-center gap-1 py-1 px-2 text-[10px]"
+          onClick={upgradeInvestmentEngine}
+          disabled={!canUpgrade}
+        >
+          <TrendingUp className="w-3 h-3" />
+          升级
+        </button>
       </div>
 
-      <div className="flex flex-col gap-5 mt-2">
-        {/* 投资资金池概览 */}
-        <div className="panel-inner flex flex-col items-center justify-center gap-1">
-          <span className="text-xs text-evolve-textDim tracking-wider">投资资金池</span>
-          <span className={`text-2xl font-mono font-bold ${investmentBankroll > 0 ? 'text-evolve-success' : 'text-evolve-textMain'}`}>
-            ${formatNumber(investmentBankroll, 2)}
-          </span>
+      <div className="flex flex-col gap-3 mt-1">
+        {/* 投资资金池与操作合并行 */}
+        <div className="flex justify-between items-center bg-evolve-bg/50 p-2 rounded border border-evolve-border/50">
+          <div className="flex flex-col">
+            <span className="text-[10px] text-evolve-textDim tracking-wider">投资资金池</span>
+            <span className={`text-lg font-mono font-bold leading-none mt-1 ${investmentBankroll > 0 ? 'text-evolve-success' : 'text-evolve-textMain'}`}>
+              ${formatNumber(investmentBankroll, 2)}
+            </span>
+          </div>
+          <div className="flex gap-2">
+            <button 
+              className="btn-evolve flex flex-col items-center gap-0.5 py-1 px-3 bg-evolve-border/20"
+              onClick={depositFunds}
+            >
+              <ArrowDownToLine className="w-3.5 h-3.5 text-evolve-success" />
+              <span className="text-[10px] tracking-wider">存入</span>
+            </button>
+            <button 
+              className="btn-evolve flex flex-col items-center gap-0.5 py-1 px-3 bg-evolve-border/20"
+              onClick={withdrawFunds}
+              disabled={investmentBankroll <= 0}
+            >
+              <ArrowUpFromLine className="w-3.5 h-3.5 text-evolve-textMain" />
+              <span className="text-[10px] tracking-wider">提取</span>
+            </button>
+          </div>
         </div>
-
-        {/* 资金操作 */}
-        <div className="grid grid-cols-2 gap-3">
-          <button 
-            className="btn-evolve flex flex-col items-center gap-1 py-3 hover:bg-evolve-border/50"
-            onClick={depositFunds}
-          >
-            <ArrowDownToLine className="w-4 h-4 text-evolve-success" />
-            <span className="text-xs tracking-wider">全部存入</span>
-          </button>
-          
-          <button 
-            className="btn-evolve flex flex-col items-center gap-1 py-3 hover:bg-evolve-border/50"
-            onClick={withdrawFunds}
-            disabled={investmentBankroll <= 0}
-          >
-            <ArrowUpFromLine className="w-4 h-4 text-evolve-textMain" />
-            <span className="text-xs tracking-wider">全部提取</span>
-          </button>
-        </div>
-
-        <div className="h-px bg-evolve-border w-full my-1"></div>
 
         {/* 风险等级控制 */}
-        <div className="flex flex-col gap-2">
-          <span className="text-sm text-evolve-textDim tracking-wider">风险策略</span>
-          <div className="flex gap-2">
+        <div className="flex flex-col gap-1.5">
+          <span className="text-[10px] text-evolve-textDim tracking-wider">风险策略</span>
+          <div className="flex gap-1.5">
             <button
-              className={`flex-1 py-1 text-xs border uppercase tracking-wide transition-colors ${
+              className={`flex-1 py-1 text-[10px] border uppercase tracking-wide transition-colors rounded ${
                 riskLevel === 'low' 
                   ? 'border-evolve-accent text-evolve-accent bg-evolve-accent/10' 
                   : 'border-evolve-border text-evolve-textDim hover:border-evolve-accent/50'
@@ -73,7 +82,7 @@ export const Investments = () => {
             </button>
             {investmentLevel >= 2 && (
               <button
-                className={`flex-1 py-1 text-xs border uppercase tracking-wide transition-colors animate-fade-in ${
+                className={`flex-1 py-1 text-[10px] border uppercase tracking-wide transition-colors rounded animate-fade-in ${
                   riskLevel === 'med' 
                     ? 'border-evolve-warning text-evolve-warning bg-evolve-warning/10' 
                     : 'border-evolve-border text-evolve-textDim hover:border-evolve-warning/50'
@@ -85,7 +94,7 @@ export const Investments = () => {
             )}
             {investmentLevel >= 3 && (
               <button
-                className={`flex-1 py-1 text-xs border uppercase tracking-wide transition-colors animate-fade-in ${
+                className={`flex-1 py-1 text-[10px] border uppercase tracking-wide transition-colors rounded animate-fade-in ${
                   riskLevel === 'high' 
                     ? 'border-evolve-danger text-evolve-danger bg-evolve-danger/10' 
                     : 'border-evolve-border text-evolve-textDim hover:border-evolve-danger/50'
@@ -96,24 +105,6 @@ export const Investments = () => {
               </button>
             )}
           </div>
-        </div>
-
-        <div className="h-px bg-evolve-border w-full my-1"></div>
-
-        {/* 引擎升级 */}
-        <div className="flex justify-between items-center">
-          <div className="flex flex-col">
-            <span className="text-sm text-evolve-textDim tracking-wider mb-1">升级投资引擎</span>
-            <span className="text-xs font-mono opacity-70">升级成本: {formatNumber(upgradeCost)} 预判值 (Yomi)</span>
-          </div>
-          <button 
-            className="btn-evolve flex items-center gap-2"
-            onClick={upgradeInvestmentEngine}
-            disabled={!canUpgrade}
-          >
-            <TrendingUp className="w-4 h-4" />
-            <span>升级</span>
-          </button>
         </div>
       </div>
     </div>
