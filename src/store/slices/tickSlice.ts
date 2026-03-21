@@ -27,7 +27,7 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
     }
 
     // 自动购买铁丝逻辑 (WireBuyer 项目)
-    if (nextState.hasWireBuyer && nextState.wireBuyerOn && nextState.wire < 1 && nextState.funds >= nextState.wireCost) {
+    if (nextState.hasWireBuyer && nextState.wireBuyerOn && nextState.wire < 1 && nextState.funds >= nextState.wireCost && !nextState.hypnoDronesReleased) {
       // 购买时基础价格微涨 (原版: wireBasePrice = wireBasePrice + .05)
       nextState.wireBasePrice += 0.05;
       
@@ -78,7 +78,7 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
 
     let totalSalesThisTick = 0;
 
-    if (nextState.unsoldInventory > 0) {
+    if (nextState.unsoldInventory > 0 && !nextState.hypnoDronesReleased) {
       // 原版销售计算公式:
       // demand 实际上是 publicDemand / 10
       const rawDemand = nextState.publicDemand / 10;
@@ -210,7 +210,7 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
     };
 
     // 股市投资逻辑
-    if (nextState.investmentEngineUnlocked && nextState.investmentBankroll > 0) {
+    if (nextState.investmentEngineUnlocked && nextState.investmentBankroll > 0 && !nextState.hypnoDronesReleased) {
       // 投资等级加成 (原版每级提升 1% 的收益概率阈值)
       const engineBonus = nextState.investmentLevel * 0.01;
       
@@ -274,13 +274,14 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
           timestamp: Date.now()
         };
         nextState.logs = [...nextState.logs, logMsg].slice(-50);
-
-        // 自动锦标赛 (AutoTourney) 科技效果
-        if (nextState.autoTourneyUnlocked && nextState.autoTourneyStatus && (nextState.ops + nextState.tempOps) >= nextState.tourneyCost) {
-           nextState.tourneyInProg = true;
-           deductOps(nextState.tourneyCost);
-        }
       }
+    }
+
+    // 自动锦标赛 (AutoTourney) 触发逻辑：
+    // 无论是比赛刚结束，还是刷新页面后没在跑，或者是算力刚恢复足够，只要开启且算力足够就启动
+    if (!nextState.tourneyInProg && nextState.autoTourneyUnlocked && nextState.autoTourneyStatus && (nextState.ops + nextState.tempOps) >= nextState.tourneyCost) {
+       nextState.tourneyInProg = true;
+       deductOps(nextState.tourneyCost);
     }
 
     // 新的工厂与无人机逻辑
