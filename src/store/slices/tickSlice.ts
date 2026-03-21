@@ -182,7 +182,13 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
         
         nextState.matchResults = results;
         // 基础奖励加上玩家策略在博弈中的得分 (放大一定倍数)
-        const yomiAward = 1000 + (totalYomiGained * 500);
+        let yomiAward = 1000 + (totalYomiGained * 500);
+        
+        // 心智理论 (Theory of Mind) 科技效果：Yomi 获取翻倍
+        if (nextState.theoryOfMindUnlocked) {
+          yomiAward *= 2;
+        }
+
         nextState.yomi += yomiAward;
         
         const logMsg = {
@@ -191,6 +197,12 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
           timestamp: Date.now()
         };
         nextState.logs = [...nextState.logs, logMsg].slice(-50);
+
+        // 自动锦标赛 (AutoTourney) 科技效果
+        if (nextState.autoTourneyUnlocked && nextState.ops >= nextState.tourneyCost) {
+           nextState.tourneyInProg = true;
+           nextState.ops -= nextState.tourneyCost;
+        }
       }
     }
 

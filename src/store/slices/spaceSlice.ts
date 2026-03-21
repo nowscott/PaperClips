@@ -35,6 +35,14 @@ export interface SpaceSlice {
   prestigeU: number; // Universe prestige
   prestigeS: number; // Sim Level prestige
   
+  // 探测器与太空战
+  honor: number;
+  
+  // 后期科技解锁
+  autoTourneyUnlocked: boolean;
+  theoryOfMindUnlocked: boolean;
+  nameTheBattlesUnlocked: boolean;
+  
   // Actions
   launchProbe: () => void;
   increaseProbeStat: (statKey: keyof Pick<SpaceSlice, 'probeSpeed' | 'probeExploration' | 'probeReplication' | 'probeHazard' | 'probeFactory' | 'probeHarvester' | 'probeWire' | 'probeCombat'>) => void;
@@ -70,6 +78,11 @@ export const initialSpaceState: Omit<SpaceSlice, 'launchProbe' | 'increaseProbeS
   victory: false,
   prestigeU: 0,
   prestigeS: 0,
+
+  honor: 0,
+  autoTourneyUnlocked: false,
+  theoryOfMindUnlocked: false,
+  nameTheBattlesUnlocked: false,
 };
 
 export const createSpaceSlice: StateCreator<GameState, [], [], SpaceSlice> = (set) => ({

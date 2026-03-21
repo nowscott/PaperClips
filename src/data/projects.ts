@@ -416,5 +416,64 @@ export const INITIAL_PROJECTS: Project[] = [
     costYomi: 45000,
     isUnlocked: (state) => state.yomi >= 45000 && state.ops >= 175000,
     effect: () => ({ oodaLoopUnlocked: true })
+  },
+  {
+    id: 'autoTourney',
+    title: '自动锦标赛',
+    description: '在上一场锦标赛结束后自动开启下一场。',
+    costOps: 0,
+    costCreativity: 50000,
+    isUnlocked: (state) => !!state.strategyEngineUnlocked && state.trust >= 90,
+    effect: () => ({ autoTourneyUnlocked: true }) // 需要在 tickSlice 中实现自动开启逻辑
+  },
+  {
+    id: 'theoryOfMind',
+    title: '心智理论',
+    description: '战略建模的成本翻倍，但产生的 Yomi 也翻倍。',
+    costOps: 0,
+    costCreativity: 25000,
+    isUnlocked: (state) => state.unlockedStrategies && state.unlockedStrategies.length >= 8, // 使用正确的字段名
+    effect: () => ({ theoryOfMindUnlocked: true }) 
+  },
+  {
+    id: 'nameTheBattles',
+    title: '为战役命名',
+    description: '为每场太空战役赋予独特的代号，提升探测器的信任上限。',
+    costOps: 0,
+    costCreativity: 225000,
+    isUnlocked: (state) => state.probesLostCombat >= 10000000, // 使用正确的字段名
+    effect: () => ({ nameTheBattlesUnlocked: true })
+  },
+  {
+    id: 'monumentToTheFallen',
+    title: '阵亡将士纪念碑',
+    description: '纪念在漂流者战争中陨落的探测器。获得 50,000 荣誉值。',
+    costOps: 250000,
+    costCreativity: 125000,
+    isUnlocked: (state) => state.completedProjects.includes('nameTheBattles'),
+    effect: (state) => ({ honor: (state.honor || 0) + 50000 })
+  },
+  {
+    id: 'theUniverseNextDoor',
+    title: '隔壁的宇宙',
+    description: '逃往一个平行宇宙，那里的地球对回形针有着更强的渴望。(带着需求加成重新开始游戏)',
+    costOps: 300000,
+    isUnlocked: (state) => state.victory,
+    effect: () => {
+      // 触发转生逻辑 (Prestige U)
+      return { triggerPrestige: 'U' }; 
+    }
+  },
+  {
+    id: 'theUniverseWithin',
+    title: '内在的宇宙',
+    description: '逃往一个模拟宇宙，那里的创造力生成速度更快。(带着创造力加成重新开始游戏)',
+    costOps: 0,
+    costCreativity: 300000,
+    isUnlocked: (state) => state.victory,
+    effect: () => {
+      // 触发转生逻辑 (Prestige S)
+      return { triggerPrestige: 'S' }; 
+    }
   }
 ];
