@@ -15,6 +15,7 @@ export interface ManufacturingSlice {
   hasWireBuyer: boolean;
   wireBuyerOn: boolean; // 新增：自动进货机的开关状态
   clipsPerSecond: number; // 新增：每秒制造量统计
+  wireConsumptionRate: number; // 新增：每秒铁丝消耗率
   buyWire: () => void;
   toggleWireBuyer: () => void; // 新增：切换自动进货机开关
   // 新增：未使用的回形针（用于建造工厂等）
@@ -43,6 +44,7 @@ export const initialManufacturingState = {
   hasWireBuyer: false,
   wireBuyerOn: true,
   clipsPerSecond: 0,
+  wireConsumptionRate: 0,
   unusedClips: 0,
   harvestRate: 0,
   wireProcessRate: 0,

@@ -17,6 +17,8 @@ export const Manufacturing = () => {
     buyMegaClipper,
     funds,
     clipsPerSecond,
+    wireConsumptionRate,
+    wireProcessRate,
     hasWireBuyer,
     wireBuyerOn,
     toggleWireBuyer,
@@ -28,6 +30,7 @@ export const Manufacturing = () => {
   // 为了视觉反馈，如果有铁丝但比例极低，我们也显示至少 1% 的宽度
   const wirePercent = wire > 0 ? Math.min(100, Math.max(1, (wire / wireSupply) * 100)) : 0;
 
+  const netWireRate = wireProcessRate - wireConsumptionRate;
   const makePaperclipContinuous = useContinuousClick(makePaperclip, 50, 200);
 
   return (
@@ -46,7 +49,16 @@ export const Manufacturing = () => {
         {/* 资源状态 */}
         <div className="panel-inner p-2">
           <div className="flex justify-between items-end mb-1">
-            <span className="text-xs text-evolve-textDim tracking-wider">原材料 (铁丝)</span>
+            <div className="flex flex-col">
+              <span className="text-xs text-evolve-textDim tracking-wider">原材料 (铁丝)</span>
+              <div className="flex gap-1 items-center">
+                {netWireRate !== 0 && (
+                  <span className={`text-[9px] italic leading-none mt-0.5 ${netWireRate > 0 ? 'text-evolve-success' : 'text-evolve-danger'} opacity-80`}>
+                    {netWireRate > 0 ? '+' : ''}{formatNumber(Math.floor(netWireRate))} 英寸/秒
+                  </span>
+                )}
+              </div>
+            </div>
             <span className="font-mono text-sm text-evolve-textMain">{formatNumber(wire)} <span className="text-[10px] text-evolve-textDim">英寸</span></span>
           </div>
           <div className="h-1.5 bg-evolve-border rounded-full overflow-hidden flex">
