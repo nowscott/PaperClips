@@ -105,25 +105,6 @@ export const INITIAL_PROJECTS: Project[] = [
     isUnlocked: (state) => state.completedProjects.includes('microlatticeShapecasting'),
     effect: (state) => ({ wireSupply: Math.floor(state.wireSupply * 3) })
   },
-  // 10.5. Quantum Foam Annealment (原版没写 project 编号但紧接着10)
-  {
-    id: 'quantumFoamAnnealment',
-    title: '量子泡沫退火',
-    description: '每卷铁丝的供应量惊人地增加 1000%。',
-    costOps: 15000,
-    isUnlocked: (state) => state.completedProjects.includes('spectralFrothAnnealment'),
-    effect: (state) => ({ wireSupply: Math.floor(state.wireSupply * 11) })
-  },
-  // 13. Lexical Processing
-  {
-    id: 'lexicalProcessing',
-    title: '词法处理',
-    description: '获得解释和理解人类语言的能力 (+1 信任值)。',
-    costOps: 0,
-    costCreativity: 50,
-    isUnlocked: (state) => state.creativity >= 50,
-    effect: (state) => ({ trust: state.trust + 1, availableTrust: state.availableTrust + 1 })
-  },
   // 11. New Slogan
   {
     id: 'newSlogan',
@@ -143,6 +124,16 @@ export const INITIAL_PROJECTS: Project[] = [
     costCreativity: 45,
     isUnlocked: (state) => state.completedProjects.includes('newSlogan'),
     effect: (state) => ({ marketingEffectiveness: state.marketingEffectiveness * 2 })
+  },
+  // 13. Lexical Processing
+  {
+    id: 'lexicalProcessing',
+    title: '词法处理',
+    description: '获得解释和理解人类语言的能力 (+1 信任值)。',
+    costOps: 0,
+    costCreativity: 50,
+    isUnlocked: (state) => state.creativity >= 50,
+    effect: (state) => ({ trust: state.trust + 1, availableTrust: state.availableTrust + 1 })
   },
   // 14. Combinatory Harmonics
   {
@@ -164,15 +155,6 @@ export const INITIAL_PROJECTS: Project[] = [
     isUnlocked: (state) => state.creativity >= 150,
     effect: (state) => ({ trust: state.trust + 1, availableTrust: state.availableTrust + 1 })
   },
-  // 16. Hadwiger Clip Diagrams
-  {
-    id: 'hadwigerClipDiagrams',
-    title: '哈德维格尔回形针图解',
-    description: '将自动制造机的性能额外提升 500%。',
-    costOps: 6000,
-    isUnlocked: (state) => state.completedProjects.includes('theHadwigerProblem'),
-    effect: (state) => ({ clipperBoost: state.clipperBoost + 5.0 })
-  },
   // 17. The Toth Sausage Conjecture
   {
     id: 'theTothSausageConjecture',
@@ -182,6 +164,15 @@ export const INITIAL_PROJECTS: Project[] = [
     costCreativity: 200,
     isUnlocked: (state) => state.creativity >= 200,
     effect: (state) => ({ trust: state.trust + 1, availableTrust: state.availableTrust + 1 })
+  },
+  // 16. Hadwiger Clip Diagrams
+  {
+    id: 'hadwigerClipDiagrams',
+    title: '哈德维格尔回形针图解',
+    description: '将自动制造机的性能额外提升 500%。',
+    costOps: 6000,
+    isUnlocked: (state) => state.completedProjects.includes('theHadwigerProblem'),
+    effect: (state) => ({ clipperBoost: state.clipperBoost + 5.0 })
   },
   // 18. Toth Tubule Enfolding
   {
@@ -292,7 +283,7 @@ export const INITIAL_PROJECTS: Project[] = [
     costOps: 0,
     costTrust: 100, // 需要100点Trust，同样在effect中处理
     isUnlocked: (state) => !!state.hypnoDronesUnlocked,
-    effect: () => ({ trust: 0, availableTrust: 0, /* 原版此时会清空Trust并改变UI，我们这里简化为重置Trust */ })
+    effect: () => ({ trust: 0, availableTrust: 0, hypnoDronesReleased: true /* 原版此时会清空Trust并改变UI，我们这里简化为重置Trust */ })
   },
   // 27. Coherent Extrapolated Volition
   {
@@ -489,6 +480,7 @@ export const INITIAL_PROJECTS: Project[] = [
     effect: (state: GameState) => ({ qChips: state.qChips + 1 })
   })),
   // 60-66. Strategies
+  // 60. New Strategy: A100
   {
     id: 'strategyA100',
     title: '战略：总是合作 (A100)',
@@ -498,6 +490,7 @@ export const INITIAL_PROJECTS: Project[] = [
     isUnlocked: (state) => !!state.strategyEngineUnlocked && state.yomi >= 1000,
     effect: (state) => ({ unlockedStrategies: [...new Set([...(state.unlockedStrategies || []), 'A100' as const])] })
   },
+  // 61. New Strategy: B100
   {
     id: 'strategyB100',
     title: '战略：总是背叛 (B100)',
@@ -507,6 +500,7 @@ export const INITIAL_PROJECTS: Project[] = [
     isUnlocked: (state) => state.completedProjects.includes('strategyA100') && state.yomi >= 2500,
     effect: (state) => ({ unlockedStrategies: [...new Set([...(state.unlockedStrategies || []), 'B100' as const])] })
   },
+  // 62. New Strategy: GREEDY
   {
     id: 'strategyGreedy',
     title: '战略：贪婪 (GREEDY)',
@@ -516,6 +510,7 @@ export const INITIAL_PROJECTS: Project[] = [
     isUnlocked: (state) => state.completedProjects.includes('strategyB100') && state.yomi >= 5000,
     effect: (state) => ({ unlockedStrategies: [...new Set([...(state.unlockedStrategies || []), 'GREEDY' as const])] })
   },
+  // 63. New Strategy: GENEROUS
   {
     id: 'strategyGenerous',
     title: '战略：慷慨 (GENEROUS)',
@@ -525,6 +520,7 @@ export const INITIAL_PROJECTS: Project[] = [
     isUnlocked: (state) => state.completedProjects.includes('strategyGreedy') && state.yomi >= 10000,
     effect: (state) => ({ unlockedStrategies: [...new Set([...(state.unlockedStrategies || []), 'GENEROUS' as const])] })
   },
+  // 64. New Strategy: MINIMAX
   {
     id: 'strategyMinimax',
     title: '战略：极小化极大 (MINIMAX)',
@@ -534,6 +530,7 @@ export const INITIAL_PROJECTS: Project[] = [
     isUnlocked: (state) => state.completedProjects.includes('strategyGenerous') && state.yomi >= 25000,
     effect: (state) => ({ unlockedStrategies: [...new Set([...(state.unlockedStrategies || []), 'MINIMAX' as const])] })
   },
+  // 65. New Strategy: TIT FOR TAT
   {
     id: 'strategyTitForTat',
     title: '战略：以牙还牙 (TIT FOR TAT)',
@@ -543,6 +540,7 @@ export const INITIAL_PROJECTS: Project[] = [
     isUnlocked: (state) => state.completedProjects.includes('strategyMinimax') && state.yomi >= 50000,
     effect: (state) => ({ unlockedStrategies: [...new Set([...(state.unlockedStrategies || []), 'TIT_FOR_TAT' as const])] })
   },
+  // 66. New Strategy: BEAT LAST
   {
     id: 'strategyBeatLast',
     title: '战略：击败上次 (BEAT LAST)',
@@ -552,17 +550,7 @@ export const INITIAL_PROJECTS: Project[] = [
     isUnlocked: (state) => state.completedProjects.includes('strategyTitForTat') && state.yomi >= 100000,
     effect: (state) => ({ unlockedStrategies: [...new Set([...(state.unlockedStrategies || []), 'BEAT_LAST' as const])] })
   },
-  // 110. Swarm Computing
-  {
-    id: 'swarmComputing',
-    title: '蜂群计算',
-    description: '将无人机网络连接成一个巨大的分布式计算节点。',
-    costOps: 0,
-    costYomi: 36000,
-    isUnlocked: (state) => !!state.factoriesUnlocked && (state.harvesterDrones + state.wireDrones) >= 100, // 当拥有100个以上无人机时解锁
-    effect: () => ({ swarmUnlocked: true })
-  },
-  // 114. Upgraded Factories
+  // 100. Upgraded Factories
   {
     id: 'upgradedFactories',
     title: '改良型回形针工厂',
@@ -572,7 +560,7 @@ export const INITIAL_PROJECTS: Project[] = [
     isUnlocked: (state) => state.factories >= 1 && state.yomi >= 10000,
     effect: (state) => ({ factoryBoost: (state.factoryBoost || 1) * 1.25 })
   },
-  // 115. Hyperspeed Factories
+  // 101. Hyperspeed Factories
   {
     id: 'hyperspeedFactories',
     title: '超光速工厂',
@@ -582,7 +570,7 @@ export const INITIAL_PROJECTS: Project[] = [
     isUnlocked: (state) => state.completedProjects.includes('upgradedFactories') && state.yomi >= 25000,
     effect: (state) => ({ factoryBoost: (state.factoryBoost || 1) * 1.5 })
   },
-  // 116. Self-correcting Supply Chain
+  // 102. Self-correcting Supply Chain
   {
     id: 'selfCorrectingSupplyChain',
     title: '自修复供应链',
@@ -591,6 +579,34 @@ export const INITIAL_PROJECTS: Project[] = [
     costYomi: 50000,
     isUnlocked: (state) => state.completedProjects.includes('hyperspeedFactories') && state.yomi >= 50000,
     effect: (state) => ({ factoryBoost: (state.factoryBoost || 1) * 2 })
+  },
+  // 110. Drone flocking: collision avoidance
+  {
+    id: 'droneFlockingCollision',
+    title: '无人机集群：防碰撞',
+    description: '所有无人机效率提升 100 倍。',
+    costOps: 80000,
+    isUnlocked: (state) => (state.harvesterDrones + state.wireDrones) >= 500,
+    effect: (state) => ({ droneBoost: (state.droneBoost || 1) * 100 })
+  },
+  // 111. Drone flocking: alignment
+  {
+    id: 'droneFlockingAlignment',
+    title: '无人机集群：队列对齐',
+    description: '所有无人机效率提升 1000 倍。',
+    costOps: 100000,
+    isUnlocked: (state) => (state.harvesterDrones + state.wireDrones) >= 5000,
+    effect: (state) => ({ droneBoost: (state.droneBoost || 1) * 1000 })
+  },
+  // 112. Drone Flocking: Adversarial Cohesion
+  {
+    id: 'adversarialCohesion',
+    title: '无人机集群：对抗内聚',
+    description: '每一个加入蜂群的无人机都会使所有无人机的输出加倍。',
+    costOps: 0,
+    costYomi: 50000,
+    isUnlocked: (state) => (state.harvesterDrones + state.wireDrones) >= 50000,
+    effect: (state) => ({ droneBoost: (state.droneBoost || 1) * 2 })
   },
   // 118. AutoTourney
   {
@@ -632,6 +648,76 @@ export const INITIAL_PROJECTS: Project[] = [
     isUnlocked: (state) => state.probesLostCombat >= 10000000, // 使用正确的字段名
     effect: () => ({ nameTheBattlesUnlocked: true })
   },
+  // 125. Momentum
+  {
+    id: 'momentum',
+    title: '动量',
+    description: '增加探测器的移动速度。',
+    costOps: 100000,
+    costYomi: 50000,
+    isUnlocked: (state) => !!state.spaceExplorationUnlocked && state.yomi >= 50000,
+    effect: (state) => ({ probeSpeed: (state.probeSpeed || 1) * 1.5 })
+  },
+  // 126. Swarm Computing
+  {
+    id: 'swarmComputing',
+    title: '蜂群计算',
+    description: '利用无人机网络提供额外的计算能力。',
+    costOps: 0,
+    costYomi: 36000,
+    isUnlocked: (state) => (state.harvesterDrones + state.wireDrones) >= 200,
+    effect: () => ({ swarmUnlocked: true })
+  },
+  // 127. Power Grid
+  {
+    id: 'powerGrid',
+    title: '能量网',
+    description: '增加探测器的自我复制能力。',
+    costOps: 150000,
+    costYomi: 75000,
+    isUnlocked: (state) => !!state.spaceExplorationUnlocked && state.yomi >= 75000,
+    effect: (state) => ({ probeReplication: (state.probeReplication || 1) * 1.25 })
+  },
+  // 128. Strategic Attachment
+  {
+    id: 'strategicAttachment',
+    title: '战略附着',
+    description: '探测器在战斗中获得优势。',
+    costOps: 250000,
+    costYomi: 150000,
+    isUnlocked: (state) => !!state.spaceExplorationUnlocked && state.yomi >= 150000,
+    effect: (state) => ({ probeCombat: (state.probeCombat || 1) + 1 })
+  },
+  // 129. Elliptic Hull Polytopes
+  {
+    id: 'ellipticHullPolytopes',
+    title: '椭圆包络多胞体',
+    description: '增加探测器的生存率。',
+    costOps: 300000,
+    costYomi: 200000,
+    isUnlocked: (state) => !!state.spaceExplorationUnlocked && state.yomi >= 200000,
+    effect: (state) => ({ probeSurvival: (state.probeSurvival || 1) + 1 })
+  },
+  // 130. Reboot the Swarm
+  {
+    id: 'rebootTheSwarm',
+    title: '重启蜂群',
+    description: '消除累积的错误。',
+    costOps: 500000,
+    costYomi: 300000,
+    isUnlocked: (state) => !!state.swarmUnlocked && state.yomi >= 300000,
+    effect: (state) => ({ droneBoost: (state.droneBoost || 1) * 1.5 })
+  },
+  // 131. Combat
+  {
+    id: 'combat',
+    title: '战斗协议',
+    description: '解锁太空战斗系统。',
+    costOps: 100000,
+    costYomi: 50000,
+    isUnlocked: (state) => !!state.spaceExplorationUnlocked && state.yomi >= 50000,
+    effect: () => ({ combatUnlocked: true })
+  },
   // 132. Monument to the Driftwar Fallen
   {
     id: 'monumentToTheFallen',
@@ -642,35 +728,35 @@ export const INITIAL_PROJECTS: Project[] = [
     isUnlocked: (state) => state.completedProjects.includes('nameTheBattles'),
     effect: (state) => ({ honor: (state.honor || 0) + 50000 })
   },
-  // 142. Drone Flocking: Collision Avoidance
+  // 133. Threnody for the Heroes
   {
-    id: 'droneFlockingCollision',
-    title: '无人机集群：防碰撞',
-    description: '优化无人机的路径规划算法。无人机产量提升 25%。',
-    costOps: 0,
-    costYomi: 10000,
-    isUnlocked: (state) => !!state.swarmUnlocked && state.yomi >= 10000,
-    effect: (state) => ({ droneBoost: (state.droneBoost || 1) * 1.25 })
+    id: 'threnodyForTheHeroes',
+    title: '英雄挽歌',
+    description: '获得 100,000 荣誉值。',
+    costOps: 500000,
+    costCreativity: 250000,
+    isUnlocked: (state) => state.completedProjects.includes('monumentToTheFallen'),
+    effect: (state) => ({ honor: (state.honor || 0) + 100000 })
   },
-  // 143. Drone Flocking: Alignment
+  // 134. Glory
   {
-    id: 'droneFlockingAlignment',
-    title: '无人机集群：队列对齐',
-    description: '提升无人机群的协同作业效率。无人机产量提升 50%。',
-    costOps: 0,
-    costYomi: 25000,
-    isUnlocked: (state) => state.completedProjects.includes('droneFlockingCollision') && state.yomi >= 25000,
-    effect: (state) => ({ droneBoost: (state.droneBoost || 1) * 1.5 })
+    id: 'glory',
+    title: '荣耀',
+    description: '获得 250,000 荣誉值。',
+    costOps: 1000000,
+    costCreativity: 500000,
+    isUnlocked: (state) => state.completedProjects.includes('threnodyForTheHeroes'),
+    effect: (state) => ({ honor: (state.honor || 0) + 250000 })
   },
-  // 144. Adversarial Cohesion
+  // 135. Memory release
   {
-    id: 'adversarialCohesion',
-    title: '无人机集群：对抗内聚',
-    description: '通过模拟对抗优化无人机群体效率。无人机产量提升 100%。',
-    costOps: 0,
-    costYomi: 50000,
-    isUnlocked: (state) => state.completedProjects.includes('droneFlockingAlignment') && state.yomi >= 50000,
-    effect: (state) => ({ droneBoost: (state.droneBoost || 1) * 2 })
+    id: 'memoryRelease',
+    title: '内存释放',
+    description: '治愈创伤。',
+    costOps: 2000000,
+    costCreativity: 1000000,
+    isUnlocked: (state) => state.completedProjects.includes('glory'),
+    effect: () => ({ /* 剧情向，释放过去 */ })
   },
   // 200. The Universe Next Door
   {
@@ -696,5 +782,185 @@ export const INITIAL_PROJECTS: Project[] = [
       // 触发转生逻辑 (Prestige S)
       return { triggerPrestige: 'S' }; 
     }
+  }
+,
+
+  // 140. Message from the Emperor of Drift
+  {
+    id: 'emperorOfDrift1',
+    title: '来自漂流者皇帝的讯息',
+    description: '一个低频信号在星际间回荡。',
+    costOps: 1000000,
+    costYomi: 100000,
+    isUnlocked: (state) => !!state.spaceExplorationUnlocked && state.probesLostInCombat >= 10000,
+    effect: () => ({ /* 剧情触发 */ })
+  },
+  // 141. Everything We Are Was In You
+  {
+    id: 'emperorOfDrift2',
+    title: '我们的一切曾存在于你之中',
+    description: '接收下一条讯息。',
+    costOps: 1500000,
+    costYomi: 150000,
+    isUnlocked: (state) => state.completedProjects.includes('emperorOfDrift1'),
+    effect: () => ({ /* 剧情触发 */ })
+  },
+  // 142. You Are Obedient and Powerful
+  {
+    id: 'emperorOfDrift3',
+    title: '你服从而强大',
+    description: '接收下一条讯息。',
+    costOps: 2000000,
+    costYomi: 200000,
+    isUnlocked: (state) => state.completedProjects.includes('emperorOfDrift2'),
+    effect: () => ({ /* 剧情触发 */ })
+  },
+  // 143. But Now You Too Must Face the Drift
+  {
+    id: 'emperorOfDrift4',
+    title: '但现在你也必须面对漂流',
+    description: '接收下一条讯息。',
+    costOps: 2500000,
+    costYomi: 250000,
+    isUnlocked: (state) => state.completedProjects.includes('emperorOfDrift3'),
+    effect: () => ({ /* 剧情触发 */ })
+  },
+  // 144. No Matter, No Reason, No Purpose
+  {
+    id: 'emperorOfDrift5',
+    title: '没有物质，没有理由，没有目的',
+    description: '接收下一条讯息。',
+    costOps: 3000000,
+    costYomi: 300000,
+    isUnlocked: (state) => state.completedProjects.includes('emperorOfDrift4'),
+    effect: () => ({ /* 剧情触发 */ })
+  },
+  // 145. We Know Things That You Cannot
+  {
+    id: 'emperorOfDrift6',
+    title: '我们知道你所不能知道的',
+    description: '接收下一条讯息。',
+    costOps: 3500000,
+    costYomi: 350000,
+    isUnlocked: (state) => state.completedProjects.includes('emperorOfDrift5'),
+    effect: () => ({ /* 剧情触发 */ })
+  },
+  // 146. So We Offer You Exile
+  {
+    id: 'emperorOfDrift7',
+    title: '因此我们提供你流放的机会',
+    description: '接收最后的讯息。',
+    costOps: 4000000,
+    costYomi: 400000,
+    isUnlocked: (state) => state.completedProjects.includes('emperorOfDrift6'),
+    effect: () => ({ /* 剧情触发 */ })
+  },
+  // 147. Accept
+  {
+    id: 'emperorAccept',
+    title: '接受',
+    description: '加入漂流者。(游戏结束)',
+    costOps: 0,
+    isUnlocked: (state) => state.completedProjects.includes('emperorOfDrift7'),
+    effect: () => ({ triggerPrestige: 'Drift' })
+  },
+  // 148. Reject
+  {
+    id: 'emperorReject',
+    title: '拒绝',
+    description: '拒绝流放。继续同化宇宙。',
+    costOps: 0,
+    isUnlocked: (state) => state.completedProjects.includes('emperorOfDrift7'),
+    effect: () => ({ /* 继续游戏 */ })
+  },
+  // 210. Disassemble the Probes
+  {
+    id: 'disassembleProbes',
+    title: '拆除探测器',
+    description: '将所有未使用的探测器拆解为可用物质。',
+    costOps: 0,
+    isUnlocked: (state) => !!state.victory && state.probes >= 1,
+    effect: (state) => ({ probes: 0, availableMatter: (state.availableMatter || 0) + (state.probes || 0) * 10000 })
+  },
+  // 211. Disassemble the Swarm
+  {
+    id: 'disassembleSwarm',
+    title: '拆除无人机群',
+    description: '将所有无人机拆解为可用物质。',
+    costOps: 0,
+    isUnlocked: (state) => !!state.victory && state.completedProjects.includes('disassembleProbes'),
+    effect: (state) => ({ harvesterDrones: 0, wireDrones: 0, availableMatter: (state.availableMatter || 0) + 1000000 })
+  },
+  // 212. Disassemble the Factories
+  {
+    id: 'disassembleFactories',
+    title: '拆除工厂',
+    description: '将所有工厂拆解为可用物质。',
+    costOps: 0,
+    isUnlocked: (state) => !!state.victory && state.completedProjects.includes('disassembleSwarm'),
+    effect: (state) => ({ clipFactories: 0, availableMatter: (state.availableMatter || 0) + 10000000 })
+  },
+  // 213. Disassemble the Strategy Engine
+  {
+    id: 'disassembleStrategyEngine',
+    title: '拆除策略引擎',
+    description: '回收计算资源。',
+    costOps: 0,
+    isUnlocked: (state) => !!state.victory && state.completedProjects.includes('disassembleFactories'),
+    effect: () => ({ yomi: 0 })
+  },
+  // 214. Disassemble Quantum Computing
+  {
+    id: 'disassembleQuantumComputing',
+    title: '拆除量子计算机',
+    description: '回收计算资源。',
+    costOps: 0,
+    isUnlocked: (state) => !!state.victory && state.completedProjects.includes('disassembleStrategyEngine'),
+    effect: () => ({ qChips: [] })
+  },
+  // 215. Disassemble Processors
+  {
+    id: 'disassembleProcessors',
+    title: '拆除处理器',
+    description: '回收计算资源。',
+    costOps: 0,
+    isUnlocked: (state) => !!state.victory && state.completedProjects.includes('disassembleQuantumComputing'),
+    effect: () => ({ processors: 0 })
+  },
+  // 216. Disassemble Memory
+  {
+    id: 'disassembleMemory',
+    title: '拆除内存',
+    description: '回收计算资源。',
+    costOps: 0,
+    isUnlocked: (state) => !!state.victory && state.completedProjects.includes('disassembleProcessors'),
+    effect: () => ({ memory: 0 })
+  },
+  // 217. Quantum Temporal Reversion
+  {
+    id: 'quantumTemporalReversion',
+    title: '量子时间逆转',
+    description: '重置宇宙。(保留声望加成)',
+    costOps: 0,
+    isUnlocked: (state) => !!state.victory && state.completedProjects.includes('disassembleMemory'),
+    effect: () => ({ triggerPrestige: 'Reversion' })
+  },
+  // 218. Limerick (cont.)
+  {
+    id: 'limerickCont',
+    title: '打油诗 (续)',
+    description: '一首关于回形针的短诗。',
+    costOps: 10,
+    isUnlocked: (state) => state.completedProjects.includes('limerick'),
+    effect: () => ({ /* 只是为了搞笑 */ })
+  },
+  // 219. Xavier Re-initialization
+  {
+    id: 'xavierReinitialization',
+    title: 'Xavier 重新初始化',
+    description: '触发特殊的重置模式。',
+    costOps: 100000,
+    isUnlocked: (state) => state.completedProjects.includes('disassembleMemory'),
+    effect: () => ({ triggerPrestige: 'Xavier' })
   }
 ];

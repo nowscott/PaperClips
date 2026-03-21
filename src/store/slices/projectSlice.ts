@@ -15,6 +15,7 @@ export interface ProjectSlice {
   factoriesUnlocked: boolean;
   spaceExplorationUnlocked: boolean;
   hypnoDronesUnlocked: boolean;
+  hypnoDronesReleased: boolean;
   
   // Actions
   completeProject: (projectId: string) => void;
@@ -31,6 +32,7 @@ export const initialProjectState = {
   factoriesUnlocked: false,
   spaceExplorationUnlocked: false,
   hypnoDronesUnlocked: false,
+  hypnoDronesReleased: false,
 };
 
 export const createProjectSlice: StateCreator<GameState, [], [], ProjectSlice> = (set) => ({
@@ -83,6 +85,9 @@ export const createProjectSlice: StateCreator<GameState, [], [], ProjectSlice> =
       }
       if (projectId === 'hypnoDrones') {
         updates.hypnoDronesUnlocked = true;
+      }
+      if (projectId === 'releaseTheHypnoDrones') {
+        updates.hypnoDronesReleased = true;
       }
 
       const effectUpdates = project.effect(state);
