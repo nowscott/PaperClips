@@ -26,7 +26,7 @@ export const createResourceSlice: StateCreator<GameState, [], [], ResourceSlice>
         clips: state.clips + 1,
         unsoldInventory: state.unsoldInventory + 1,
         wire: state.wire - 1,
-        unusedClips: state.tothFlag ? state.unusedClips + 1 : state.unusedClips
+        unusedClips: (state.tothFlag || state.hypnoDronesReleased) ? state.unusedClips + 1 : state.unusedClips
       };
     }
     return state;
