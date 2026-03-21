@@ -562,31 +562,29 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'upgradedFactories',
     title: '改良型回形针工厂',
-    description: '将工厂的生产效率提升 25%。',
-    costOps: 0,
-    costYomi: 10000,
-    isUnlocked: (state) => state.factories >= 1 && state.yomi >= 10000,
-    effect: (state) => ({ factoryBoost: (state.factoryBoost || 1) * 1.25 })
+    description: '将工厂的生产效率提升 100 倍。',
+    costOps: 80000,
+    isUnlocked: (state) => state.factories >= 10,
+    effect: (state) => ({ factoryBoost: (state.factoryBoost || 1) * 100 })
   },
   // 101. Hyperspeed Factories
   {
     id: 'hyperspeedFactories',
     title: '超光速工厂',
-    description: '将工厂的生产效率提升 50%。',
-    costOps: 0,
-    costYomi: 25000,
-    isUnlocked: (state) => state.completedProjects.includes('upgradedFactories') && state.yomi >= 25000,
-    effect: (state) => ({ factoryBoost: (state.factoryBoost || 1) * 1.5 })
+    description: '将工厂的生产效率提升 1000 倍。',
+    costOps: 85000,
+    isUnlocked: (state) => state.factories >= 20 && state.completedProjects.includes('upgradedFactories'),
+    effect: (state) => ({ factoryBoost: (state.factoryBoost || 1) * 1000 })
   },
   // 102. Self-correcting Supply Chain
   {
     id: 'selfCorrectingSupplyChain',
     title: '自修复供应链',
-    description: '将工厂的生产效率提升 100%。',
+    description: '每一个加入网络的工厂都会使所有工厂的产出提升 1000 倍。',
     costOps: 0,
-    costYomi: 50000,
-    isUnlocked: (state) => state.completedProjects.includes('hyperspeedFactories') && state.yomi >= 50000,
-    effect: (state) => ({ factoryBoost: (state.factoryBoost || 1) * 2 })
+    costTrust: 0, // 原版消耗 1 sextillion clips (unusedClips)
+    isUnlocked: (state) => state.factories >= 50 && state.completedProjects.includes('hyperspeedFactories'),
+    effect: (state) => ({ factoryBoost: (state.factoryBoost || 1) * 1000 }) // 这里逻辑略有不同，原版是将 factoryBoost 设为 1000 并触发特殊乘法
   },
   // 110. Drone flocking: collision avoidance
   {

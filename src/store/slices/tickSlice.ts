@@ -240,7 +240,7 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
          droneThinkRatio = (200 - nextState.sliderPos) / 100; // 2 to 0
          
          // 增加基于无人机数量的算力 (Ops)
-         const swarmOpsBonus = Math.floor((nextState.harvesterDrones + nextState.wireDrones) * 0.0001 * droneThinkRatio);
+         const swarmOpsBonus = (nextState.harvesterDrones + nextState.wireDrones) * 0.0001 * droneThinkRatio;
          if (swarmOpsBonus > 0) {
             nextState.ops = Math.min(nextState.maxOps, nextState.ops + swarmOpsBonus);
          }
@@ -292,8 +292,8 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
       // 工厂逻辑：如果解锁了工厂，工厂会自动且大量地消耗铁丝制造回形针
       let factoryProduction = 0;
       if (nextState.factories > 0 && nextState.wire > 0) {
-        // 原版工厂的基础产能非常恐怖，这里按比例大致估算 (每个工厂每秒上亿)
-        factoryProduction = nextState.factories * 100000000 * droneWorkRatio * nextState.factoryBoost; 
+        // 原版工厂的基础产能非常恐怖：1,000,000,000 (10亿)
+        factoryProduction = nextState.factories * 1000000000 * droneWorkRatio * nextState.factoryBoost; 
         factoryProduction = Math.min(factoryProduction, nextState.wire);
         
         nextState.clips += factoryProduction;
