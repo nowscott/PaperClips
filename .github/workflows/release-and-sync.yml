@@ -31,9 +31,14 @@ jobs:
           BUMP_TYPE="patch" # 默认小更新
           
           # 检查标签或标题以决定是否为 major/minor/patch
-          if [[ "$PR_LABELS" == *"major"* ]] || [[ "$PR_TITLE" == *"BREAKING CHANGE"* ]] || [[ "$PR_BODY" == *"BREAKING CHANGE"* ]]; then
+          # 提取 PR 中所有的提交信息
+          PR_COMMITS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/commits" | grep '"message":' | cut -d'"' -f4)
+          
+          # 检查标题、正文、标签以及 PR 包含的所有 commit 信息
+          if [[ "$PR_LABELS" == *"major"* ]] || [[ "$PR_TITLE" == *"BREAKING CHANGE"* ]] || [[ "$PR_BODY" == *"BREAKING CHANGE"* ]] || [[ "$PR_COMMITS" == *"BREAKING CHANGE"* ]]; then
             BUMP_TYPE="major"
-          elif [[ "$PR_LABELS" == *"minor"* ]] || [[ "$PR_LABELS" == *"feature"* ]] || [[ "$PR_TITLE" == feat:* ]] || [[ "$PR_TITLE" == feature:* ]]; then
+          elif [[ "$PR_LABELS" == *"minor"* ]] || [[ "$PR_LABELS" == *"feature"* ]] || echo "$PR_TITLE" | grep -qE '^feat(\(.*\))?:|^feature(\(.*\))?:' || echo "$PR_COMMITS" | grep -qE '^feat(\(.*\))?:|^feature(\(.*\))?:'; then
             BUMP_TYPE="minor"
           fi
           
