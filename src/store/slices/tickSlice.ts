@@ -231,27 +231,32 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
       }
 
       // 采集无人机：将可用物质(Available Matter)转化为已采集物质(Acquired Matter)
+      let harvestAmount = 0;
       if (nextState.harvesterDrones > 0 && nextState.availableMatter > 0) {
         // 原版基础采集率：26,180,337
-        let harvestAmount = nextState.harvesterDrones * 26180337 * droneWorkRatio * nextState.droneBoost; 
+        harvestAmount = nextState.harvesterDrones * 26180337 * droneWorkRatio * nextState.droneBoost; 
         harvestAmount = Math.min(harvestAmount, nextState.availableMatter);
         nextState.availableMatter -= harvestAmount;
         nextState.acquiredMatter += harvestAmount;
       }
+      nextState.harvestRate = harvestAmount * 10; // Assuming TICK_RATE is 100ms (10 ticks/sec)
 
       // 铁丝加工无人机：将已采集物质(Acquired Matter)转化为铁丝(Wire)
+      let processAmount = 0;
       if (nextState.wireDrones > 0 && nextState.acquiredMatter > 0) {
         // 原版基础加工率：16,180,339
-        let processAmount = nextState.wireDrones * 16180339 * droneWorkRatio * nextState.droneBoost;
+        processAmount = nextState.wireDrones * 16180339 * droneWorkRatio * nextState.droneBoost;
         processAmount = Math.min(processAmount, nextState.acquiredMatter);
         nextState.acquiredMatter -= processAmount;
         nextState.wire += processAmount;
       }
+      nextState.wireProcessRate = processAmount * 10;
 
       // 工厂逻辑：如果解锁了工厂，工厂会自动且大量地消耗铁丝制造回形针
+      let factoryProduction = 0;
       if (nextState.factories > 0 && nextState.wire > 0) {
         // 原版工厂的基础产能非常恐怖，这里按比例大致估算 (每个工厂每秒上亿)
-        let factoryProduction = nextState.factories * 100000000 * droneWorkRatio * nextState.factoryBoost; 
+        factoryProduction = nextState.factories * 100000000 * droneWorkRatio * nextState.factoryBoost; 
         factoryProduction = Math.min(factoryProduction, nextState.wire);
         nextState.clips += factoryProduction;
         nextState.unsoldInventory += factoryProduction;
@@ -261,6 +266,7 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
           nextState.unusedClips += factoryProduction;
         }
       }
+      nextState.factoryClipRate = factoryProduction * 10;
     }
 
     // 太空阶段：冯·诺依曼探测器核心循环 (Space Phase Game Loop)

@@ -23,7 +23,8 @@ export const Manufacturing = () => {
     clipFactories,
     factoryCost,
     unusedClips,
-    buyFactory
+    buyFactory,
+    factoryClipRate
   } = useGameStore();
   
   const maxWire = 1000;
@@ -85,9 +86,9 @@ export const Manufacturing = () => {
             <span className="font-mono text-lg">{formatNumber(autoClippers)}</span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-xs font-mono opacity-70">造价: ${formatNumber(autoClipperCost, 2)}</span>
+            <span className="text-[10px] font-mono opacity-70">造价: ${formatNumber(autoClipperCost, 2)}</span>
             <button 
-              className="btn-evolve text-xs py-1.5 px-3"
+              className="btn-evolve text-xs py-1 px-3"
               onClick={buyAutoClipper}
               disabled={funds < autoClipperCost}
             >
@@ -109,9 +110,9 @@ export const Manufacturing = () => {
                 <span className="font-mono text-lg text-evolve-accent">{formatNumber(megaClippers)}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-xs font-mono opacity-70">造价: ${formatNumber(megaClipperCost, 2)}</span>
+                <span className="text-[10px] font-mono opacity-70">造价: ${formatNumber(megaClipperCost, 2)}</span>
                 <button 
-                  className="btn-evolve btn-evolve-accent text-xs py-1.5 px-3"
+                  className="btn-evolve btn-evolve-accent text-xs py-1 px-3"
                   onClick={buyMegaClipper}
                   disabled={funds < megaClipperCost}
                 >
@@ -135,9 +136,9 @@ export const Manufacturing = () => {
                 <span className="font-mono text-lg text-evolve-accent">{formatNumber(clipFactories)}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-xs font-mono opacity-70">造价: {formatNumber(factoryCost)} clips</span>
+                <span className="text-[10px] font-mono opacity-70">造价: {formatNumber(factoryCost)}</span>
                 <button 
-                  className="btn-evolve btn-evolve-accent text-xs py-1.5 px-3"
+                  className="btn-evolve btn-evolve-accent text-xs py-1 px-3"
                   onClick={buyFactory}
                   disabled={unusedClips < factoryCost}
                 >
@@ -145,14 +146,21 @@ export const Manufacturing = () => {
                 </button>
               </div>
             </div>
-            <div className="mt-1 text-xs text-evolve-textDim font-mono">
-              可用回形针: {formatNumber(unusedClips)}
+            <div className="flex justify-between items-center mt-1">
+              <span className="text-[10px] text-evolve-textDim tracking-wider opacity-70">可用回形针</span>
+              <span className="font-mono text-xs text-evolve-textDim">{formatNumber(unusedClips)}</span>
             </div>
+            {factoryClipRate > 0 && (
+              <div className="flex justify-between items-center">
+                <span className="text-[10px] text-evolve-textDim tracking-wider opacity-70">工厂产能</span>
+                <span className="font-mono text-xs text-evolve-accent">{formatNumber(Math.floor(factoryClipRate))} 件/秒</span>
+              </div>
+            )}
           </>
         )}
 
         {/* 产能统计 */}
-        {(autoClippers > 0 || megaClippers > 0) && (
+        {(autoClippers > 0 || megaClippers > 0) && !tothFlag && (
           <div className="mt-2 text-right text-xs font-mono text-evolve-textDim animate-fade-in">
             当前产能: {formatNumber(Math.floor(clipsPerSecond))} 件/秒
           </div>
