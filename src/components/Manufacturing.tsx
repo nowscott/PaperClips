@@ -23,7 +23,9 @@ export const Manufacturing = () => {
     wireBuyerOn,
     toggleWireBuyer,
     tothFlag,
-    hypnoDronesReleased
+    hypnoDronesReleased,
+    clips,
+    nextTrustStage
   } = useGameStore();
   
   // 原版逻辑：进度条代表当前这“卷”铁丝的剩余量
@@ -131,10 +133,17 @@ export const Manufacturing = () => {
           </div>
         )}
 
-        {/* 产能统计 */}
-        {!hypnoDronesReleased && (autoClippers > 0 || megaClippers > 0) && !tothFlag && (
-          <div className="mt-2 text-right text-xs font-mono text-evolve-textDim animate-fade-in">
-            当前产能: {formatNumber(Math.floor(clipsPerSecond))} 件/秒
+        {/* 产能统计与信任进度 */}
+        {!hypnoDronesReleased && (
+          <div className="mt-2 flex flex-col gap-1 items-end animate-fade-in">
+            {(autoClippers > 0 || megaClippers > 0) && !tothFlag && (
+              <div className="text-[10px] font-mono text-evolve-textDim">
+                当前产能: {formatNumber(Math.floor(clipsPerSecond))} 件/秒
+              </div>
+            )}
+            <div className="text-[10px] font-mono text-evolve-accent opacity-80">
+              距离下级信任还需: {formatNumber(Math.max(0, nextTrustStage - clips))} 件
+            </div>
           </div>
         )}
       </div>
