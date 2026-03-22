@@ -82,23 +82,44 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
       // 原版销售计算公式:
       // demand 实际上是 publicDemand / 10
       const rawDemand = nextState.publicDemand / 10;
-      let chanceOfPurchase = rawDemand / 100;
+      // 我们的 tick 是 100ms，是原版 10ms 的 10 倍长。
+      // 如果完全按原版几率，会导致卖出次数减少 10 倍。
+      // 因此单次购买的几率需要放大 10 倍，以保持宏观销售速度一致。
+      let chanceOfPurchase = (rawDemand / 100) * 10;
       if (chanceOfPurchase > 1) chanceOfPurchase = 1;
 
       // 如果触发购买
       if (Math.random() < chanceOfPurchase) {
         // 原版公式: Math.floor(0.7 * Math.pow(demand, 1.15))
-        const clipsDemanded = Math.floor(0.7 * Math.pow(rawDemand, 1.15));
-        const sellCount = Math.min(clipsDemanded, nextState.unsoldInventory);
+        // 同样，因为触发频率变低，单次触发时我们需要卖出更多的量。
+        // （如果不做几率乘 10 且单次量乘 10 的处理，也可以通过循环多次售卖来模拟，这里选择最直接的量放大）
+        // 不过由于 `chanceOfPurchase` 已经乘了 10，对于低需求情况下触发频率已补偿，
+        // 但如果 `chanceOfPurchase` 超过了 1（说明原版每 10ms 必买），那我们就需要在单次购买量上再乘 10。
+        // 更准确的模拟是：在一个 100ms 的 tick 里，循环 10 次 10ms 的购买判定。
+        
+        // 改进：为了完美对齐原版的销售模型，我们在这个 100ms 的 tick 里直接执行 10 次购买判定
+        let totalSellCountThisTick = 0;
+        let totalRevenueThisTick = 0;
+        const originalChance = rawDemand / 100;
+        const originalDemanded = Math.floor(0.7 * Math.pow(rawDemand, 1.15));
+        
+        for (let i = 0; i < 10; i++) {
+          if (nextState.unsoldInventory > 0 && Math.random() < originalChance) {
+             const sellCount = Math.min(originalDemanded, nextState.unsoldInventory);
+             if (sellCount > 0) {
+               nextState.unsoldInventory -= sellCount;
+               totalRevenueThisTick += sellCount * nextState.price;
+               totalSellCountThisTick += sellCount;
+             }
+          }
+        }
 
-        if (sellCount > 0) {
-          nextState.unsoldInventory -= sellCount;
-          const revenue = sellCount * nextState.price;
-          nextState.funds += revenue;
-          totalSalesThisTick = sellCount;
+        if (totalSellCountThisTick > 0) {
+          nextState.funds += totalRevenueThisTick;
+          totalSalesThisTick = totalSellCountThisTick;
           
           if (nextState.revTrackerUnlocked) {
-             nextState.revenuePerSecond = nextState.revenuePerSecond * 0.95 + (revenue * 10) * 0.05;
+             nextState.revenuePerSecond = nextState.revenuePerSecond * 0.95 + (totalRevenueThisTick * 10) * 0.05;
           }
         }
       } else {
