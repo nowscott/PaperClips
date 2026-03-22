@@ -187,7 +187,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'tothTubuleEnfolding',
     title: '托特小管折叠',
-    description: '直接用回形针组装制造设备的技术。解锁回形针工厂，并开始积攒可用回形针。',
+    description: '直接用回形针组装制造设备的技术。开启可用回形针面板，并作为后续工业研发的前提。',
     costOps: 45000,
     isUnlocked: (state) => state.completedProjects.includes('theTothSausageConjecture'),
     effect: () => ({ tothFlag: true }) // 在原版中，这个标志位解锁了用回形针造工厂的功能和 unused clips 面板
