@@ -205,7 +205,7 @@ export const sanitizeSaveData = (state: GameState): { updates: Partial<GameState
     }
   }
 
-  // 4. 数据一致性检查 (Cost Recovery)
+  // 4. 数据一致性检查 (Cost & Boost Recovery)
   // 修复可能因为 NaN 或错误计算导致的价格异常
   if (isNaN(state.wireCost) || state.wireCost <= 0) {
     updates.wireCost = initialManufacturingState.wireCost;
@@ -219,6 +219,59 @@ export const sanitizeSaveData = (state: GameState): { updates: Partial<GameState
     updates.marketingCost = initialBusinessState.marketingCost;
     reasons.push(`修复数据损坏: 营销成本异常，已重置为初始值`);
   }
+
+  // 修复生产加成 (Production Boosts)
+  // 重新根据已完成项目计算理论加成值，确保加成确实生效
+  let expectedClipperBoost = 1;
+  let expectedMegaClipperBoost = 1;
+  let expectedDroneBoost = 1;
+  let expectedFactoryBoost = 1;
+  let expectedHarvesterBoost = 1;
+  let expectedWireDroneBoost = 1;
+  let expectedFactoryRateBoost = 1;
+
+  if (currentCompleted.includes('improvedAutoClippers')) expectedClipperBoost += 0.25;
+  if (currentCompleted.includes('evenBetterAutoClippers')) expectedClipperBoost += 0.50;
+  if (currentCompleted.includes('optimizedAutoClippers')) expectedClipperBoost += 0.75;
+  if (currentCompleted.includes('hadwigerClipDiagrams')) expectedClipperBoost += 5.0;
+  
+  if (currentCompleted.includes('improvedMegaClippers')) expectedMegaClipperBoost += 0.25;
+  if (currentCompleted.includes('evenBetterMegaClippers')) expectedMegaClipperBoost += 0.50;
+  if (currentCompleted.includes('optimizedMegaClippers')) expectedMegaClipperBoost += 1.0;
+
+  if (currentCompleted.includes('droneFlockingCollision')) {
+    expectedHarvesterBoost *= 100;
+    expectedWireDroneBoost *= 100;
+  }
+  if (currentCompleted.includes('droneFlockingAlignment')) {
+    expectedHarvesterBoost *= 1000;
+    expectedWireDroneBoost *= 1000;
+  }
+  if (currentCompleted.includes('adversarialCohesion')) expectedDroneBoost = 2;
+  if (currentCompleted.includes('rebootTheSwarm')) expectedDroneBoost *= 1.5;
+
+  if (currentCompleted.includes('upgradedFactories')) expectedFactoryRateBoost *= 100;
+  if (currentCompleted.includes('hyperspeedFactories')) expectedFactoryRateBoost *= 1000;
+  if (currentCompleted.includes('selfCorrectingSupplyChain')) expectedFactoryBoost = 1000;
+
+  // 校验并更新加成
+  const boostChecks = [
+    { key: 'clipperBoost', expected: expectedClipperBoost, label: '自动制造机加成' },
+    { key: 'megaClipperBoost', expected: expectedMegaClipperBoost, label: '巨型制造机加成' },
+    { key: 'droneBoost', expected: expectedDroneBoost, label: '无人机集群加成' },
+    { key: 'factoryBoost', expected: expectedFactoryBoost, label: '工厂集群加成' },
+    { key: 'harvesterBoost', expected: expectedHarvesterBoost, label: '采集无人机倍率' },
+    { key: 'wireDroneBoost', expected: expectedWireDroneBoost, label: '拉丝无人机倍率' },
+    { key: 'factoryRateBoost', expected: expectedFactoryRateBoost, label: '工厂基础倍率' },
+  ];
+
+  boostChecks.forEach(check => {
+    const actual = state[check.key as keyof GameState] as number;
+    if (Math.abs(actual - check.expected) > 0.001) {
+      (updates as any)[check.key] = check.expected;
+      reasons.push(`修复逻辑异常: ${check.label}不匹配，已重新校准`);
+    }
+  });
 
   // 修复无人机和工厂造价
   // 根据原版逻辑，无人机的价格是 Math.pow((level+1), 2.25) * 1000000

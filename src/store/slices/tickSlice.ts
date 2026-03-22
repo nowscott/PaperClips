@@ -366,7 +366,7 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
            dbsth = nextState.droneBoost * nextState.harvesterDrones;
         }
         
-        harvestAmount = dbsth * nextState.harvesterDrones * 26180337 * 10; 
+        harvestAmount = dbsth * nextState.harvesterDrones * 26180337 * 10 * nextState.harvesterBoost; 
         harvestAmount = harvestAmount * droneWorkRatio;
         
         harvestAmount = Math.min(harvestAmount, nextState.availableMatter);
@@ -384,7 +384,7 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
            dbstw = nextState.droneBoost * nextState.wireDrones;
         }
         
-        processAmount = dbstw * nextState.wireDrones * 16180339 * 10;
+        processAmount = dbstw * nextState.wireDrones * 16180339 * 10 * nextState.wireDroneBoost;
         
         // 蜂群工作效率加成 (sliderPos: 0~200)
         processAmount = processAmount * droneWorkRatio;
@@ -405,7 +405,7 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
            fbst = nextState.factoryBoost * nextState.factories;
         }
         
-        factoryProduction = fbst * nextState.factories * 1000000000 * 10; 
+        factoryProduction = fbst * nextState.factories * 1000000000 * 10 * nextState.factoryRateBoost; 
         factoryProduction = Math.min(factoryProduction, nextState.wire);
         
         nextState.clips += factoryProduction;

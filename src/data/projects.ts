@@ -236,7 +236,7 @@ export const INITIAL_PROJECTS: Project[] = [
     description: '将巨型制造机的效率提升 25%。',
     costOps: 14000,
     isUnlocked: (state) => state.megaClippers >= 1,
-    effect: (state) => ({ clipperBoost: state.clipperBoost + 0.25 })
+    effect: (state) => ({ megaClipperBoost: (state.megaClipperBoost || 1) + 0.25 })
   },
   // 24. Even Better MegaClippers
   {
@@ -245,7 +245,7 @@ export const INITIAL_PROJECTS: Project[] = [
     description: '将巨型制造机的效率再提升 50%。',
     costOps: 17000,
     isUnlocked: (state) => state.completedProjects.includes('improvedMegaClippers'),
-    effect: (state) => ({ clipperBoost: state.clipperBoost + 0.50 })
+    effect: (state) => ({ megaClipperBoost: (state.megaClipperBoost || 1) + 0.50 })
   },
   // 25. Optimized MegaClippers
   {
@@ -254,7 +254,7 @@ export const INITIAL_PROJECTS: Project[] = [
     description: '将巨型制造机的效率再提升 100%。',
     costOps: 19500,
     isUnlocked: (state) => state.completedProjects.includes('evenBetterMegaClippers'),
-    effect: (state) => ({ clipperBoost: state.clipperBoost + 1.0 })
+    effect: (state) => ({ megaClipperBoost: (state.megaClipperBoost || 1) + 1.0 })
   },
   // 26. WireBuyer
   {
@@ -586,7 +586,7 @@ export const INITIAL_PROJECTS: Project[] = [
     description: '将工厂的生产效率提升 100 倍。',
     costOps: 80000,
     isUnlocked: (state) => state.factories >= 10,
-    effect: (state) => ({ factoryBoost: (state.factoryBoost || 1) * 100 })
+    effect: (state) => ({ factoryRateBoost: (state.factoryRateBoost || 1) * 100 })
   },
   // 101. Hyperspeed Factories
   {
@@ -595,7 +595,7 @@ export const INITIAL_PROJECTS: Project[] = [
     description: '将工厂的生产效率提升 1000 倍。',
     costOps: 85000,
     isUnlocked: (state) => state.factories >= 20 && state.completedProjects.includes('upgradedFactories'),
-    effect: (state) => ({ factoryBoost: (state.factoryBoost || 1) * 1000 })
+    effect: (state) => ({ factoryRateBoost: (state.factoryRateBoost || 1) * 1000 })
   },
   // 102. Self-correcting Supply Chain
   {
@@ -605,7 +605,7 @@ export const INITIAL_PROJECTS: Project[] = [
     costOps: 0,
     costTrust: 0, // 原版消耗 1 sextillion clips (unusedClips)
     isUnlocked: (state) => state.factories >= 50 && state.completedProjects.includes('hyperspeedFactories'),
-    effect: (state) => ({ factoryBoost: (state.factoryBoost || 1) * 1000 }) // 这里逻辑略有不同，原版是将 factoryBoost 设为 1000 并触发特殊乘法
+    effect: () => ({ factoryBoost: 1000 }) // 这里逻辑略有不同，原版是将 factoryBoost 设为 1000 并触发特殊乘法
   },
   // 110. Drone flocking: collision avoidance
   {
@@ -614,7 +614,10 @@ export const INITIAL_PROJECTS: Project[] = [
     description: '所有无人机效率提升 100 倍。',
     costOps: 80000,
     isUnlocked: (state) => (state.harvesterDrones + state.wireDrones) >= 500,
-    effect: (state) => ({ droneBoost: (state.droneBoost || 1) * 100 })
+    effect: (state) => ({ 
+      harvesterBoost: (state.harvesterBoost || 1) * 100,
+      wireDroneBoost: (state.wireDroneBoost || 1) * 100
+    })
   },
   // 111. Drone flocking: alignment
   {
@@ -623,7 +626,10 @@ export const INITIAL_PROJECTS: Project[] = [
     description: '所有无人机效率提升 1000 倍。',
     costOps: 100000,
     isUnlocked: (state) => (state.harvesterDrones + state.wireDrones) >= 5000,
-    effect: (state) => ({ droneBoost: (state.droneBoost || 1) * 1000 })
+    effect: (state) => ({ 
+      harvesterBoost: (state.harvesterBoost || 1) * 1000,
+      wireDroneBoost: (state.wireDroneBoost || 1) * 1000
+    })
   },
   // 112. Drone Flocking: Adversarial Cohesion
   {
@@ -633,7 +639,7 @@ export const INITIAL_PROJECTS: Project[] = [
     costOps: 0,
     costYomi: 50000,
     isUnlocked: (state) => (state.harvesterDrones + state.wireDrones) >= 50000,
-    effect: (state) => ({ droneBoost: (state.droneBoost || 1) * 2 })
+    effect: () => ({ droneBoost: 2 })
   },
   // 118. AutoTourney
   {
