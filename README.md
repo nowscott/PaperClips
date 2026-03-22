@@ -32,8 +32,6 @@
 为了保持“原有功能完全一致”并顺利过渡，我们的二次开发将严格遵循以下几个阶段：
 
 ### Phase 1: 资产归档与基础设施搭建 (已完成 ✅)
-- 抓取原版 `index.html`, `main.js`, `globals.js` 等所有资源。
-- 存放至 `public/legacy/` 作为对照和兼容版本（已在 `.gitignore` 中忽略以免污染仓库）。
 - 初始化 Vite + React + TS 脚手架，确保本地运行与 Vercel 部署通道畅通。
 
 ### Phase 2: 核心状态抽象 (State Management) (已完成 ✅)
@@ -83,7 +81,6 @@ npm install
 npm run dev
 ```
 *(开发服务器默认运行在 http://localhost:5173)*
-*(原版对照页面可通过 http://localhost:5173/legacy/index.html 访问，供开发时对比逻辑和数据使用)*
 
 ### Vercel 部署
 本项目已针对 Vercel 优化。只需将代码推送到 GitHub，并在 Vercel 中导入该仓库。
