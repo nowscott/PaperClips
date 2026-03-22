@@ -121,6 +121,8 @@ export const sanitizeSaveData = (state: GameState): { updates: Partial<GameState
   // 确保已完成项目对应的科技标记已正确开启，避免后续清理逻辑误判
   // ==========================================
   const stateSyncMap: Record<string, keyof GameState> = {
+    'tothTubuleEnfolding': 'tothFlag',
+    'solarFarms': 'solarFarmsUnlocked',
     'nanoWireProduction': 'nanoWireUnlocked',
     'harvesterDrones': 'harvesterDronesUnlocked',
     'wireDrones': 'wireDronesUnlocked',

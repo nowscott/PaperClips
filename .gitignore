@@ -24,4 +24,4 @@ dist-ssr
 *.sw?
 
 # Ignore legacy original source files
-public/legacy/
+temp_original_check/
