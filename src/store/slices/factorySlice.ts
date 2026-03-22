@@ -6,6 +6,7 @@ export interface FactorySlice {
   harvesterDronesUnlocked: boolean;
   wireDronesUnlocked: boolean;
   factoriesUnlocked: boolean;
+  solarFarmsUnlocked: boolean;
   
   availableMatter: number;
   acquiredMatter: number;
@@ -44,6 +45,7 @@ export const initialFactoryState = {
   harvesterDronesUnlocked: false,
   wireDronesUnlocked: false,
   factoriesUnlocked: false,
+  solarFarmsUnlocked: false,
   
   availableMatter: 6000000000000000000000, // 原版地球物质: 6 Octillion (6 * 10^21)
   acquiredMatter: 0,
