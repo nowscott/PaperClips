@@ -220,5 +220,37 @@ export const sanitizeSaveData = (state: GameState): { updates: Partial<GameState
     reasons.push(`修复数据损坏: 营销成本异常，已重置为初始值`);
   }
 
+  // 修复无人机和工厂造价
+  // 根据原版逻辑，无人机的价格是 Math.pow((level+1), 2.25) * 1000000
+  const expectedHarvesterCost = Math.pow(state.harvesterDrones + 1, 2.25) * 1000000;
+  if (Math.abs(state.harvesterDroneCost - expectedHarvesterCost) / Math.max(1, expectedHarvesterCost) > 0.05) {
+    updates.harvesterDroneCost = expectedHarvesterCost;
+    reasons.push(`修复数据损坏: 采集无人机造价与等级不匹配，已重置为正确曲线`);
+  }
+
+  const expectedWireCost = Math.pow(state.wireDrones + 1, 2.25) * 1000000;
+  if (Math.abs(state.wireDroneCost - expectedWireCost) / Math.max(1, expectedWireCost) > 0.05) {
+    updates.wireDroneCost = expectedWireCost;
+    reasons.push(`修复数据损坏: 拉丝无人机造价与等级不匹配，已重置为正确曲线`);
+  }
+
+  // 修复工厂造价 (原版工厂是阶梯式的 fcmod 乘法，但为了能够修复旧版损坏数据，我们重新推演它)
+  let expectedFactoryCost = 100000000;
+  for (let i = 1; i <= state.factories; i++) {
+    let fcmod = 1;
+    if (i > 0 && i < 8) fcmod = 11 - i;
+    else if (i > 7 && i < 13) fcmod = 2;
+    else if (i > 12 && i < 20) fcmod = 1.5;
+    else if (i > 19 && i < 39) fcmod = 1.25;
+    else if (i > 38 && i < 79) fcmod = 1.15;
+    else fcmod = 1.10;
+    expectedFactoryCost = Math.ceil(expectedFactoryCost * fcmod);
+  }
+  
+  if (Math.abs(state.factoryCost - expectedFactoryCost) / Math.max(1, expectedFactoryCost) > 0.05) {
+    updates.factoryCost = expectedFactoryCost;
+    reasons.push(`修复数据损坏: 工厂造价与等级不匹配，已重置为正确曲线`);
+  }
+
   return { updates, reasons };
 };

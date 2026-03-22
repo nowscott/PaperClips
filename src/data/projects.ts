@@ -629,7 +629,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: 'adversarialCohesion',
     title: '无人机集群：对抗内聚',
-    description: '通过复杂的对抗算法进一步强化集群效率。使所有无人机与工厂的输出成倍提升。',
+    description: '每一个加入蜂群的无人机都会使所有无人机的输出加倍。',
     costOps: 0,
     costYomi: 50000,
     isUnlocked: (state) => (state.harvesterDrones + state.wireDrones) >= 50000,
