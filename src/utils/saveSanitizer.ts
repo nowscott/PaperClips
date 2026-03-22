@@ -117,13 +117,42 @@ export const sanitizeSaveData = (state: GameState): { updates: Partial<GameState
   }
 
   // ==========================================
-  // 第二步：修复游戏阶段与硬性逻辑冲突
+  // 第二步：状态同步 (State Synchronization)
+  // 确保已完成项目对应的科技标记已正确开启，避免后续清理逻辑误判
+  // ==========================================
+  const stateSyncMap: Record<string, keyof GameState> = {
+    'nanoWireProduction': 'nanoWireUnlocked',
+    'harvesterDrones': 'harvesterDronesUnlocked',
+    'wireDrones': 'wireDronesUnlocked',
+    'clipFactories': 'factoriesUnlocked',
+    'spaceExploration': 'spaceExplorationUnlocked',
+    'quantumComputing': 'qComputingUnlocked',
+    'strategicModeling': 'strategyEngineUnlocked',
+    'algoTrading': 'investmentEngineUnlocked',
+    'creativity': 'creativityOn',
+    'revTracker': 'revTrackerUnlocked',
+    'autoTourney': 'autoTourneyUnlocked',
+    'theoryOfMind': 'theoryOfMindUnlocked',
+    'hypnoDrones': 'hypnoDronesUnlocked',
+    'releaseTheHypnoDrones': 'hypnoDronesReleased',
+  };
+
+  Object.entries(stateSyncMap).forEach(([projectId, flag]) => {
+    if (currentCompleted.includes(projectId) && !state[flag] && !updates[flag]) {
+      (updates as any)[flag] = true;
+      reasons.push(`同步科技标记: 项目 [${projectId}] 已完成，已开启对应标记 [${flag}]`);
+    }
+  });
+
+  // ==========================================
+  // 第三步：修复游戏阶段与硬性逻辑冲突
   // ==========================================
   
   // 1. 催眠无人机释放前的逻辑约束 (Phase 1 -> Phase 2)
   const isHypnoReleased = updates.hypnoDronesReleased ?? state.hypnoDronesReleased;
   if (!isHypnoReleased) {
-    // 如果没有释放催眠无人机，就不应该有任何无人机或工厂
+    // 如果没有释放催眠无人机，就不应该有任何无人机或工厂。
+    // 在原版中，必须消耗 100 信任点释放催眠无人机后，才标志着进入第二阶段，此时人类文明结束，才能开始大规模拆解地球资源。
     if (state.harvesterDrones > 0 || state.wireDrones > 0 || state.factories > 0) {
       updates.harvesterDrones = initialFactoryState.harvesterDrones;
       updates.harvesterDroneCost = initialFactoryState.harvesterDroneCost;
@@ -132,7 +161,7 @@ export const sanitizeSaveData = (state: GameState): { updates: Partial<GameState
       updates.factories = initialFactoryState.factories;
       updates.factoryCost = initialFactoryState.factoryCost;
       updates.availableMatter = 6000000000000000000000; // 修复时恢复正确的地球物质
-      reasons.push(`修复阶段冲突: 催眠无人机未释放，已清空所有无人机和工厂数据`);
+      reasons.push(`修复阶段冲突: 尚未执行 [释放催眠无人机] (需要 100 信任点)，不应拥有第二阶段的无人机或工厂。数据已重置以保持游戏阶段平衡。`);
     }
     
     // 如果没有释放无人机，但物质不是初始值且也没有无人机（或者因为之前版本导致了坏数据）
@@ -304,31 +333,5 @@ export const sanitizeSaveData = (state: GameState): { updates: Partial<GameState
     expectedFactoryCost = Math.ceil(expectedFactoryCost * fcmod);
   }
   
-  // 5. 状态同步检查 (State Synchronization)
-  // 确保已完成项目对应的科技标记已正确开启
-  const stateSyncMap: Record<string, keyof GameState> = {
-    'nanoWireProduction': 'nanoWireUnlocked',
-    'harvesterDrones': 'harvesterDronesUnlocked',
-    'wireDrones': 'wireDronesUnlocked',
-    'clipFactories': 'factoriesUnlocked',
-    'spaceExploration': 'spaceExplorationUnlocked',
-    'quantumComputing': 'qComputingUnlocked',
-    'strategicModeling': 'strategyEngineUnlocked',
-    'algoTrading': 'investmentEngineUnlocked',
-    'creativity': 'creativityOn',
-    'revTracker': 'revTrackerUnlocked',
-    'autoTourney': 'autoTourneyUnlocked',
-    'theoryOfMind': 'theoryOfMindUnlocked',
-    'hypnoDrones': 'hypnoDronesUnlocked',
-    'releaseTheHypnoDrones': 'hypnoDronesReleased',
-  };
-
-  Object.entries(stateSyncMap).forEach(([projectId, flag]) => {
-    if (currentCompleted.includes(projectId) && !state[flag] && !updates[flag]) {
-      (updates as any)[flag] = true;
-      reasons.push(`修复状态不同步: 项目 [${projectId}] 已完成但标记 [${flag}] 未开启`);
-    }
-  });
-
   return { updates, reasons };
 };

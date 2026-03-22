@@ -425,7 +425,7 @@ export const INITIAL_PROJECTS: Project[] = [
     title: '纳米级线材制造',
     description: '掌握在分子层面将物质转化为铁丝的技术。解锁物质与无人机面板。',
     costOps: 35000,
-    isUnlocked: (state) => state.clips >= 50000000 && !!state.strategyEngineUnlocked, // 原版是一个前置的大量制造要求
+    isUnlocked: (state) => !!state.hypnoDronesReleased, // 原版：释放催眠无人机后解锁
     effect: () => ({ nanoWireUnlocked: true })
   },
   // 42. RevTracker
