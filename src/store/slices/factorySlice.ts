@@ -19,6 +19,9 @@ export interface FactorySlice {
   factories: number;
   factoryCost: number;
   factoryBoost: number;
+  factoryRateBoost: number;
+  harvesterBoost: number;
+  wireDroneBoost: number;
 
   swarmUnlocked: boolean;
   sliderPos: number; // 0 to 200 (100 is center)
@@ -54,6 +57,9 @@ export const initialFactoryState = {
   factories: 0,
   factoryCost: 100000000,
   factoryBoost: 1,
+  factoryRateBoost: 1,
+  harvesterBoost: 1,
+  wireDroneBoost: 1,
 
   swarmUnlocked: false,
   sliderPos: 100, // 默认中间，100% Work, 100% Think
