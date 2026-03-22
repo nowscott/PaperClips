@@ -35,9 +35,22 @@ export interface FactorySlice {
   nextSwarmGiftCost: number;
   claimSwarmGift: () => void;
   
-  buyHarvesterDrone: () => void;
-  buyWireDrone: () => void;
-  buyFactory: () => void;
+  // 电力系统
+  solarFarms: number;
+  solarFarmCost: number;
+  batteries: number;
+  batteryCost: number;
+  maxStorage: number;
+  currentStorage: number;
+  totalPowerGenerated: number;
+  totalPowerConsumed: number;
+  powerProductionRatio: number; // 0-1 之间的效率系数
+
+  buyHarvesterDrone: (amount?: number) => void;
+  buyWireDrone: (amount?: number) => void;
+  buyFactory: (amount?: number) => void;
+  buySolarFarm: (amount?: number) => void;
+  buyBattery: (amount?: number) => void;
 }
 
 export const initialFactoryState = {
@@ -70,6 +83,17 @@ export const initialFactoryState = {
   swarmGiftProgress: 0,
   swarmGiftsAvailable: 0,
   nextSwarmGiftCost: 10000,
+
+  // 电力系统初始化
+  solarFarms: 0,
+  solarFarmCost: 10000000,
+  batteries: 0,
+  batteryCost: 1000000,
+  maxStorage: 10000,
+  currentStorage: 10000,
+  totalPowerGenerated: 0,
+  totalPowerConsumed: 0,
+  powerProductionRatio: 1,
 };
 
 export const createFactorySlice: StateCreator<GameState, [], [], FactorySlice> = (set) => ({
@@ -88,54 +112,113 @@ export const createFactorySlice: StateCreator<GameState, [], [], FactorySlice> =
     return state;
   }),
   
-  buyHarvesterDrone: () => set((state: GameState) => {
-    // 使用 unsoldInventory 代替 clips
-    if (state.unsoldInventory >= state.harvesterDroneCost) {
-      const nextLevel = state.harvesterDrones + 1;
-      return {
-        harvesterDrones: nextLevel,
-        unsoldInventory: state.unsoldInventory - state.harvesterDroneCost, // 扣除未使用的回形针
-        harvesterDroneCost: Math.pow(nextLevel + 1, 2.25) * 1000000
-      }
+  buyHarvesterDrone: (amount = 1) => set((state: GameState) => {
+    let currentInventory = state.unsoldInventory;
+    let currentDrones = state.harvesterDrones;
+    let currentCost = state.harvesterDroneCost;
+    
+    for (let i = 0; i < amount; i++) {
+      if (currentInventory >= currentCost) {
+        currentInventory -= currentCost;
+        currentDrones += 1;
+        currentCost = Math.pow(currentDrones + 1, 2.25) * 1000000;
+      } else break;
     }
-    return state;
+    return { 
+      harvesterDrones: currentDrones, 
+      unsoldInventory: currentInventory, 
+      harvesterDroneCost: currentCost 
+    };
   }),
   
-  buyWireDrone: () => set((state: GameState) => {
-    // 使用 unsoldInventory 代替 clips
-    if (state.unsoldInventory >= state.wireDroneCost) {
-      const nextLevel = state.wireDrones + 1;
-      return {
-        wireDrones: nextLevel,
-        unsoldInventory: state.unsoldInventory - state.wireDroneCost, // 扣除未使用的回形针
-        wireDroneCost: Math.pow(nextLevel + 1, 2.25) * 1000000
-      }
+  buyWireDrone: (amount = 1) => set((state: GameState) => {
+    let currentInventory = state.unsoldInventory;
+    let currentDrones = state.wireDrones;
+    let currentCost = state.wireDroneCost;
+    
+    for (let i = 0; i < amount; i++) {
+      if (currentInventory >= currentCost) {
+        currentInventory -= currentCost;
+        currentDrones += 1;
+        currentCost = Math.pow(currentDrones + 1, 2.25) * 1000000;
+      } else break;
     }
-    return state;
+    return { 
+      wireDrones: currentDrones, 
+      unsoldInventory: currentInventory, 
+      wireDroneCost: currentCost 
+    };
   }),
   
-  buyFactory: () => set((state: GameState) => {
-    // 使用 unsoldInventory 代替 clips
-    if (state.unsoldInventory >= state.factoryCost) {
-      const nextLevel = state.factories + 1;
-      // 原版工厂价格的分段衰减系数逻辑
-      let fcmod = 1;
-      if (nextLevel > 0 && nextLevel < 8) fcmod = 11 - nextLevel; // 1-7台：系数从10降到4
-      else if (nextLevel > 7 && nextLevel < 13) fcmod = 2;        // 8-12台：2倍
-      else if (nextLevel > 12 && nextLevel < 20) fcmod = 1.5;     // 13-19台：1.5倍
-      else if (nextLevel > 19 && nextLevel < 39) fcmod = 1.25;    // 20-38台：1.25倍
-      else if (nextLevel > 38 && nextLevel < 79) fcmod = 1.15;    // 39-78台：1.15倍
-      else fcmod = 1.10;                                          // 79台以上：1.10倍
+  buyFactory: (amount = 1) => set((state: GameState) => {
+    let currentInventory = state.unsoldInventory;
+    let currentFactories = state.factories;
+    let currentCost = state.factoryCost;
+    
+    for (let i = 0; i < amount; i++) {
+      if (currentInventory >= currentCost) {
+        currentInventory -= currentCost;
+        currentFactories += 1;
+        
+        // 原版工厂价格的分段衰减系数逻辑
+        let fcmod = 1;
+        if (currentFactories > 0 && currentFactories < 8) fcmod = 11 - currentFactories;
+        else if (currentFactories > 7 && currentFactories < 13) fcmod = 2;
+        else if (currentFactories > 12 && currentFactories < 20) fcmod = 1.5;
+        else if (currentFactories > 19 && currentFactories < 39) fcmod = 1.25;
+        else if (currentFactories > 38 && currentFactories < 79) fcmod = 1.15;
+        else fcmod = 1.10;
 
-      // 为了防止极度膨胀后的浮点精度丢失导致工厂价格停止增长，这里采用增量计算并确保至少有微小的增长
-      const nextCost = Math.ceil(state.factoryCost * fcmod);
-
-      return {
-        factories: nextLevel,
-        unsoldInventory: state.unsoldInventory - state.factoryCost, // 扣除未使用的回形针
-        factoryCost: nextCost
-      }
+        currentCost = Math.ceil(currentCost * fcmod);
+      } else break;
     }
-    return state;
+    return { 
+      factories: currentFactories, 
+      unsoldInventory: currentInventory, 
+      factoryCost: currentCost 
+    };
+  }),
+
+  buySolarFarm: (amount = 1) => set((state: GameState) => {
+    let currentInventory = state.unsoldInventory;
+    let currentFarms = state.solarFarms;
+    let currentCost = state.solarFarmCost;
+    
+    for (let i = 0; i < amount; i++) {
+      if (currentInventory >= currentCost) {
+        currentInventory -= currentCost;
+        currentFarms += 1;
+        // 原版中太阳能电站价格按 1.1x 指数增长
+        currentCost = Math.ceil(currentCost * 1.1);
+      } else break;
+    }
+    return { 
+      solarFarms: currentFarms, 
+      unsoldInventory: currentInventory, 
+      solarFarmCost: currentCost 
+    };
+  }),
+
+  buyBattery: (amount = 1) => set((state: GameState) => {
+    let currentInventory = state.unsoldInventory;
+    let currentBatteries = state.batteries;
+    let currentCost = state.batteryCost;
+    
+    for (let i = 0; i < amount; i++) {
+      if (currentInventory >= currentCost) {
+        currentInventory -= currentCost;
+        currentBatteries += 1;
+        // 原版中蓄电池价格按 1.1x 指数增长
+        currentCost = Math.ceil(currentCost * 1.1);
+      } else break;
+    }
+    // 每块蓄电池提供 10,000 MWs 的存储容量
+    const nextMaxStorage = initialFactoryState.maxStorage + currentBatteries * 10000;
+    return { 
+      batteries: currentBatteries, 
+      unsoldInventory: currentInventory, 
+      batteryCost: currentCost,
+      maxStorage: nextMaxStorage
+    };
   }),
 });

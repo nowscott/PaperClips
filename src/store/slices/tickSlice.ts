@@ -367,7 +367,7 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
         }
         
         harvestAmount = dbsth * nextState.harvesterDrones * 26180337 * 10 * nextState.harvesterBoost; 
-        harvestAmount = harvestAmount * droneWorkRatio;
+        harvestAmount = harvestAmount * droneWorkRatio * nextState.powerProductionRatio;
         
         harvestAmount = Math.min(harvestAmount, nextState.availableMatter);
         nextState.availableMatter -= harvestAmount;
@@ -387,7 +387,7 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
         processAmount = dbstw * nextState.wireDrones * 16180339 * 10 * nextState.wireDroneBoost;
         
         // 蜂群工作效率加成 (sliderPos: 0~200)
-        processAmount = processAmount * droneWorkRatio;
+        processAmount = processAmount * droneWorkRatio * nextState.powerProductionRatio;
 
         processAmount = Math.min(processAmount, nextState.acquiredMatter);
         nextState.acquiredMatter -= processAmount;
@@ -406,6 +406,7 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
         }
         
         factoryProduction = fbst * nextState.factories * 1000000000 * 10 * nextState.factoryRateBoost; 
+        factoryProduction = factoryProduction * nextState.powerProductionRatio;
         factoryProduction = Math.min(factoryProduction, nextState.wire);
         
         nextState.clips += factoryProduction;
@@ -420,6 +421,43 @@ export const createTickSlice: StateCreator<GameState, [], [], TickSlice> = (set)
       }
       // 恢复 factoryClipRate 以防其他地方依赖
       nextState.factoryClipRate = factoryProduction * 10;
+
+      // 电力逻辑 (Power Grid Logic)
+      if (nextState.solarFarmsUnlocked) {
+        // 1. 计算发电量 (MW)
+        // 原版中每座太阳能电站产生 50MW
+        const powerGenerated = nextState.solarFarms * 50;
+        nextState.totalPowerGenerated = powerGenerated;
+
+        // 2. 计算耗电量 (MW)
+        // 原版中每座工厂消耗 200,000 MW (200GW)
+        // 每架无人机消耗约 1 MW (为了平衡，我们这里设为 1000MW 即 1GW)
+        const factoryConsumption = nextState.factories * 200000;
+        const droneConsumption = (nextState.harvesterDrones + nextState.wireDrones) * 1;
+        const totalConsumption = factoryConsumption + droneConsumption;
+        nextState.totalPowerConsumed = totalConsumption;
+
+        // 3. 更新蓄电池存储 (MWs)
+        // 净功率 (MW)
+        const netPower = powerGenerated - totalConsumption;
+        
+        // 我们的 tick 是 100ms (0.1s)，所以能量变化是 netPower * 0.1
+        let newStorage = nextState.currentStorage + (netPower * 0.1);
+        
+        // 限制在 0 到 maxStorage 之间
+        newStorage = Math.max(0, Math.min(nextState.maxStorage, newStorage));
+        nextState.currentStorage = newStorage;
+
+        // 4. 计算生产效率系数
+        // 如果存储耗尽且消耗大于发电，生产效率会降低
+        if (newStorage <= 0 && totalConsumption > powerGenerated) {
+          nextState.powerProductionRatio = powerGenerated / totalConsumption;
+        } else {
+          nextState.powerProductionRatio = 1;
+        }
+      } else {
+        nextState.powerProductionRatio = 1;
+      }
     }
 
     // 太空阶段：冯·诺依曼探测器核心循环 (Space Phase Game Loop)

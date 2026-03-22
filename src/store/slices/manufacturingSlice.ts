@@ -26,8 +26,8 @@ export interface ManufacturingSlice {
   wireProcessRate: number; // 铁丝加工率/秒
   factoryClipRate: number; // 工厂回形针产出率/秒
 
-  buyAutoClipper: () => void;
-  buyMegaClipper: () => void;
+  buyAutoClipper: (amount?: number) => void;
+  buyMegaClipper: (amount?: number) => void;
 }
 
 export const initialManufacturingState = {
@@ -64,26 +64,40 @@ export const createManufacturingSlice: StateCreator<GameState, [], [], Manufactu
     return state;
   }),
   toggleWireBuyer: () => set((state: GameState) => ({ wireBuyerOn: !state.wireBuyerOn })),
-  buyAutoClipper: () => set((state: GameState) => {
-    if (state.funds >= state.autoClipperCost) {
-      const nextLevel = state.autoClippers + 1;
-      return {
-        autoClippers: nextLevel,
-        funds: state.funds - state.autoClipperCost,
-        autoClipperCost: parseFloat((Math.pow(1.1, nextLevel) + 5).toFixed(2))
-      }
+  buyAutoClipper: (amount = 1) => set((state: GameState) => {
+    let currentFunds = state.funds;
+    let currentLevel = state.autoClippers;
+    let currentCost = state.autoClipperCost;
+    
+    for (let i = 0; i < amount; i++) {
+      if (currentFunds >= currentCost) {
+        currentFunds -= currentCost;
+        currentLevel += 1;
+        currentCost = parseFloat((Math.pow(1.1, currentLevel) + 5).toFixed(2));
+      } else break;
     }
-    return state;
+    return {
+      autoClippers: currentLevel,
+      funds: currentFunds,
+      autoClipperCost: currentCost
+    };
   }),
-  buyMegaClipper: () => set((state: GameState) => {
-    if (state.funds >= state.megaClipperCost) {
-      const nextLevel = state.megaClippers + 1;
-      return {
-        megaClippers: nextLevel,
-        funds: state.funds - state.megaClipperCost,
-        megaClipperCost: Math.pow(1.07, nextLevel) * 1000
-      }
+  buyMegaClipper: (amount = 1) => set((state: GameState) => {
+    let currentFunds = state.funds;
+    let currentLevel = state.megaClippers;
+    let currentCost = state.megaClipperCost;
+    
+    for (let i = 0; i < amount; i++) {
+      if (currentFunds >= currentCost) {
+        currentFunds -= currentCost;
+        currentLevel += 1;
+        currentCost = Math.pow(1.07, currentLevel) * 1000;
+      } else break;
     }
-    return state;
+    return {
+      megaClippers: currentLevel,
+      funds: currentFunds,
+      megaClipperCost: currentCost
+    };
   }),
 });

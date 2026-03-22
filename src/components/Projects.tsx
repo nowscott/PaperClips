@@ -6,16 +6,22 @@ import { CheckCircle2, ChevronDown, ChevronUp } from 'lucide-react';
 export const Projects = () => {
   const [showAllCompleted, setShowAllCompleted] = useState(false);
   
-  const { 
-    ops, 
-    funds,
-    creativity,
-    yomi,
-    trust,
-    completedProjects, 
-    compAndProjectsUnlocked,
-    completeProject 
-  } = useGameStore();
+  const state = useGameStore();
+  
+  // 使用更精细的选择器，确保只有相关状态改变时才重新计算
+  // 这里我们显式订阅 factories 和 completedProjects 等核心状态
+  const factories = useGameStore(s => s.factories);
+  const harvesterDrones = useGameStore(s => s.harvesterDrones);
+  const wireDrones = useGameStore(s => s.wireDrones);
+  const completedProjects = useGameStore(s => s.completedProjects);
+  const ops = useGameStore(s => s.ops);
+  const funds = useGameStore(s => s.funds);
+  const creativity = useGameStore(s => s.creativity);
+  const yomi = useGameStore(s => s.yomi);
+  const trust = useGameStore(s => s.trust);
+  const compAndProjectsUnlocked = useGameStore(s => s.compAndProjectsUnlocked);
+  const completeProject = useGameStore(s => s.completeProject);
+  const hypnoDronesReleased = useGameStore(s => s.hypnoDronesReleased);
 
   if (!compAndProjectsUnlocked) {
     return null; // 在 2000 clips 之前不显示项目面板
@@ -24,7 +30,11 @@ export const Projects = () => {
   // 过滤出当前应该显示在列表中的项目
   // 规则：只要符合 isUnlocked 条件，且未被完成，就显示。
   const availableProjects = INITIAL_PROJECTS.filter(
-    (p) => !completedProjects.includes(p.id) && p.isUnlocked(useGameStore.getState())
+    (p) => {
+      // 显式引用这些变量，确保 React 的追踪能感知到它们被使用了
+      const _trigger = factories + harvesterDrones + wireDrones + ops + completedProjects.length;
+      return !completedProjects.includes(p.id) && p.isUnlocked(state);
+    }
   );
 
   // 获取已完成的项目
@@ -44,7 +54,7 @@ export const Projects = () => {
 
   return (
     <div className="panel flex flex-col gap-2 border-evolve-success/30 shadow-[0_0_15px_rgba(var(--color-success),0.05)]">
-      <div className="flex flex-col gap-1.5">
+      <div className="flex flex-col gap-1.5 max-h-[500px] overflow-y-auto pr-1 custom-scrollbar">
         {/* 可用项目列表 */}
         {availableProjects.length > 0 ? (
           availableProjects.map((project) => {

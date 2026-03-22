@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useGameStore } from '../store/gameStore';
-import { useContinuousClick } from '../hooks/useContinuousClick';
 
 export const QuantumComputing = () => {
   const { qChips, qComputingUnlocked, addOps } = useGameStore();
@@ -44,14 +43,11 @@ export const QuantumComputing = () => {
 
   const handleCompute = () => {
     // 根据当前的总量子状态计算算力 (放大倍数可调)
-    // 这里的 totalQ 会随动画帧实时更新，callbackRef.current() 每次执行时都会读取最新的 totalQ
     const opsGained = Math.floor(totalQ * 360);
     if (opsGained > 0) {
       addOps(opsGained);
     }
   };
-
-  const continuousCompute = useContinuousClick(handleCompute, 50, 400);
 
   // 如果没有解锁量子计算，不显示面板
   if (!qComputingUnlocked) return null;
@@ -103,8 +99,8 @@ export const QuantumComputing = () => {
 
         {/* 算力收集按钮 */}
         <button
-          className="btn-evolve btn-evolve-accent py-2 font-bold tracking-wider select-none touch-none"
-          {...continuousCompute}
+          className="btn-evolve btn-evolve-accent py-2 font-bold tracking-wider"
+          onClick={handleCompute}
           disabled={totalQ <= 0}
         >
           执行量子计算

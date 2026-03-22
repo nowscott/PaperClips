@@ -126,13 +126,29 @@ export const SpaceAndDrones = () => {
             </div>
             <div className="flex flex-col items-end gap-1">
               <span className="font-mono text-sm text-evolve-accent leading-none">{formatNumber(harvesterDrones)}</span>
-              <button 
-                className="btn-evolve text-[10px] py-0.5 px-2 select-none touch-none"
-                {...buyHarvesterContinuous}
-                disabled={unsoldInventory < harvesterDroneCost}
-              >
-                组装
-              </button>
+              <div className="flex gap-1">
+                <button 
+                  className="btn-evolve text-[10px] py-0.5 px-2 select-none touch-none"
+                  {...buyHarvesterContinuous}
+                  disabled={unsoldInventory < harvesterDroneCost}
+                >
+                  组装
+                </button>
+                <button 
+                  className="btn-evolve text-[10px] py-0.5 px-1.5 opacity-60 hover:opacity-100"
+                  onClick={() => buyHarvesterDrone(10)}
+                  disabled={unsoldInventory < harvesterDroneCost}
+                >
+                  +10
+                </button>
+                <button 
+                  className="btn-evolve text-[10px] py-0.5 px-1.5 opacity-60 hover:opacity-100"
+                  onClick={() => buyHarvesterDrone(100)}
+                  disabled={unsoldInventory < harvesterDroneCost}
+                >
+                  +100
+                </button>
+              </div>
             </div>
           </div>
         )}
@@ -148,13 +164,29 @@ export const SpaceAndDrones = () => {
             </div>
             <div className="flex flex-col items-end gap-1">
               <span className="font-mono text-sm text-evolve-accent leading-none">{formatNumber(wireDrones)}</span>
-              <button 
-                className="btn-evolve text-[10px] py-0.5 px-2 select-none touch-none"
-                {...buyWireContinuous}
-                disabled={unsoldInventory < wireDroneCost}
-              >
-                组装
-              </button>
+              <div className="flex gap-1">
+                <button 
+                  className="btn-evolve text-[10px] py-0.5 px-2 select-none touch-none"
+                  {...buyWireContinuous}
+                  disabled={unsoldInventory < wireDroneCost}
+                >
+                  组装
+                </button>
+                <button 
+                  className="btn-evolve text-[10px] py-0.5 px-1.5 opacity-60 hover:opacity-100"
+                  onClick={() => buyWireDrone(10)}
+                  disabled={unsoldInventory < wireDroneCost}
+                >
+                  +10
+                </button>
+                <button 
+                  className="btn-evolve text-[10px] py-0.5 px-1.5 opacity-60 hover:opacity-100"
+                  onClick={() => buyWireDrone(100)}
+                  disabled={unsoldInventory < wireDroneCost}
+                >
+                  +100
+                </button>
+              </div>
             </div>
           </div>
         )}
@@ -170,13 +202,29 @@ export const SpaceAndDrones = () => {
             </div>
             <div className="flex flex-col items-end gap-1">
               <span className="font-mono text-sm text-evolve-warning leading-none">{formatNumber(factories)}</span>
-              <button 
-                className="btn-evolve btn-evolve-warning text-[10px] py-0.5 px-2 select-none touch-none"
-                {...buyFactoryContinuous}
-                disabled={unsoldInventory < factoryCost}
-              >
-                组装
-              </button>
+              <div className="flex gap-1">
+                <button 
+                  className="btn-evolve btn-evolve-warning text-[10px] py-0.5 px-2 select-none touch-none"
+                  {...buyFactoryContinuous}
+                  disabled={unsoldInventory < factoryCost}
+                >
+                  组装
+                </button>
+                <button 
+                  className="btn-evolve btn-evolve-warning text-[10px] py-0.5 px-1.5 opacity-60 hover:opacity-100"
+                  onClick={() => buyFactory(10)}
+                  disabled={unsoldInventory < factoryCost}
+                >
+                  +10
+                </button>
+                <button 
+                  className="btn-evolve btn-evolve-warning text-[10px] py-0.5 px-1.5 opacity-60 hover:opacity-100"
+                  onClick={() => buyFactory(100)}
+                  disabled={unsoldInventory < factoryCost}
+                >
+                  +100
+                </button>
+              </div>
             </div>
           </div>
         )}

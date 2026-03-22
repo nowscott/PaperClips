@@ -7,6 +7,7 @@ import { Projects } from './components/Projects';
 import { Investments } from './components/Investments';
 import { StrategicModeling } from './components/StrategicModeling';
 import { SpaceAndDrones } from './components/SpaceAndDrones';
+import { PowerGrid } from './components/PowerGrid';
 import { SpaceExploration } from './components/SpaceExploration';
 import { ConsoleLog } from './components/ConsoleLog';
 import { GameLoop } from './components/GameLoop';
@@ -24,7 +25,8 @@ function App() {
     harvesterDronesUnlocked,
     wireDronesUnlocked,
     factoriesUnlocked,
-    hypnoDronesReleased
+    hypnoDronesReleased,
+    solarFarmsUnlocked
   } = useGameStore();
 
   return (
@@ -62,6 +64,13 @@ function App() {
                            harvesterDronesUnlocked || 
                            wireDronesUnlocked || 
                            factoriesUnlocked
+              },
+              { 
+                id: 'power_grid', 
+                label: "电力",
+                icon: 'Zap',
+                content: <PowerGrid />,
+                condition: solarFarmsUnlocked
               }
             ]}
           />

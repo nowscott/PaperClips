@@ -592,7 +592,7 @@ export const INITIAL_PROJECTS: Project[] = [
     title: '超光速工厂',
     description: '将工厂的生产效率提升 1000 倍。',
     costOps: 85000,
-    isUnlocked: (state) => state.factories >= 20 && state.completedProjects.includes('upgradedFactories'),
+    isUnlocked: (state) => state.factories >= 20,
     effect: (state) => ({ factoryRateBoost: (state.factoryRateBoost || 1) * 1000 })
   },
   // 102. Self-correcting Supply Chain
@@ -602,7 +602,7 @@ export const INITIAL_PROJECTS: Project[] = [
     description: '每一个加入网络的工厂都会使所有工厂的产出提升 1000 倍。',
     costOps: 0,
     costTrust: 0,
-    isUnlocked: (state) => state.factories >= 50 && state.completedProjects.includes('hyperspeedFactories'),
+    isUnlocked: (state) => state.factories >= 50,
     effect: () => ({ factoryBoost: 1000 })
   },
   // 110. Drone flocking: collision avoidance

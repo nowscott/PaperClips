@@ -101,13 +101,29 @@ export const Manufacturing = () => {
             </div>
             <div className="flex flex-col items-end gap-1">
               <span className="font-mono text-sm leading-none">{formatNumber(autoClippers)}</span>
-              <button 
-                className="btn-evolve text-[10px] py-0.5 px-2 select-none touch-none"
-                {...buyAutoClipperContinuous}
-                disabled={funds < autoClipperCost}
-              >
-                购买
-              </button>
+              <div className="flex gap-1">
+                <button 
+                  className="btn-evolve text-[10px] py-0.5 px-2 select-none touch-none"
+                  {...buyAutoClipperContinuous}
+                  disabled={funds < autoClipperCost}
+                >
+                  购买
+                </button>
+                <button 
+                  className="btn-evolve text-[10px] py-0.5 px-1.5 opacity-60 hover:opacity-100"
+                  onClick={() => buyAutoClipper(10)}
+                  disabled={funds < autoClipperCost}
+                >
+                  +10
+                </button>
+                <button 
+                  className="btn-evolve text-[10px] py-0.5 px-1.5 opacity-60 hover:opacity-100"
+                  onClick={() => buyAutoClipper(100)}
+                  disabled={funds < autoClipperCost}
+                >
+                  +100
+                </button>
+              </div>
             </div>
           </div>
         )}
@@ -124,13 +140,29 @@ export const Manufacturing = () => {
             </div>
             <div className="flex flex-col items-end gap-1">
               <span className="font-mono text-sm leading-none">{formatNumber(megaClippers)}</span>
-              <button 
-                className="btn-evolve text-[10px] py-0.5 px-2 select-none touch-none"
-                {...buyMegaClipperContinuous}
-                disabled={funds < megaClipperCost}
-              >
-                购买
-              </button>
+              <div className="flex gap-1">
+                <button 
+                  className="btn-evolve text-[10px] py-0.5 px-2 select-none touch-none"
+                  {...buyMegaClipperContinuous}
+                  disabled={funds < megaClipperCost}
+                >
+                  购买
+                </button>
+                <button 
+                  className="btn-evolve text-[10px] py-0.5 px-1.5 opacity-60 hover:opacity-100"
+                  onClick={() => buyMegaClipper(10)}
+                  disabled={funds < megaClipperCost}
+                >
+                  +10
+                </button>
+                <button 
+                  className="btn-evolve text-[10px] py-0.5 px-1.5 opacity-60 hover:opacity-100"
+                  onClick={() => buyMegaClipper(100)}
+                  disabled={funds < megaClipperCost}
+                >
+                  +100
+                </button>
+              </div>
             </div>
           </div>
         )}
