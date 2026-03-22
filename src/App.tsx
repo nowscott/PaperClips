@@ -20,6 +20,7 @@ function App() {
     strategyEngineUnlocked,
     compAndProjectsUnlocked,
     qComputingUnlocked,
+    nanoWireUnlocked,
     harvesterDronesUnlocked,
     wireDronesUnlocked,
     factoriesUnlocked,
@@ -57,7 +58,8 @@ function App() {
                 content: <SpaceAndDrones />,
                 // 当至少有一个无人机相关科技解锁时才显示此 Tab
                 // 注意：不能用 availableMatter > 0，因为游戏初始时地球物质就是满的，会导致一开局就暴露此面板
-                condition: harvesterDronesUnlocked || 
+                condition: nanoWireUnlocked ||
+                           harvesterDronesUnlocked || 
                            wireDronesUnlocked || 
                            factoriesUnlocked
               }

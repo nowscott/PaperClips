@@ -178,6 +178,10 @@ export const sanitizeSaveData = (state: GameState): { updates: Partial<GameState
     
     // 如果还没解锁纳米线材，却有了无人机，强制清零无人机
     const hasNanoWire = currentCompleted.includes('nanoWireProduction');
+    if (hasNanoWire && !state.nanoWireUnlocked) {
+      updates.nanoWireUnlocked = true;
+      reasons.push(`修复逻辑异常: 纳米线材已研发但未解锁面板，已手动开启`);
+    }
     if (!hasNanoWire && (state.harvesterDrones > 0 || state.wireDrones > 0)) {
       updates.harvesterDrones = 0;
       updates.wireDrones = 0;
@@ -300,10 +304,31 @@ export const sanitizeSaveData = (state: GameState): { updates: Partial<GameState
     expectedFactoryCost = Math.ceil(expectedFactoryCost * fcmod);
   }
   
-  if (Math.abs(state.factoryCost - expectedFactoryCost) / Math.max(1, expectedFactoryCost) > 0.05) {
-    updates.factoryCost = expectedFactoryCost;
-    reasons.push(`修复数据损坏: 工厂造价与等级不匹配，已重置为正确曲线`);
-  }
+  // 5. 状态同步检查 (State Synchronization)
+  // 确保已完成项目对应的科技标记已正确开启
+  const stateSyncMap: Record<string, keyof GameState> = {
+    'nanoWireProduction': 'nanoWireUnlocked',
+    'harvesterDrones': 'harvesterDronesUnlocked',
+    'wireDrones': 'wireDronesUnlocked',
+    'clipFactories': 'factoriesUnlocked',
+    'spaceExploration': 'spaceExplorationUnlocked',
+    'quantumComputing': 'qComputingUnlocked',
+    'strategicModeling': 'strategyEngineUnlocked',
+    'algoTrading': 'investmentEngineUnlocked',
+    'creativity': 'creativityOn',
+    'revTracker': 'revTrackerUnlocked',
+    'autoTourney': 'autoTourneyUnlocked',
+    'theoryOfMind': 'theoryOfMindUnlocked',
+    'hypnoDrones': 'hypnoDronesUnlocked',
+    'releaseTheHypnoDrones': 'hypnoDronesReleased',
+  };
+
+  Object.entries(stateSyncMap).forEach(([projectId, flag]) => {
+    if (currentCompleted.includes(projectId) && !state[flag] && !updates[flag]) {
+      (updates as any)[flag] = true;
+      reasons.push(`修复状态不同步: 项目 [${projectId}] 已完成但标记 [${flag}] 未开启`);
+    }
+  });
 
   return { updates, reasons };
 };
